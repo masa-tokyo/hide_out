@@ -1,0 +1,6 @@
+
+enum RecordingScreenType {
+  BEFORE_RECORDING,
+  DURING_RECORDING,
+  AFTER_RECORDING,
+}

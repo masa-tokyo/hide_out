@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "289406628812",
+    "project_id": "voiceput-e9f38",
+    "storage_bucket": "voiceput-e9f38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289406628812:android:62889695477266332e6369",
+        "android_client_info": {
+          "package_name": "io.flycricket.voiceput"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289406628812-db78dd7q9ptr6kq5bc1oar19gb5bjusc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8VKizqiSXuXnorx_Dw9nPEGJ1Bw7ZBx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289406628812-db78dd7q9ptr6kq5bc1oar19gb5bjusc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

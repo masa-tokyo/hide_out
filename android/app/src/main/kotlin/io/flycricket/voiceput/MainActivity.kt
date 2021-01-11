@@ -1,4 +1,4 @@
-package com.example.voice_put
+package io.flycricket.voiceput
 
 import io.flutter.embedding.android.FlutterActivity
 
