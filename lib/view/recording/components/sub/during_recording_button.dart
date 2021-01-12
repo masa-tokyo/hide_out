@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voice_put/view_models/recording_view_model.dart';
 
 class DuringRecordingButton extends StatelessWidget {
   @override
@@ -7,7 +9,7 @@ class DuringRecordingButton extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         _backwardCircle(),
-        _forwardRectangle(),
+        _forwardRectangle(context),
       ],
     );
   }
@@ -26,12 +28,12 @@ class DuringRecordingButton extends StatelessWidget {
     );
   }
 
-  Widget _forwardRectangle() {
+  Widget _forwardRectangle(BuildContext context) {
     return Container(
       width: 60.0,
       height: 60.0,
       child: RaisedButton(
-        onPressed: () => _onRectangleButtonPressed(),
+        onPressed: () => _onRectangleButtonPressed(context),
         elevation: 3.0,
         color: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -41,9 +43,13 @@ class DuringRecordingButton extends StatelessWidget {
     );
   }
 
-  _onRectangleButtonPressed() {
+  _onRectangleButtonPressed(BuildContext context) async{
     //todo stop recording
 
-    //todo change the state from DURING to AFTER
+
+    //change RecordingButtonStatus from DURING to AFTER
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.changeStatus();
+
   }
 }

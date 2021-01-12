@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/view/recording/components/sub/after_recording_buttons.dart';
 import 'package:voice_put/view/recording/components/sub/before_recording_button.dart';
 import 'package:voice_put/view/recording/components/sub/during_recording_button.dart';
 import 'package:voice_put/view/recording/components/sub/recording_time_display.dart';
+import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtonPart extends StatelessWidget {
-  final recordingScreenType = RecordingScreenType.AFTER_RECORDING;
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         RecordingTimeDisplay(),
-        _recordingButtons(context, recordingScreenType),
+        Selector<RecordingViewModel, RecordingButtonStatus>(
+            selector: (context, viewModel) => viewModel.recordingButtonStatus,
+            builder: (context, status, child) => _recordingButtons(context, status),
+            ),
       ],
     );
   }
 
-  Widget _recordingButtons(BuildContext context, RecordingScreenType recordingScreenType) {
+  Widget _recordingButtons(BuildContext context, RecordingButtonStatus status) {
     var button;
-    switch(recordingScreenType){
-      case RecordingScreenType.BEFORE_RECORDING:
+    switch(status){
+      case RecordingButtonStatus.BEFORE_RECORDING:
         button = BeforeRecordingButton();
         break;
-      case RecordingScreenType.DURING_RECORDING:
+      case RecordingButtonStatus.DURING_RECORDING:
         button = DuringRecordingButton();
         break;
-      case RecordingScreenType.AFTER_RECORDING:
+      case RecordingButtonStatus.AFTER_RECORDING:
         button = AfterRecordingButtons();
         break;
     }

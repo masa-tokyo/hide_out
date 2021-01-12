@@ -46,6 +46,7 @@ dependencies:
 
   font_awesome_flutter: ^8.11.0
 
+  flutter_sound: ^7.5.1+2
 
 
 dev_dependencies:

@@ -1,5 +1,5 @@
 
-enum RecordingScreenType {
+enum RecordingButtonStatus {
   BEFORE_RECORDING,
   DURING_RECORDING,
   AFTER_RECORDING,
