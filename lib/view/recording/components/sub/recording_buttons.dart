@@ -6,8 +6,10 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
   @override
@@ -222,8 +224,15 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     );
   }
 
-  _onSendButtonPressed() {
-    //todo post the recording
+  _onSendButtonPressed() async{
+    //post the recording
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.postRecording(_path);
+    print("_path: $_path");
+
+    Navigator.pop(context);
+
+    //todo show toast message "post was successful"
 
   }
 

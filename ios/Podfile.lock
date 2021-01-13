@@ -306,6 +306,10 @@ PODS:
     - FirebaseCore (~> 6.10)
     - GTMSessionFetcher/Core (~> 1.1)
   - Flutter (1.0.0)
+  - "flutter_sound (7.5.1+2)":
+    - Flutter
+    - mobile-ffmpeg-audio (= 4.3.1.LTS)
+    - "tau_sound_core (= 7.5.1+2)"
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -376,12 +380,18 @@ PODS:
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
   - leveldb-library (1.22)
+  - mobile-ffmpeg-audio (4.3.1.LTS)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
     - nanopb/encode (= 1.30906.0)
   - nanopb/decode (1.30906.0)
   - nanopb/encode (1.30906.0)
+  - path_provider (0.0.1):
+    - Flutter
+  - "permission_handler (5.0.1+1)":
+    - Flutter
   - PromisesObjC (1.2.11)
+  - "tau_sound_core (7.5.1+2)"
   - Toast (4.0.0)
 
 DEPENDENCIES:
@@ -391,8 +401,11 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
 
 SPEC REPOS:
   trunk:
@@ -416,8 +429,10 @@ SPEC REPOS:
     - GTMAppAuth
     - GTMSessionFetcher
     - leveldb-library
+    - mobile-ffmpeg-audio
     - nanopb
     - PromisesObjC
+    - tau_sound_core
     - Toast
 
 EXTERNAL SOURCES:
@@ -433,10 +448,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  flutter_sound:
+    :path: ".symlinks/plugins/flutter_sound/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -456,6 +477,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FirebaseStorage: 15e0f15ef3c7fec3d1899d68623e47d4447066b4
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_sound: 73ed7a5b76dc0d8de46a5e30dce0cd39ebae849f
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleAppMeasurement: 966e88df9d19c15715137bb2ddaf52373f111436
@@ -467,8 +489,12 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  mobile-ffmpeg-audio: adc36047b8032bc0f8e5c4e6ab7cb110189d9b37
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
+  tau_sound_core: 3653b154a8804ea466c3f383e3e7453df8603e61
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

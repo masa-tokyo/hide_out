@@ -1,8 +1,8 @@
-
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/models/repositories/group_repository.dart';
+import 'package:voice_put/models/repositories/post_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
@@ -27,6 +27,9 @@ List<SingleChildWidget> dependentModels = [
   ProxyProvider<DatabaseManager, GroupRepository>(
     update: (context, dbManager, repository) => GroupRepository(dbManager: dbManager),
   ),
+  ProxyProvider<DatabaseManager, PostRepository>(
+    update: (context, dbManager, repository) => PostRepository(dbManager: dbManager),
+  ),
 ];
 List<SingleChildWidget> viewModels = [
   ChangeNotifierProvider<LoginViewModel>(
@@ -41,18 +44,18 @@ List<SingleChildWidget> viewModels = [
           )),
   ChangeNotifierProvider<HomeScreenViewModel>(
       create: (context) => HomeScreenViewModel(
-        userRepository: Provider.of<UserRepository>(context, listen: false),
-        groupRepository: Provider.of<GroupRepository>(context, listen: false),
-      )),
+            userRepository: Provider.of<UserRepository>(context, listen: false),
+            groupRepository: Provider.of<GroupRepository>(context, listen: false),
+          )),
   ChangeNotifierProvider<JoinGroupViewModel>(
       create: (context) => JoinGroupViewModel(
-        userRepository: Provider.of<UserRepository>(context, listen: false),
-        groupRepository: Provider.of<GroupRepository>(context, listen: false),
-      )),
+            userRepository: Provider.of<UserRepository>(context, listen: false),
+            groupRepository: Provider.of<GroupRepository>(context, listen: false),
+          )),
   ChangeNotifierProvider<RecordingViewModel>(
       create: (context) => RecordingViewModel(
-        userRepository: Provider.of<UserRepository>(context, listen: false),
-        groupRepository: Provider.of<GroupRepository>(context, listen: false),
-      )),
-
+            userRepository: Provider.of<UserRepository>(context, listen: false),
+            groupRepository: Provider.of<GroupRepository>(context, listen: false),
+            postRepository: Provider.of<PostRepository>(context, listen: false),
+          )),
 ];
