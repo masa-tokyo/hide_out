@@ -12,16 +12,17 @@ class HomeScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: RefreshIndicator(
-          //todo [check] on real devices, can refresh by swiping other parts than MyGroupPart??
-          onRefresh: () => homeScreenViewModel.getMyGroup(),
-          child: Column(
-            children: [
-              SizedBox(height: 24.0,),
-              MyGroupPart(),
-              SizedBox(height: 16.0,),
-              NewGroupPart(),
-            ],
+        body: SingleChildScrollView(
+          child: RefreshIndicator(
+            onRefresh: () => homeScreenViewModel.getMyGroup(),
+            child: Column(
+              children: [
+                SizedBox(height: 24.0,),
+                MyGroupPart(),
+                SizedBox(height: 16.0,),
+                NewGroupPart(),
+              ],
+            ),
           ),
         ),
       ),

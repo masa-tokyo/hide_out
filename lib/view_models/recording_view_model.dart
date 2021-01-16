@@ -27,6 +27,11 @@ class RecordingViewModel extends ChangeNotifier{
 
     //todo post
 
+    print("post was done!");
+
+    isProcessing = false;
+    notifyListeners();
+
   }
 
 

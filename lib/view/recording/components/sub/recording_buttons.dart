@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   bool _isRecorderInitiated = false;
   String _path = "";
 
+  //todo delete unnecessary properties
+  String _testTimeText = "00:00:00 TEST";
+  StreamSubscription _recorderSubscription;
+
 
   @override
   void initState() {
@@ -35,9 +40,12 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   @override
   void dispose() {
-    _stopRecording();
+    _stopRecording(); // in the case when status is DURING and not stopped.
+    _cancelRecorderSubscriptions();
+
     _flutterSoundRecorder.closeAudioSession();
     _flutterSoundRecorder = null;
+
     if (_path != null) {
       var outputFile = File(_path);
       if (outputFile.existsSync()){
@@ -47,6 +55,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     super.dispose();
   }
 
+
+  //------------------------------------------------------------------------------------------------------------------UI
   @override
   Widget build(BuildContext context) {
     var button;
@@ -62,10 +72,17 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         break;
 
     }
-    return button;
+    //todo delete the testTimeText
+
+    return Column(
+      children: [
+        SizedBox(height: 24.0,),
+        Text(_testTimeText),
+        button
+      ],
+    );
   }
 
-  //------------------------------------------------------------------------------------------------------------------UI
   //----------------------------------------------------------------------------------------------BEFORE_RECORDING
   Widget _beforeRecordingButton() {
     return Stack(
@@ -257,20 +274,66 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
 
   Future<void> _startRecording() async{
+
     assert(_isRecorderInitiated);
     await _flutterSoundRecorder.startRecorder(
       toFile: _path,
       codec: Codec.aacADTS,
     );
+
+    //time display
+    try {
+
+      print("_recorderSubscription Before: $_recorderSubscription");
+      print("_flutterSoundRecorder.onProgress: ${_flutterSoundRecorder.onProgress}");
+      print("_flutterSoundRecorder.onProgress.listen(): ${_flutterSoundRecorder.onProgress.listen((event) { })}");
+
+      _recorderSubscription = _flutterSoundRecorder.onProgress.listen((event) {
+        print("event: $event");
+        if (event != null && event.duration != null){
+
+          var date = DateTime.fromMillisecondsSinceEpoch(
+              event.duration.inMilliseconds,
+              isUtc: true);
+
+
+          setState(() {
+            _testTimeText = date.toString();
+          });
+
+        }
+      });
+
+      print("_recorderSubscription After: $_recorderSubscription");
+
+    } on Exception catch (e){
+      print("error: $e");
+    }
+
+
+
     //todo [check] is SetState() necessary?
+    setState(() {
+
+    });
 
   }
 
   Future<void> _stopRecording() async{
-    await _flutterSoundRecorder.startRecorder();
+    await _flutterSoundRecorder.stopRecorder();
 
     //todo [check] is SetState() necessary?
+    // setState(() {
+    //
+    // });
 
+  }
+
+  void _cancelRecorderSubscriptions() {
+    if (_recorderSubscription != null){
+      _recorderSubscription.cancel();
+      _recorderSubscription = null;
+    }
   }
 
 

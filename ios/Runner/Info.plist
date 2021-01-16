@@ -55,5 +55,10 @@
     	</dict>
     </array>
     <!-- End of the Google Sign-in Section -->
+    <!-- Flutter_Sound Section -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses the microphone to record your speech.</string>
+    <!-- End of the Google Sign-in Section -->
+
 </dict>
 </plist>
