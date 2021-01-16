@@ -23,9 +23,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   bool _isRecorderInitiated = false;
   String _path = "";
 
-  //todo delete unnecessary properties
-  String _testTimeText = "00:00:00 TEST";
-  StreamSubscription _recorderSubscription;
 
 
   @override
@@ -41,7 +38,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   @override
   void dispose() {
     _stopRecording(); // in the case when status is DURING and not stopped.
-    _cancelRecorderSubscriptions();
 
     _flutterSoundRecorder.closeAudioSession();
     _flutterSoundRecorder = null;
@@ -59,6 +55,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   //------------------------------------------------------------------------------------------------------------------UI
   @override
   Widget build(BuildContext context) {
+
     var button;
     switch (_recordingButtonStatus){
       case RecordingButtonStatus.BEFORE_RECORDING:
@@ -72,12 +69,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         break;
 
     }
-    //todo delete the testTimeText
 
     return Column(
       children: [
         SizedBox(height: 24.0,),
-        Text(_testTimeText),
         button
       ],
     );
@@ -131,6 +126,9 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     await _startRecording();
 
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.startStopwatch();
+
     //change RecordingButtonStatus from BEFORE to DURING
     _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
     setState(() {});
@@ -166,6 +164,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   _onRectangleButtonPressed(BuildContext context) async{
     //stop recording
     await _stopRecording();
+
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.finishStopwatch();
+
 
     //change RecordingButtonStatus from DURING to AFTER
     _recordingButtonStatus = RecordingButtonStatus.AFTER_RECORDING;
@@ -216,6 +218,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       outputFile.delete();
     }
 
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.resetStopwatch();
+
+
     //change RecordingButtonStatus from AFTER to BEFORE
     _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
     setState(() {});
@@ -246,6 +252,9 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(_path);
     print("_path: $_path");
+
+    await recordingViewModel.resetStopwatch();
+
 
     Navigator.pop(context);
 
@@ -281,35 +290,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       codec: Codec.aacADTS,
     );
 
-    //time display
-    try {
-
-      print("_recorderSubscription Before: $_recorderSubscription");
-      print("_flutterSoundRecorder.onProgress: ${_flutterSoundRecorder.onProgress}");
-      print("_flutterSoundRecorder.onProgress.listen(): ${_flutterSoundRecorder.onProgress.listen((event) { })}");
-
-      _recorderSubscription = _flutterSoundRecorder.onProgress.listen((event) {
-        print("event: $event");
-        if (event != null && event.duration != null){
-
-          var date = DateTime.fromMillisecondsSinceEpoch(
-              event.duration.inMilliseconds,
-              isUtc: true);
-
-
-          setState(() {
-            _testTimeText = date.toString();
-          });
-
-        }
-      });
-
-      print("_recorderSubscription After: $_recorderSubscription");
-
-    } on Exception catch (e){
-      print("error: $e");
-    }
-
 
 
     //todo [check] is SetState() necessary?
@@ -329,12 +309,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   }
 
-  void _cancelRecorderSubscriptions() {
-    if (_recorderSubscription != null){
-      _recorderSubscription.cancel();
-      _recorderSubscription = null;
-    }
-  }
 
 
 }

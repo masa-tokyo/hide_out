@@ -14,9 +14,11 @@ class RecordingViewModel extends ChangeNotifier{
 
   bool isProcessing = false;
 
-  String timeText = "00:01";
+  String timeText = "timeText";
   String title = "";
   File audioFile;
+
+  Stopwatch _stopwatch = Stopwatch();
 
   Future<void> postRecording(String path) async{
     isProcessing = true;
@@ -30,6 +32,30 @@ class RecordingViewModel extends ChangeNotifier{
     print("post was done!");
 
     isProcessing = false;
+    notifyListeners();
+
+  }
+
+  Future<void> startStopwatch() async{
+    _stopwatch.start();
+    timeText = _stopwatch.elapsedTicks.toString();
+
+    notifyListeners();
+
+  }
+
+  Future<void> finishStopwatch() async{
+    _stopwatch.stop();
+    timeText = _stopwatch.elapsedTicks.toString();
+
+    notifyListeners();
+
+  }
+
+  Future <void> resetStopwatch() async{
+    _stopwatch.reset();
+    timeText = _stopwatch.elapsedTicks.toString();
+
     notifyListeners();
 
   }
