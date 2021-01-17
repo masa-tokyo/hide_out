@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class RecordingViewModel extends ChangeNotifier{
   File audioFile;
 
   Stopwatch _stopwatch = Stopwatch();
+  StreamController stopwatchController; //todo check the caution
 
   Future<void> postRecording(String path) async{
     isProcessing = true;
@@ -39,6 +41,7 @@ class RecordingViewModel extends ChangeNotifier{
   Future<void> startStopwatch() async{
     _stopwatch.start();
     timeText = _stopwatch.elapsedTicks.toString();
+    stopwatchController.sink.add(timeText);
 
     notifyListeners();
 
