@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/%20data_models/user.dart';
 
 class DatabaseManager {
@@ -36,6 +40,19 @@ class DatabaseManager {
         .collection("members").doc(userId).set({"userId": userId});
 
   }
+
+  Future<String> uploadAudioToStorage(File audioFile, String storageId) async{
+    final storageRef = FirebaseStorage.instance.ref().child(storageId);
+    final uploadTask = storageRef.putFile(audioFile);
+    final downloadUrl = uploadTask.then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
+    return downloadUrl;
+  }
+
+ Future<void> postRecording(Post post) async{
+    await _db.collection("posts").doc(post.postId).set(post.toMap());
+ }
+
+
 
   //--------------------------------------------------------------------------------------------------Read
 
@@ -124,6 +141,13 @@ class DatabaseManager {
     return results;
 
   }
+
+ Future<Group> getGroupInfoByGroupId(String groupId) async{
+    final query = await _db.collection("groups").where("groupId", isEqualTo: groupId).get();
+    return Group.fromMap(query.docs[0].data());
+ }
+
+
 
 
 

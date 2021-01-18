@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
@@ -23,6 +24,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   bool _isRecorderInitiated = false;
   String _path = "";
 
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
 
   @override
@@ -32,11 +34,15 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         _isRecorderInitiated = true;
       });
     });
+
+    _stopWatchTimer.rawTime.listen((value) =>
+    print('rawTime $value ${StopWatchTimer.getDisplayTime(value)}'));
+
     super.initState();
   }
 
   @override
-  void dispose() {
+  void dispose() async{
     _stopRecording(); // in the case when status is DURING and not stopped.
 
     _flutterSoundRecorder.closeAudioSession();
@@ -48,7 +54,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         outputFile.delete();
       }
     }
+
     super.dispose();
+    await _stopWatchTimer.dispose();
+
   }
 
 
@@ -67,16 +76,34 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       case RecordingButtonStatus.AFTER_RECORDING:
         button = _afterRecordingButtons();
         break;
-
     }
 
     return Column(
       children: [
         SizedBox(height: 24.0,),
+        _timeDisplay(),
         button
       ],
     );
   }
+
+  //----------------------------------------------------------------------------------------------TimeDisplay
+  Widget _timeDisplay() {
+    return StreamBuilder<int>(
+        stream: _stopWatchTimer.rawTime,
+        initialData: 0,
+        builder: (context, snapshot) {
+          return Text(StopWatchTimer.getDisplayTime(
+              snapshot.data,
+              hours: snapshot.data < 3600000
+              ? false
+              : true,
+              milliSecond: false));
+        }
+    );
+
+  }
+
 
   //----------------------------------------------------------------------------------------------BEFORE_RECORDING
   Widget _beforeRecordingButton() {
@@ -126,8 +153,9 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     await _startRecording();
 
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.startStopwatch();
+    //start stopwatch
+    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
 
     //change RecordingButtonStatus from BEFORE to DURING
     _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
@@ -165,8 +193,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     //stop recording
     await _stopRecording();
 
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.finishStopwatch();
+    //finish stopwatch
+    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
 
 
     //change RecordingButtonStatus from DURING to AFTER
@@ -218,8 +246,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       outputFile.delete();
     }
 
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.resetStopwatch();
+
+    //reset stopwatch
+    _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+
 
 
     //change RecordingButtonStatus from AFTER to BEFORE
@@ -248,15 +278,26 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   }
 
   _onSendButtonPressed() async{
-    //post the recording
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.postRecording(_path);
-    print("_path: $_path");
-
-    await recordingViewModel.resetStopwatch();
 
 
-    Navigator.pop(context);
+    _stopWatchTimer.rawTime.listen((event) async{
+      var displayTime;
+
+      displayTime =  StopWatchTimer.getDisplayTime(event,
+          hours: event < 3600000
+              ? false
+              : true,
+          milliSecond: false);
+
+      //post the recording
+      final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+      await recordingViewModel.postRecording(_path, displayTime);
+
+
+    });
+
+
+     Navigator.pop(context);
 
     //todo show toast message "post was successful"
 
@@ -308,6 +349,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     // });
 
   }
+
 
 
 

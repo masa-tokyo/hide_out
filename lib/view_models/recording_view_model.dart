@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
@@ -15,53 +17,34 @@ class RecordingViewModel extends ChangeNotifier{
 
   bool isProcessing = false;
 
-  String timeText = "timeText";
   String title = "";
   File audioFile;
 
-  Stopwatch _stopwatch = Stopwatch();
-  StreamController stopwatchController; //todo check the caution
+  User get currentUser => UserRepository.currentUser;
+  Group get currentGroup => GroupRepository.currentGroup;
 
-  Future<void> postRecording(String path) async{
+  Future<void> postRecording(String path, String audioDuration) async{
     isProcessing = true;
     notifyListeners();
 
-    //todo pick audio file
-    // audioFile = await
+    //todo [check] filePicker necessary?
+    // audioFile = await postRepository.pickAudioFile(path);
+    audioFile = File(path);
 
-    //todo post
-
-    print("post was done!");
+    //post
+    await postRepository.postRecording(
+      currentUser,
+      currentGroup,
+      title,
+      audioFile,
+      audioDuration,
+    );
 
     isProcessing = false;
     notifyListeners();
 
   }
 
-  Future<void> startStopwatch() async{
-    _stopwatch.start();
-    timeText = _stopwatch.elapsedTicks.toString();
-    stopwatchController.sink.add(timeText);
-
-    notifyListeners();
-
-  }
-
-  Future<void> finishStopwatch() async{
-    _stopwatch.stop();
-    timeText = _stopwatch.elapsedTicks.toString();
-
-    notifyListeners();
-
-  }
-
-  Future <void> resetStopwatch() async{
-    _stopwatch.reset();
-    timeText = _stopwatch.elapsedTicks.toString();
-
-    notifyListeners();
-
-  }
 
 
 }
