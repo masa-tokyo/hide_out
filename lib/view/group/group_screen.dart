@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/recording_screen.dart';
+import 'package:voice_put/view_models/group_view_model.dart';
+
+import 'components/audio_play_button.dart';
 
 class GroupScreen extends StatelessWidget {
   final Group group;
@@ -9,6 +14,9 @@ class GroupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    Future(() => groupViewModel.getGroupPosts(group));
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.keyboard_voice),
@@ -20,9 +28,12 @@ class GroupScreen extends StatelessWidget {
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       //todo show post data
-      body: Center(child: Text("post data")),
+      body: _postListView(context),
     );
   }
+
+  //---------------------------------------------------------------------------------------------- Other than body
+
 
   Widget _groupEditButton() {
     return IconButton(
@@ -53,5 +64,40 @@ class GroupScreen extends StatelessWidget {
 
         });
   }
+
+
+
+//---------------------------------------------------------------------------------------------- body
+
+  Widget _postListView(BuildContext context) {
+    return Consumer<GroupViewModel>(
+      builder: (context, model, child){
+        return model.isLoading
+            ? Center(child: CircularProgressIndicator(),)
+            : ListView.builder(
+            itemCount: model.posts.length,
+            itemBuilder: (context, int index){
+              final post = model.posts[index];
+              return Card(
+                elevation: 2.0,
+                child: ListTile(
+                  trailing: AudioPlayButton(),
+                  subtitle: Text(post.userName),
+                  title: RichText(
+                      text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            TextSpan(text: post.title, style: postTitleTextStyle),
+                            TextSpan(text: "  "),
+                            TextSpan(text: "(${post.audioDuration})", style: postAudioDurationTextStyle),
+                          ]
+                      )),
+                ),
+              );
+            });
+      },
+    );
+  }
+
 
 }

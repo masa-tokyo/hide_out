@@ -21,3 +21,8 @@ const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);
+
+//Group
+const postTitleTextStyle = TextStyle(fontSize: 16.0, color: Colors.black87);
+const postAudioDurationTextStyle = TextStyle(fontSize: 14.0,color: Colors.black54);
+

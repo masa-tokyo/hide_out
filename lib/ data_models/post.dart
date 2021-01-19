@@ -5,6 +5,7 @@ class Post {
   final String postId;
   final String userId;
   final String groupId;
+  final String userName;
   final String title;
   final String audioUrl;
   final String audioStoragePath;
@@ -17,6 +18,7 @@ class Post {
     @required this.postId,
     @required this.userId,
     @required this.groupId,
+    @required this.userName,
     @required this.title,
     @required this.audioUrl,
     @required this.audioStoragePath,
@@ -28,6 +30,7 @@ class Post {
     String postId,
     String userId,
     String groupId,
+    String userName,
     String title,
     String audioUrl,
     String audioStoragePath,
@@ -37,6 +40,7 @@ class Post {
     if ((postId == null || identical(postId, this.postId)) &&
         (userId == null || identical(userId, this.userId)) &&
         (groupId == null || identical(groupId, this.groupId)) &&
+        (userName == null || identical(userName, this.userName)) &&
         (title == null || identical(title, this.title)) &&
         (audioUrl == null || identical(audioUrl, this.audioUrl)) &&
         (audioStoragePath == null || identical(audioStoragePath, this.audioStoragePath)) &&
@@ -49,6 +53,7 @@ class Post {
       postId: postId ?? this.postId,
       userId: userId ?? this.userId,
       groupId: groupId ?? this.groupId,
+      userName: userName ?? this.userName,
       title: title ?? this.title,
       audioUrl: audioUrl ?? this.audioUrl,
       audioStoragePath: audioStoragePath ?? this.audioStoragePath,
@@ -59,7 +64,7 @@ class Post {
 
   @override
   String toString() {
-    return 'Post{postId: $postId, userId: $userId, groupId: $groupId, title: $title, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, audioDuration: $audioDuration, postDateTime: $postDateTime}';
+    return 'Post{postId: $postId, userId: $userId, groupId: $groupId, userName: $userName, title: $title, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, audioDuration: $audioDuration, postDateTime: $postDateTime}';
   }
 
   @override
@@ -70,6 +75,7 @@ class Post {
           postId == other.postId &&
           userId == other.userId &&
           groupId == other.groupId &&
+          userName == other.userName &&
           title == other.title &&
           audioUrl == other.audioUrl &&
           audioStoragePath == other.audioStoragePath &&
@@ -81,6 +87,7 @@ class Post {
       postId.hashCode ^
       userId.hashCode ^
       groupId.hashCode ^
+      userName.hashCode ^
       title.hashCode ^
       audioUrl.hashCode ^
       audioStoragePath.hashCode ^
@@ -92,12 +99,13 @@ class Post {
       postId: map['postId'] as String,
       userId: map['userId'] as String,
       groupId: map['groupId'] as String,
+      userName: map['userName'] as String,
       title: map['title'] as String,
       audioUrl: map['audioUrl'] as String,
       audioStoragePath: map['audioStoragePath'] as String,
       audioDuration: map['audioDuration'] as String,
       postDateTime: map['postDateTime'] == null
-      ? null : DateTime.parse(map['postDateTime'] as String),
+    ? null : DateTime.parse(map['postDateTime'] as String),
     );
   }
 
@@ -107,6 +115,7 @@ class Post {
       'postId': this.postId,
       'userId': this.userId,
       'groupId': this.groupId,
+      'userName': this.userName,
       'title': this.title,
       'audioUrl': this.audioUrl,
       'audioStoragePath': this.audioStoragePath,

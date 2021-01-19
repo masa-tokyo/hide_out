@@ -16,6 +16,11 @@ class GroupRepository {
 
   }
 
+  //todo delete it after introducing alternative way of reading groups more than 10
+  Future<bool> isNewGroupAvailable(User currentUser) async{
+    return await dbManager.isNewGroupAvailable(currentUser.userId);
+  }
+
    Future<List<Group>> getGroupsByUserId(User currentUser) async{
     return await dbManager.getGroupsByUserId(currentUser.userId);
    }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/%20data_models/user.dart';
@@ -83,7 +84,7 @@ class DatabaseManager {
     if (queryOnGroups.docs.length == 0) return List();
 
     var results = List<Group>();
-    await _db.collection("groups").where("groupId", whereIn: groupIds).get()
+    await _db.collection("groups").where("groupId", whereIn: groupIds).limit(10).get()
     .then((value) {
       value.docs.forEach((element) {
         results.add(Group.fromMap(element.data()));
@@ -106,7 +107,7 @@ class DatabaseManager {
   }
 
   Future<List<String>> getGroupIds(String userId) async{
-    final query = await _db.collection("users").doc(userId).collection("groups").get();
+    final query = await _db.collection("users").doc(userId).collection("groups").limit(10).get();
     if(query.docs.length == 0) return List();
 
     var results = List<String>();
@@ -146,6 +147,29 @@ class DatabaseManager {
     final query = await _db.collection("groups").where("groupId", isEqualTo: groupId).get();
     return Group.fromMap(query.docs[0].data());
  }
+
+ Future<List<Post>> getPostsByGroup(String groupId) async{
+    final query = await _db.collection("posts").get();
+    if (query.docs.length == 0) return List();
+
+    var results = List<Post>();
+
+    await _db.collection("posts").where("groupId", isEqualTo: groupId).orderBy("postDateTime", descending: false).get()
+    .then((value) {
+      value.docs.forEach((element) {
+        results.add(Post.fromMap(element.data()));
+      });
+    });
+
+    return results;
+
+ }
+
+  Future<bool> isNewGroupAvailable(String userId) async{
+    final query = await _db.collection("users").doc(userId).collection("groups").get();
+    if(query.docs.length <= 10) return true;
+    return false;
+  }
 
 
 

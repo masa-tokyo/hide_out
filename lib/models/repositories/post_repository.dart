@@ -25,6 +25,7 @@ class PostRepository {
       postId: Uuid().v1(),
       userId: currentUser.userId,
       groupId: currentGroup.groupId,
+      userName: currentUser.inAppUserName,
       title: title,
       audioUrl: audioUrl,
       audioStoragePath: storageId,
@@ -32,6 +33,11 @@ class PostRepository {
       postDateTime: DateTime.now(),);
 
     await dbManager.postRecording(post);
+
+  }
+
+  Future<List<Post>> getPostsByGroup(String groupId) async{
+    return await dbManager.getPostsByGroup(groupId);
 
   }
 }
