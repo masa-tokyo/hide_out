@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 SizedBox(height: 24.0,),
                 MyGroupPart(),
-                SizedBox(height: 16.0,),
+                SizedBox(height: 28.0,),
                 NewGroupPart(),
               ],
             ),

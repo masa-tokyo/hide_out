@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/view_models/group_view_model.dart';
 
 class AudioPlayButton extends StatefulWidget {
- // final String audioPath
+  final String audioUrl;
+  AudioPlayButton({@required this.audioUrl});
 
   @override
   _AudioPlayButtonState createState() => _AudioPlayButtonState();
@@ -11,12 +14,6 @@ class AudioPlayButton extends StatefulWidget {
 class _AudioPlayButtonState extends State<AudioPlayButton> {
   AudioPlayButtonStatus _buttonStatus = AudioPlayButtonStatus.BEFORE_PLAYING;
 
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +54,13 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
     );
   }
 
-  _onBeforePlayingButtonPressed() {
+  _onBeforePlayingButtonPressed() async{
     print("pressed");
-    //todo play audio
+    //todo if another audio is playing, pause it first
+
+    // play audio
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    await groupViewModel.playAudio(widget.audioUrl);
 
     setState(() {
       _buttonStatus = AudioPlayButtonStatus.DURING_PLAYING;
@@ -91,12 +92,14 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
     );
   }
 
-  _onDuringPlayingButtonPressed() {
+  _onDuringPlayingButtonPressed() async{
     print("pressed");
 
     //todo when another audio button became DURING_PLAYING, change this button's status to PAUSED or BEFORE_PLAYING
 
-    //todo pause audio
+    //pause audio
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    await groupViewModel.pauseAudio();
 
     setState(() {
       _buttonStatus = AudioPlayButtonStatus.PAUSED;
@@ -126,10 +129,12 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
     );
   }
 
-  _onPausedButtonPressed() {
+  _onPausedButtonPressed() async{
     print("pressed");
 
-    //todo re-start audio
+    //resume audio
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    await groupViewModel.resumeAudio();
 
     setState(() {
       _buttonStatus = AudioPlayButtonStatus.DURING_PLAYING;

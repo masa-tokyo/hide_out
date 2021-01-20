@@ -21,6 +21,7 @@ class MyGroupPart extends StatelessWidget {
             style: homeScreenLabelTextStyle,
           ),
         ),
+        SizedBox(height: 8.0,),
         Consumer<HomeScreenViewModel>(
           builder: (context, model, child) {
             return model.isLoading
@@ -39,12 +40,12 @@ class MyGroupPart extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       elevation: 2.0,
-                      color: Colors.grey.shade300,
                       child: InkWell(
                         splashColor: Colors.blueGrey,
                         onTap: () => _openGroupScreen(context, group),
                          child: ListTile(
                            title: Text(group.groupName, style: listTileTitleTextStyle,),
+                           trailing: Icon(Icons.arrow_forward_ios_rounded),
                            dense: true,
                          ),
                       ),

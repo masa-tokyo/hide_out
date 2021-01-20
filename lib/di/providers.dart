@@ -1,6 +1,7 @@
 
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:voice_put/models/audio_play_manager.dart';
 import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
@@ -20,6 +21,7 @@ List<SingleChildWidget> globalProviders = [
 
 List<SingleChildWidget> independentModels = [
   Provider<DatabaseManager>(create: (_) => DatabaseManager()),
+  Provider<AudioPlayManager>(create: (_) => AudioPlayManager()),
 ];
 
 List<SingleChildWidget> dependentModels = [
@@ -68,6 +70,7 @@ List<SingleChildWidget> viewModels = [
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
+      audioPlayManager: Provider.of<AudioPlayManager>(context, listen: false),
     ),
   ),
 ];

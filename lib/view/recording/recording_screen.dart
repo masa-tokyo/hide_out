@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/view/recording/components/post_title_part.dart';
 import 'package:voice_put/view/recording/components/recording_button_part.dart';
 
 class RecordingScreen extends StatelessWidget {
+  final Group group;
+
+  RecordingScreen({@required this.group});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +23,7 @@ class RecordingScreen extends StatelessWidget {
           SizedBox(height: 1.0,),
           SizedBox(height: 1.0,),
           SizedBox(height: 1.0,),
-          RecordingButtonPart(),
+          RecordingButtonPart(group: group,),
         ],
       ),
     );

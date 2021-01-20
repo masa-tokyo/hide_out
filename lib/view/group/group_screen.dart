@@ -28,7 +28,9 @@ class GroupScreen extends StatelessWidget {
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       //todo show post data
-      body: _postListView(context),
+      body: RefreshIndicator(
+          onRefresh: () => groupViewModel.getGroupPosts(group),
+          child: _postListView(context)),
     );
   }
 
@@ -51,7 +53,7 @@ class GroupScreen extends StatelessWidget {
   Route<Object> _createRoute(BuildContext context) {
 
     return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => RecordingScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => RecordingScreen(group: group,),
         transitionsBuilder: (context, animation, secondaryAnimation, child){
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;
@@ -81,7 +83,7 @@ class GroupScreen extends StatelessWidget {
               return Card(
                 elevation: 2.0,
                 child: ListTile(
-                  trailing: AudioPlayButton(),
+                  trailing: AudioPlayButton(audioUrl: post.audioUrl),
                   subtitle: Text(post.userName),
                   title: RichText(
                       text: TextSpan(

@@ -21,9 +21,8 @@ class RecordingViewModel extends ChangeNotifier{
   File audioFile;
 
   User get currentUser => UserRepository.currentUser;
-  Group get currentGroup => GroupRepository.currentGroup;
 
-  Future<void> postRecording(String path, String audioDuration) async{
+  Future<void> postRecording(String path, String audioDuration, Group group) async{
     isProcessing = true;
     notifyListeners();
 
@@ -34,7 +33,7 @@ class RecordingViewModel extends ChangeNotifier{
     //post
     await postRepository.postRecording(
       currentUser,
-      currentGroup,
+      group,
       title,
       audioFile,
       audioDuration,

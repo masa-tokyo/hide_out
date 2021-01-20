@@ -9,11 +9,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
+  final Group group;
+
+  RecordingButtons({@required this.group});
+
   @override
   _RecordingButtonsState createState() => _RecordingButtonsState();
 }
@@ -291,7 +296,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
       //post the recording
       final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-      await recordingViewModel.postRecording(_path, displayTime);
+      await recordingViewModel.postRecording(_path, displayTime, widget.group);
 
 
     });

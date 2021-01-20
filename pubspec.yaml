@@ -50,9 +50,9 @@ dependencies:
   permission_handler: ^5.0.1+1
   path_provider: ^1.6.27
 
-  stop_watch_timer: ^0.7.0
+  stop_watch_timer: ^0.6.0
 
-
+  assets_audio_player: ^2.0.13+1
 
 
 dev_dependencies:

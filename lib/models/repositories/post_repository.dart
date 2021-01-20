@@ -12,7 +12,7 @@ class PostRepository {
   PostRepository({this.dbManager});
 
   Future<void> postRecording(User currentUser,
-      Group currentGroup,
+      Group group,
       String title,
       File audioFile,
       String audioDuration,) async {
@@ -24,7 +24,7 @@ class PostRepository {
     final post = Post(
       postId: Uuid().v1(),
       userId: currentUser.userId,
-      groupId: currentGroup.groupId,
+      groupId: group.groupId,
       userName: currentUser.inAppUserName,
       title: title,
       audioUrl: audioUrl,

@@ -7,12 +7,11 @@ class GroupRepository {
 
   GroupRepository({this.dbManager});
 
-  static Group currentGroup;
 
   Future<void> registerGroup(Group group, User currentUser) async{
     await dbManager.registerGroup(group, currentUser);
 
-    currentGroup = await dbManager.getGroupInfoByGroupId(group.groupId);
+    await dbManager.getGroupInfoByGroupId(group.groupId);
 
   }
 
