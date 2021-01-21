@@ -12,19 +12,23 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   User get currentUser => UserRepository.currentUser;
 
-  bool isLoading = false;
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
 
-  List<Group> groups;
+  List<Group> _groups = List();
+  List<Group> get groups => _groups;
 
   Future<void> getMyGroup() async{
-    isLoading = true;
+
+    await groupRepository.getGroupsByUserId(currentUser);
+
+
+  }
+
+  onMyGroupObtained(GroupRepository groupRepository) {
+    _isProcessing = groupRepository.isProcessing;
+    _groups = groupRepository.groups;
     notifyListeners();
-
-    groups = await groupRepository.getGroupsByUserId(currentUser);
-
-    isLoading = false;
-    notifyListeners();
-
   }
 
 }

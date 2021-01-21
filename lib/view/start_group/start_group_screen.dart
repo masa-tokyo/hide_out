@@ -53,7 +53,7 @@ class StartGroupScreen extends StatelessWidget {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
     await startGroupViewModel.registerGroup();
 
-    //animation from bottom to top
+    //todo while processing circularIndicator, after processing pop up "done!"
     Navigator.of(context).pushReplacement(_createRoute(context));
 
   }

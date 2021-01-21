@@ -1,4 +1,5 @@
 
+
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:voice_put/models/audio_play_manager.dart';
@@ -25,52 +26,61 @@ List<SingleChildWidget> independentModels = [
 ];
 
 List<SingleChildWidget> dependentModels = [
-  ProxyProvider<DatabaseManager, UserRepository>(
-    update: (context, dbManager, repository) => UserRepository(dbManager: dbManager),
+  ChangeNotifierProvider<UserRepository>(
+      create: (context) => UserRepository(
+        dbManager: Provider.of<DatabaseManager>(context, listen: false),
+      ),
   ),
-  ProxyProvider<DatabaseManager, GroupRepository>(
-    update: (context, dbManager, repository) => GroupRepository(dbManager: dbManager),
+  ChangeNotifierProvider<GroupRepository>(
+      create: (context) => GroupRepository(
+        dbManager: Provider.of<DatabaseManager>(context, listen: false),
+      ),
   ),
-  ProxyProvider<DatabaseManager, PostRepository>(
-    update: (context, dbManager, repository) => PostRepository(dbManager: dbManager),
+  ChangeNotifierProvider<PostRepository>(
+      create: (context) => PostRepository(
+        dbManager: Provider.of<DatabaseManager>(context, listen: false),
+      ),
   ),
 ];
 List<SingleChildWidget> viewModels = [
-  ChangeNotifierProvider<LoginViewModel>(
+  ChangeNotifierProxyProvider<UserRepository, LoginViewModel>(
     create: (context) => LoginViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
     ),
+    update: (context, userRepository, viewModel) => viewModel..onUserRepositoryUpdated(userRepository),
   ),
-  ChangeNotifierProvider<StartGroupViewModel>(
+  ChangeNotifierProxyProvider2<UserRepository, GroupRepository, StartGroupViewModel>(
       create: (context) => StartGroupViewModel(
             userRepository: Provider.of<UserRepository>(context, listen: false),
             groupRepository: Provider.of<GroupRepository>(context, listen: false),
-          )),
-  ChangeNotifierProvider<HomeScreenViewModel>(
+          ),
+      update: (context, userRepository, groupRepository, viewModel) => viewModel,),
+  ChangeNotifierProxyProvider2<UserRepository, GroupRepository, HomeScreenViewModel>(
     create: (context) => HomeScreenViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
+    update: (context, userRepository, groupRepository, viewModel) => viewModel..onMyGroupObtained(groupRepository),
   ),
-  ChangeNotifierProvider<JoinGroupViewModel>(
+  ChangeNotifierProxyProvider2<UserRepository, GroupRepository, JoinGroupViewModel>(
     create: (context) => JoinGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
+    update: (context, userRepository, groupRepository, viewModel) => viewModel..onGroupsExceptForMineObtained(groupRepository),
   ),
-  ChangeNotifierProvider<RecordingViewModel>(
+
+  ChangeNotifierProxyProvider<PostRepository, RecordingViewModel>(
     create: (context) => RecordingViewModel(
-      userRepository: Provider.of<UserRepository>(context, listen: false),
-      groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
     ),
+    update: (context, postRepository, viewModel) => viewModel..onRecordingPosted(postRepository),
   ),
-  ChangeNotifierProvider<GroupViewModel>(
+  ChangeNotifierProxyProvider2<PostRepository, AudioPlayManager, GroupViewModel>(
     create: (context) => GroupViewModel(
-      userRepository: Provider.of<UserRepository>(context, listen: false),
-      groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
       audioPlayManager: Provider.of<AudioPlayManager>(context, listen: false),
     ),
+    update: (context, postRepository, audioPlayManager, viewModel) => viewModel..onGroupPostsObtained(postRepository),
   ),
 ];

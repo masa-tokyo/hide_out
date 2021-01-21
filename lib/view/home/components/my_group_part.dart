@@ -24,7 +24,7 @@ class MyGroupPart extends StatelessWidget {
         SizedBox(height: 8.0,),
         Consumer<HomeScreenViewModel>(
           builder: (context, model, child) {
-            return model.isLoading
+            return model.isProcessing
               ? Center(child: CircularProgressIndicator(),)
               : ListView.builder(
                 shrinkWrap: true,

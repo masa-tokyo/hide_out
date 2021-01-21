@@ -13,7 +13,7 @@ class LoginScreen extends StatelessWidget {
         body: Center(
           child: Consumer<LoginViewModel>(
             builder: (context, model, child){
-              return model.isLoading
+              return model.isProcessing
               ? CircularProgressIndicator()
               : Column(
                 mainAxisAlignment: MainAxisAlignment.center,

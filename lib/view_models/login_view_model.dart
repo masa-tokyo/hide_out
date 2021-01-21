@@ -6,20 +6,25 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel({this.userRepository});
 
-  bool isLoading = false;
-  bool isSuccessful = false;
+  bool _isSuccessful = false;
+  bool get isSuccessful => _isSuccessful;
+
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
 
   Future<bool> isSignIn() async{
     return await userRepository.isSignIn();
   }
 
   Future<void> signUp() async{
-    isLoading = true;
-    notifyListeners();
 
-    isSuccessful = await userRepository.signUp();
+    await userRepository.signUp();
 
-    isLoading = false;
+  }
+
+  onUserRepositoryUpdated(UserRepository userRepository) {
+    _isSuccessful = userRepository.isSuccessful;
+    _isProcessing = userRepository.isProcessing;
     notifyListeners();
   }
 

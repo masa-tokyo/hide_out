@@ -2,30 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/models/audio_play_manager.dart';
-import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
 
 class GroupViewModel extends ChangeNotifier {
-  final UserRepository userRepository;
-  final GroupRepository groupRepository;
   final PostRepository postRepository;
   final AudioPlayManager audioPlayManager;
 
-  GroupViewModel({this.postRepository, this.groupRepository, this.userRepository, this.audioPlayManager});
+  GroupViewModel({this.postRepository, this.audioPlayManager});
 
-  List<Post> posts = <Post>[];
+  List<Post> _posts = <Post>[];
+  List<Post> get posts => _posts;
 
-  bool isLoading = false;
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
 
   Future<void> getGroupPosts(Group group) async{
-    isLoading = true;
-    notifyListeners();
 
-    posts = await postRepository.getPostsByGroup(group.groupId);
+    await postRepository.getPostsByGroup(group.groupId);
 
-    isLoading = false;
-    notifyListeners();
   }
 
   Future<void> playAudio(String audioUrl) async{
@@ -52,6 +47,12 @@ class GroupViewModel extends ChangeNotifier {
   void dispose() {
     super.dispose();
     audioPlayManager.dispose();
+  }
+
+  onGroupPostsObtained(PostRepository postRepository) {
+    _isProcessing = postRepository.isProcessing;
+    _posts = postRepository.posts;
+    notifyListeners();
   }
 
 

@@ -50,7 +50,6 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
     startGroupViewModel.updateGroupName(_groupNameController.text);
     print("groupName: ${startGroupViewModel.groupName}");
 
-
   }
 
 }

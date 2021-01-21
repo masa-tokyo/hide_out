@@ -1,14 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
 
-class UserRepository {
+class UserRepository extends ChangeNotifier{
   final DatabaseManager dbManager;
 
   UserRepository({this.dbManager});
 
   static User currentUser;
+
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
+  bool _isSuccessful = false;
+  bool get isSuccessful => _isSuccessful;
+
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -22,7 +30,10 @@ class UserRepository {
     return false;
   }
 
-  Future<bool> signUp() async {
+  Future<void> signUp() async {
+    _isProcessing = true;
+    notifyListeners();
+
     try {
       GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
       GoogleSignInAuthentication signInAuthentication = await signInAccount.authentication;
@@ -34,7 +45,7 @@ class UserRepository {
 
       final firebaseUser = (await _auth.signInWithCredential(credential)).user;
       if (firebaseUser == null) {
-        return false;
+        _isSuccessful = false;
       }
 
       final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
@@ -43,13 +54,16 @@ class UserRepository {
         await dbManager.insertUser(_convertToUser(firebaseUser));
       }
       currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
-      return true;
+      _isSuccessful = true;
 
     } catch (error) {
       print("sign in error caught: $error");
-      return false;
+      _isSuccessful = false;
 
     }
+    _isProcessing = false;
+    notifyListeners();
+
   }
 
   User _convertToUser(auth.User firebaseUser) {

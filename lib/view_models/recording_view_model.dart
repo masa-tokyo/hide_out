@@ -9,22 +9,22 @@ import 'package:voice_put/models/repositories/post_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 
 class RecordingViewModel extends ChangeNotifier{
-  final UserRepository userRepository;
   final GroupRepository groupRepository;
   final PostRepository postRepository;
 
-  RecordingViewModel({this.userRepository, this.groupRepository, this.postRepository});
+  RecordingViewModel({this.groupRepository, this.postRepository});
 
-  bool isProcessing = false;
 
   String title = "";
   File audioFile;
 
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
   User get currentUser => UserRepository.currentUser;
 
+
   Future<void> postRecording(String path, String audioDuration, Group group) async{
-    isProcessing = true;
-    notifyListeners();
 
     //todo [check] filePicker necessary?
     // audioFile = await postRepository.pickAudioFile(path);
@@ -38,10 +38,11 @@ class RecordingViewModel extends ChangeNotifier{
       audioFile,
       audioDuration,
     );
+  }
 
-    isProcessing = false;
+  onRecordingPosted(PostRepository postRepository) {
+    _isProcessing = postRepository.isProcessing;
     notifyListeners();
-
   }
 
 

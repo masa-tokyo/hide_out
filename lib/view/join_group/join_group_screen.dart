@@ -17,7 +17,9 @@ class JoinGroupScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Consumer<JoinGroupViewModel>(builder: (context, model, child) {
-          return ListView.builder(
+          return model.isProcessing
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
               itemCount: model.groups.length,
               itemBuilder: (context, int index) {
                 final group = model.groups[index];

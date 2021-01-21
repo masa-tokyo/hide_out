@@ -27,7 +27,6 @@ class GroupScreen extends StatelessWidget {
         actions: [_groupEditButton()],
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
-      //todo show post data
       body: RefreshIndicator(
           onRefresh: () => groupViewModel.getGroupPosts(group),
           child: _postListView(context)),
@@ -74,7 +73,7 @@ class GroupScreen extends StatelessWidget {
   Widget _postListView(BuildContext context) {
     return Consumer<GroupViewModel>(
       builder: (context, model, child){
-        return model.isLoading
+        return model.isProcessing
             ? Center(child: CircularProgressIndicator(),)
             : ListView.builder(
             itemCount: model.posts.length,

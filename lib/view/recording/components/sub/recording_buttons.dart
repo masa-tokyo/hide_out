@@ -297,14 +297,12 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       //post the recording
       final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
       await recordingViewModel.postRecording(_path, displayTime, widget.group);
-
-
     });
 
-
-     Navigator.pop(context);
+    Navigator.pop(context);
 
     //todo show toast message "post was successful"
+
 
   }
 
