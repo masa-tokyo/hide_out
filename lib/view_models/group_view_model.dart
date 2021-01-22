@@ -16,6 +16,9 @@ class GroupViewModel extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  bool _isAudioFinished = false;
+  bool get isAudioFinished => _isAudioFinished;
+
 
   Future<void> getGroupPosts(Group group) async{
 
@@ -25,21 +28,17 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> playAudio(String audioUrl) async{
 
-    await _prepareAudio(audioUrl);
-    await audioPlayManager.playAudio();
+    await audioPlayManager.playAudio(audioUrl);
 
   }
 
-  Future<void> _prepareAudio(String audioUrl) async{
-    await audioPlayManager.prepareAudio(audioUrl);
-  }
 
   Future<void> pauseAudio() async{
     await audioPlayManager.pauseAudio();
   }
 
-  Future<void> resumeAudio() async{
-    await audioPlayManager.playAudio();
+  Future<void> resumeAudio(String audioUrl) async{
+    await audioPlayManager.playAudio(audioUrl);
   }
 
 
@@ -54,6 +53,12 @@ class GroupViewModel extends ChangeNotifier {
     _posts = postRepository.posts;
     notifyListeners();
   }
+
+  onAudioFinished(AudioPlayManager audioPlayManager) {
+    _isAudioFinished = audioPlayManager.isAudioFinished;
+    notifyListeners();
+  }
+
 
 
 }

@@ -22,7 +22,8 @@ List<SingleChildWidget> globalProviders = [
 
 List<SingleChildWidget> independentModels = [
   Provider<DatabaseManager>(create: (_) => DatabaseManager()),
-  Provider<AudioPlayManager>(create: (_) => AudioPlayManager()),
+  ChangeNotifierProvider<AudioPlayManager>(
+      create: (_) => AudioPlayManager()),
 ];
 
 List<SingleChildWidget> dependentModels = [
@@ -81,6 +82,9 @@ List<SingleChildWidget> viewModels = [
       postRepository: Provider.of<PostRepository>(context, listen: false),
       audioPlayManager: Provider.of<AudioPlayManager>(context, listen: false),
     ),
-    update: (context, postRepository, audioPlayManager, viewModel) => viewModel..onGroupPostsObtained(postRepository),
+    update: (context, postRepository, audioPlayManager, viewModel)
+       => viewModel
+                ..onGroupPostsObtained(postRepository)
+                ..onAudioFinished(audioPlayManager),
   ),
 ];
