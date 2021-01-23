@@ -16,6 +16,7 @@ class AudioPlayButton extends StatefulWidget {
 class _AudioPlayButtonState extends State<AudioPlayButton> {
   AudioPlayButtonStatus _buttonStatus = AudioPlayButtonStatus.BEFORE_PLAYING;
 
+
   @override
   Widget build(BuildContext context) {
     var button;
@@ -30,32 +31,39 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
         button = _pausedButton();
         break;
     }
-    return Row(
-      children: [
-        _audioWidget(),
-        //button
-      ],
-    );
+    return _audioWidget();
   }
 
   Widget _audioWidget() {
-    var play = false;
-    return AudioWidget.network(
-      url: widget.audioUrl,
-      play: play,
-      child: SizedBox(
-        width: 5.0,
-        height: 5.0,
-        child: RaisedButton(
-            child: Text(play
-            ?"pause":"play"
-            ),
-            onPressed: (){
-              setState(() {
-                play = !play;
-              });
-            }),
-      ),);
+    return Consumer<GroupViewModel>(
+      builder: (context, model, child){
+        return AudioWidget.network(
+          url: widget.audioUrl,
+          play: model.isPlaying,
+          loopMode: LoopMode.single,
+          child: RaisedButton(
+              child: Text(model.isPlaying
+                  ?"pause":"play"
+              ),
+              onPressed: () => _onButtonPressed()),
+          onFinished: () => _onAudioFinished(),
+        );
+      },
+    );
+  }
+
+
+  _onButtonPressed()async{
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    if(groupViewModel.isAnotherAudioPlaying){
+      await groupViewModel.stopAnotherAudio();
+    }
+    await groupViewModel.updateStatus();
+  }
+
+  _onAudioFinished() async{
+      final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+      await groupViewModel.updateStatus();
   }
 
   //---------------------------------------------------------------------------------------------- BEFORE_PLAYING
@@ -214,6 +222,10 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
       _buttonStatus = AudioPlayButtonStatus.DURING_PLAYING;
     });
   }
+
+
+
+
 
 
 }

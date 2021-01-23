@@ -11,7 +11,11 @@ class AudioPlayManager extends ChangeNotifier{
   bool _isAudioFinished = false;
   bool get isAudioFinished => _isAudioFinished;
 
+  bool _isAnotherAudioPlaying = false;
+  bool get isAnotherAudioPlaying => _isAnotherAudioPlaying;
 
+  bool _isPlaying = false;
+  bool get isPlaying => _isPlaying;
 
   Future<void> playAudio(String audioUrl) async{
     try{
@@ -59,6 +63,18 @@ class AudioPlayManager extends ChangeNotifier{
 
   void dispose() {
     _audioPlayer.dispose();
+  }
+
+  Future<void> stopAnotherAudio() async{
+   _isAnotherAudioPlaying = !isAnotherAudioPlaying;
+   _isPlaying = !_isPlaying;
+   notifyListeners();
+  }
+
+  Future<void> updateStatus() async{
+    _isPlaying = !_isPlaying;
+    _isAnotherAudioPlaying = !isAnotherAudioPlaying;
+    notifyListeners();
   }
 
 }

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
@@ -19,6 +20,11 @@ class GroupViewModel extends ChangeNotifier {
   bool _isAudioFinished = false;
   bool get isAudioFinished => _isAudioFinished;
 
+  bool _isAnotherAudioPlaying = false;
+  bool get isAnotherAudioPlaying => _isAnotherAudioPlaying;
+
+  bool _isPlaying = false;
+  bool get isPlaying => _isPlaying;
 
   Future<void> getGroupPosts(Group group) async{
 
@@ -56,6 +62,26 @@ class GroupViewModel extends ChangeNotifier {
 
   onAudioFinished(AudioPlayManager audioPlayManager) {
     _isAudioFinished = audioPlayManager.isAudioFinished;
+    notifyListeners();
+  }
+
+  Future<void> stopAnotherAudio() async{
+    await audioPlayManager.stopAnotherAudio();
+  }
+
+  onAnotherPlayerStopped(AudioPlayManager audioPlayManager) {
+    _isAnotherAudioPlaying = audioPlayManager.isAnotherAudioPlaying;
+    _isPlaying = audioPlayManager.isPlaying;
+    notifyListeners();
+  }
+
+  Future<void> updateStatus() async{
+    await audioPlayManager.updateStatus();
+  }
+
+  onStatusUpdated(AudioPlayManager audioPlayManager) {
+    _isPlaying = audioPlayManager.isPlaying;
+    _isAnotherAudioPlaying = audioPlayManager.isPlaying;
     notifyListeners();
   }
 

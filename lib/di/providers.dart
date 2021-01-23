@@ -85,6 +85,8 @@ List<SingleChildWidget> viewModels = [
     update: (context, postRepository, audioPlayManager, viewModel)
        => viewModel
                 ..onGroupPostsObtained(postRepository)
-                ..onAudioFinished(audioPlayManager),
+                ..onAudioFinished(audioPlayManager)
+                ..onAnotherPlayerStopped(audioPlayManager)
+                ..onStatusUpdated(audioPlayManager),
   ),
 ];
