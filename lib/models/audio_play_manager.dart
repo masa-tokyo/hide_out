@@ -61,9 +61,13 @@ class AudioPlayManager extends ChangeNotifier{
     }
   }
 
+
+  @override
   void dispose() {
+    super.dispose();
     _audioPlayer.dispose();
   }
+
 
   Future<void> stopAnotherAudio() async{
    _isAnotherAudioPlaying = !isAnotherAudioPlaying;

@@ -31,6 +31,14 @@ class GroupViewModel extends ChangeNotifier {
     await postRepository.getPostsByGroup(group.groupId);
 
   }
+  onGroupPostsObtained(PostRepository postRepository) {
+    _isProcessing = postRepository.isProcessing;
+    _posts = postRepository.posts;
+    notifyListeners();
+  }
+
+
+  //-------------------------------------------------------------------------------------------------- Audio methods
 
   Future<void> playAudio(String audioUrl) async{
 
@@ -47,18 +55,6 @@ class GroupViewModel extends ChangeNotifier {
     await audioPlayManager.playAudio(audioUrl);
   }
 
-
-  @override
-  void dispose() {
-    super.dispose();
-    audioPlayManager.dispose();
-  }
-
-  onGroupPostsObtained(PostRepository postRepository) {
-    _isProcessing = postRepository.isProcessing;
-    _posts = postRepository.posts;
-    notifyListeners();
-  }
 
   onAudioFinished(AudioPlayManager audioPlayManager) {
     _isAudioFinished = audioPlayManager.isAudioFinished;

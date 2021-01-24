@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/view/recording/components/post_title_part.dart';
 import 'package:voice_put/view/recording/components/recording_button_part.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingScreen extends StatelessWidget {
   final Group group;

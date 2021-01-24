@@ -107,33 +107,6 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   //---------------------------------------------------------------------------------------------- DURING_PLAYING
 
   Widget _duringPlayingButton() {
-    // return StreamBuilder<Object>(
-    //     stream: null,
-    //     builder: (context, snapshot) {
-    //       return snapshot.hasData
-    //           ? (snapshot == false)
-    //           ? InkWell(
-    //         onTap: () => _onDuringPlayingButtonPressed(),
-    //         child: Card(
-    //           elevation: 3.0,
-    //           shape: RoundedRectangleBorder(
-    //               borderRadius: BorderRadius.circular(24.0)
-    //           ),
-    //           child: SizedBox(
-    //             width: 36.0,
-    //             height: 36.0,
-    //             child:
-    //             Icon(Icons.pause,
-    //               size: 36.0,
-    //               color: Colors.black54,),
-    //           ),
-    //         ),
-    //       )
-    //           : _beforePlayingButton()
-    //           : Center(child: CircularProgressIndicator(),);
-    //     }
-    // );
-
     return Consumer<GroupViewModel>(builder: (context, model, child) {
       if (model.isAudioFinished) {
         return _beforePlayingButton();
@@ -156,6 +129,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
         );
       }
     });
+
     //todo erase this comment
     // return InkWell(
     //   onTap: () => _onDuringPlayingButtonPressed(),
