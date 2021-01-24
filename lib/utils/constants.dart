@@ -5,9 +5,8 @@ enum RecordingButtonStatus {
   AFTER_RECORDING,
 }
 
-enum AudioPlayButtonStatus {
-  BEFORE_PLAYING,
-  DURING_PLAYING,
-  PAUSED,
+enum GroupEditMenu {
+  EDIT,
+  LEAVE,
 }
 

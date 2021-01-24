@@ -18,7 +18,6 @@ class StartGroupViewModel extends ChangeNotifier {
 
   Group group;
 
-  //todo delete this method, update the property @view
   Future<void> updateGroupName(String groupNameString) async{
     groupName = groupNameString;
     notifyListeners();

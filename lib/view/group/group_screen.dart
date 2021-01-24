@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/group/group_info_detail_screen.dart';
 import 'package:voice_put/view/recording/recording_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
@@ -24,7 +26,7 @@ class GroupScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text(group.groupName),
-        actions: [_groupEditButton()],
+        actions: [_groupEditButton(context)],
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       body: RefreshIndicator(
@@ -33,26 +35,17 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  //---------------------------------------------------------------------------------------------- Other than body
-
-
-  Widget _groupEditButton() {
-    return IconButton(
-      icon: Icon(Icons.more_vert),
-      //todo show pop up menu
-      onPressed: null,
-    );
-  }
+  //---------------------------------------------------------------------------------------------- FloatingActionButton
 
   _openRecordingScreen(BuildContext context) {
-    Navigator.of(context).push(_createRoute(context));
+    Navigator.of(context).push(_createRoute(context, RecordingScreen(group: group)));
 
   }
 
-  Route<Object> _createRoute(BuildContext context) {
+  Route<Object> _createRoute(BuildContext context, Widget screen) {
 
     return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => RecordingScreen(group: group,),
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
         transitionsBuilder: (context, animation, secondaryAnimation, child){
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;
@@ -66,9 +59,47 @@ class GroupScreen extends StatelessWidget {
         });
   }
 
+  //---------------------------------------------------------------------------------------------- AppBar
+
+  Widget _groupEditButton(BuildContext context) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    return PopupMenuButton(
+        icon: Icon(Icons.more_vert),
+        onSelected: (value) => _onPopupMenuSelected(context, value),
+        itemBuilder: (context){
+          if(groupViewModel.currentUser.userId == group.ownerId){
+            return [
+              PopupMenuItem(
+                  value: GroupEditMenu.EDIT,
+                  child: Text("Edit Group Info", style: groupEditMenuTextStyle,)),
+              PopupMenuItem(
+                  value: GroupEditMenu.LEAVE,
+                  child: Text("Leave Group", style: leaveGroupMenuTextStyle,)),
+            ];
+          } else {
+            return [
+              PopupMenuItem(
+                  value: GroupEditMenu.LEAVE,
+                  child: Text("Leave Group", style: leaveGroupMenuTextStyle,)),
+            ];
+          }
+        });
+  }
+
+  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) {
+    switch(selectedMenu) {
+      case GroupEditMenu.EDIT:
+        Navigator.push(context, _createRoute(context, GroupInfoDetailScreen(isEditable: true, group: group,)));
+
+        break;
+      case GroupEditMenu.LEAVE:
+        Navigator.push(context, _createRoute(context, GroupInfoDetailScreen(isEditable: false, group: group,)));
+        break;
+    }
+  }
 
 
-//---------------------------------------------------------------------------------------------- body
+//------------------------------------------------------------------------------------------------ body
 
   Widget _postListView(BuildContext context) {
     return Consumer<GroupViewModel>(
@@ -99,6 +130,7 @@ class GroupScreen extends StatelessWidget {
       },
     );
   }
+
 
 
 }
