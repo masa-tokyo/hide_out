@@ -172,18 +172,24 @@ class DatabaseManager {
 
 
 
+  //--------------------------------------------------------------------------------------------------Update
 
-
-
-
-//--------------------------------------------------------------------------------------------------Update
-
-
+  Future<void> updateGroupInfo(Group updatedGroup) async{
+    await _db.collection("groups").doc(updatedGroup.groupId).update(updatedGroup.toMap());
+  }
 
 
 
   //--------------------------------------------------------------------------------------------------Delete
 
+ Future<void> leaveGroup(String groupId, String userId) async{
+    //delete userId at "groups"
+   await _db.collection("groups").doc(groupId).collection("members").doc(userId).delete();
+
+   //delete groupId at "users"
+   await _db.collection("users").doc(userId).collection("groups").doc(groupId).delete();
+
+ }
 
 
 

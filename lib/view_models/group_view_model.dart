@@ -4,19 +4,28 @@ import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/audio_play_manager.dart';
+import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 
 class GroupViewModel extends ChangeNotifier {
+  final GroupRepository groupRepository;
   final PostRepository postRepository;
   final AudioPlayManager audioPlayManager;
 
-  GroupViewModel({this.postRepository, this.audioPlayManager});
+  GroupViewModel({this.groupRepository, this.postRepository, this.audioPlayManager});
 
   User get currentUser => UserRepository.currentUser;
 
+  String groupName = "";
+  String description = "";
+
   List<Post> _posts = <Post>[];
   List<Post> get posts => _posts;
+
+  Group _group;
+  Group get group => _group;
+
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
@@ -40,6 +49,7 @@ class GroupViewModel extends ChangeNotifier {
     _posts = postRepository.posts;
     notifyListeners();
   }
+
 
 
   //-------------------------------------------------------------------------------------------------- Audio methods
@@ -84,6 +94,40 @@ class GroupViewModel extends ChangeNotifier {
     _isAnotherAudioPlaying = audioPlayManager.isPlaying;
     notifyListeners();
   }
+
+  //-------------------------------------------------------------------------------------------------- Group Repository
+  Future<void> getGroupInfo(String groupId) async{
+    await groupRepository.getGroupInfo(groupId);
+  }
+
+  onGroupInfoObtained(GroupRepository groupRepository) {
+    _isProcessing = groupRepository.isProcessing;
+    _group = groupRepository.group;
+    notifyListeners();
+  }
+
+  Future<void> updateGroupNameAndDescription() async{
+    await groupRepository.updateInfo(group.copyWith(groupName: groupName, description: description));
+  }
+
+  Future<void> updateGroupName() async{
+    await groupRepository.updateInfo(group.copyWith(groupName: groupName,));
+
+  }
+
+  Future<void> updateDescription() async{
+    await groupRepository.updateInfo(group.copyWith(description: description));
+
+  }
+
+  Future<void> leaveGroup(Group group) async{
+    await groupRepository.leaveGroup(group, currentUser);
+  }
+
+
+
+
+
 
 
 

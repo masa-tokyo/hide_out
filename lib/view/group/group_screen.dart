@@ -18,6 +18,8 @@ class GroupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     Future(() => groupViewModel.getGroupPosts(group));
+    //for update of groupName
+    Future(() => groupViewModel.getGroupInfo(group.groupId));
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -25,13 +27,23 @@ class GroupScreen extends StatelessWidget {
         onPressed: () => _openRecordingScreen(context),
       ),
       appBar: AppBar(
-        title: Text(group.groupName),
+        title: Consumer<GroupViewModel>(
+          builder: (context, model, child){
+            return model.isProcessing
+                ? Text("")
+                : Text(model.group.groupName);
+          },
+        ),
         actions: [_groupEditButton(context)],
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       body: RefreshIndicator(
-          onRefresh: () => groupViewModel.getGroupPosts(group),
-          child: _postListView(context)),
+            onRefresh: () async {
+              await groupViewModel.getGroupPosts(group);
+              //in order to update the group name after the owner edit it
+              await groupViewModel.getGroupInfo(group.groupId);
+            },
+            child: _postListView(context)),
     );
   }
 
@@ -39,14 +51,12 @@ class GroupScreen extends StatelessWidget {
 
   _openRecordingScreen(BuildContext context) {
     Navigator.of(context).push(_createRoute(context, RecordingScreen(group: group)));
-
   }
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
-
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child){
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;
           var curve = Curves.ease;
@@ -55,7 +65,6 @@ class GroupScreen extends StatelessWidget {
           return SlideTransition(
             position: offsetAnimation,
             child: child,);
-
         });
   }
 
@@ -66,8 +75,8 @@ class GroupScreen extends StatelessWidget {
     return PopupMenuButton(
         icon: Icon(Icons.more_vert),
         onSelected: (value) => _onPopupMenuSelected(context, value),
-        itemBuilder: (context){
-          if(groupViewModel.currentUser.userId == group.ownerId){
+        itemBuilder: (context) {
+          if (groupViewModel.currentUser.userId == group.ownerId) {
             return [
               PopupMenuItem(
                   value: GroupEditMenu.EDIT,
@@ -86,14 +95,18 @@ class GroupScreen extends StatelessWidget {
         });
   }
 
-  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) {
-    switch(selectedMenu) {
-      case GroupEditMenu.EDIT:
-        Navigator.push(context, _createRoute(context, GroupInfoDetailScreen(isEditable: true, group: group,)));
+  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) async{
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
+    switch (selectedMenu) {
+      case GroupEditMenu.EDIT:
+        Navigator.push(
+            context, _createRoute(context, GroupInfoDetailScreen(isEditable: true, group: group,)));
         break;
       case GroupEditMenu.LEAVE:
-        Navigator.push(context, _createRoute(context, GroupInfoDetailScreen(isEditable: false, group: group,)));
+        //todo show popup dialog
+        await groupViewModel.leaveGroup(group);
+        Navigator.pop(context);
         break;
     }
   }
@@ -103,12 +116,12 @@ class GroupScreen extends StatelessWidget {
 
   Widget _postListView(BuildContext context) {
     return Consumer<GroupViewModel>(
-      builder: (context, model, child){
+      builder: (context, model, child) {
         return model.isProcessing
             ? Center(child: CircularProgressIndicator(),)
             : ListView.builder(
             itemCount: model.posts.length,
-            itemBuilder: (context, int index){
+            itemBuilder: (context, int index) {
               final post = model.posts[index];
               return Card(
                 elevation: 2.0,
@@ -117,11 +130,14 @@ class GroupScreen extends StatelessWidget {
                   subtitle: Text(post.userName),
                   title: RichText(
                       text: TextSpan(
-                          style: DefaultTextStyle.of(context).style,
+                          style: DefaultTextStyle
+                              .of(context)
+                              .style,
                           children: [
                             TextSpan(text: post.title, style: postTitleTextStyle),
                             TextSpan(text: "  "),
-                            TextSpan(text: "(${post.audioDuration})", style: postAudioDurationTextStyle),
+                            TextSpan(text: "(${post.audioDuration})",
+                                style: postAudioDurationTextStyle),
                           ]
                       )),
                 ),
@@ -130,7 +146,6 @@ class GroupScreen extends StatelessWidget {
       },
     );
   }
-
 
 
 }

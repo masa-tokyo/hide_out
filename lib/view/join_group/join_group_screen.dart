@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/join_group/group_detail_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
+import 'dart:io';
 
 class JoinGroupScreen extends StatelessWidget {
   @override
@@ -13,6 +15,10 @@ class JoinGroupScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Join a Group"),
+        leading: IconButton(
+          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen())),
+          icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),)
+        ,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

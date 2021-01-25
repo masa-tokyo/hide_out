@@ -42,7 +42,7 @@ class NewGroupPart extends StatelessWidget {
   }
 
   _openJoinGroupScreen(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => JoinGroupScreen(),

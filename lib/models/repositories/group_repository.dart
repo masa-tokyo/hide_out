@@ -11,13 +11,16 @@ class GroupRepository extends ChangeNotifier{
   List<Group> _groups = <Group>[];
   List<Group> get groups => _groups;
 
+  Group _group;
+  Group get group => _group;
+
+
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
   Future<void> registerGroup(Group group, User currentUser) async{
     await dbManager.registerGroup(group, currentUser);
 
-    await dbManager.getGroupInfoByGroupId(group.groupId);
 
   }
 
@@ -51,6 +54,25 @@ class GroupRepository extends ChangeNotifier{
   Future<void> joinGroup(Group group, User currentUser) async{
     await dbManager.joinGroup(group.groupId, currentUser.userId);
   }
+
+  Future<void> updateInfo(Group updatedGroup) async{
+    await dbManager.updateGroupInfo(updatedGroup);
+  }
+
+  Future<void> getGroupInfo(String groupId) async{
+    _isProcessing = true;
+    notifyListeners();
+
+    _group = await dbManager.getGroupInfoByGroupId(groupId);
+
+    _isProcessing = false;
+    notifyListeners();
+  }
+
+  Future<void> leaveGroup(Group group, User currentUser) async{
+    await dbManager.leaveGroup(group.groupId, currentUser.userId);
+  }
+
 
 
 }
