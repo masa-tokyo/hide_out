@@ -30,7 +30,7 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
         controller: _titleController,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "Title"
+          hintText: "No Title"
         ),
 
       ),
@@ -42,7 +42,7 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
   final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
   recordingViewModel.title = _titleController.text;
 
-  //todo "isTextEnabled" necessary?
+  //todo "isTextEnabled" necessary? "No title"
 
   }
 

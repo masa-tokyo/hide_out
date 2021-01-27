@@ -7,6 +7,7 @@ import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
+import 'package:voice_put/utils/constants.dart';
 
 class RecordingViewModel extends ChangeNotifier{
   final GroupRepository groupRepository;
@@ -21,13 +22,14 @@ class RecordingViewModel extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  RecordingButtonStatus _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
+  RecordingButtonStatus get recordingButtonStatus => _recordingButtonStatus;
+
   User get currentUser => UserRepository.currentUser;
 
 
   Future<void> postRecording(String path, String audioDuration, Group group) async{
 
-    //todo [check] filePicker necessary?
-    // audioFile = await postRepository.pickAudioFile(path);
     audioFile = File(path);
 
     //post
@@ -43,6 +45,11 @@ class RecordingViewModel extends ChangeNotifier{
   onRecordingPosted(PostRepository postRepository) {
     _isProcessing = postRepository.isProcessing;
     notifyListeners();
+  }
+
+  updateRecordingButtonStatus(RecordingButtonStatus recordingButtonStatus) {
+    _recordingButtonStatus = recordingButtonStatus;
+
   }
 
 

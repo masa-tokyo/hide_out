@@ -85,8 +85,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     return Column(
       children: [
-        SizedBox(height: 24.0,),
         _timeDisplay(),
+        SizedBox(height: 80.0,),
         button
       ],
     );
@@ -103,7 +103,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
               hours: snapshot.data < 3600000
               ? false
               : true,
-              milliSecond: false));
+              milliSecond: false),
+              style: timeDisplayTextStyle,);
         }
     );
 
@@ -163,9 +164,11 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
 
     //change RecordingButtonStatus from BEFORE to DURING
-    _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
-    setState(() {});
-
+    setState(() {
+      _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
+    });
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
   }
 
 //----------------------------------------------------------------------------------------------DURING_RECORDING
@@ -203,8 +206,12 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
 
     //change RecordingButtonStatus from DURING to AFTER
-    _recordingButtonStatus = RecordingButtonStatus.AFTER_RECORDING;
-    setState(() {});
+    setState(() {
+      _recordingButtonStatus = RecordingButtonStatus.AFTER_RECORDING;
+    });
+
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
 
 
   }
@@ -258,8 +265,13 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
 
     //change RecordingButtonStatus from AFTER to BEFORE
-    _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
-    setState(() {});
+    setState(() {
+      _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
+    });
+
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
+
 
   }
 
@@ -322,7 +334,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       await outputFile.delete();
     }
     await _flutterSoundRecorder.openAudioSession();
-    //todo [check]  "_isRecorderInitiated = true;" necessary?
  }
 
 
@@ -334,22 +345,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       codec: Codec.aacADTS,
     );
 
-
-
-    //todo [check] is SetState() necessary?
-    setState(() {
-
-    });
-
   }
 
   Future<void> _stopRecording() async{
     await _flutterSoundRecorder.stopRecorder();
-
-    //todo [check] is SetState() necessary?
-    // setState(() {
-    //
-    // });
 
   }
 

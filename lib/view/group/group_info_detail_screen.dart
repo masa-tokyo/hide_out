@@ -214,7 +214,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
 
 
   //----------------------------------------------------------------------------------------------View Only
-//todo
+//todo if GroupInfo from participants is necessary?
   Widget _viewOnlyGroupInfo() {
     return Container();
 

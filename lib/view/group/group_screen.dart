@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
 import 'package:voice_put/view/group/group_info_detail_screen.dart';
 import 'package:voice_put/view/recording/recording_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
@@ -28,22 +29,20 @@ class GroupScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Consumer<GroupViewModel>(
-          builder: (context, model, child){
-            return model.isProcessing
-                ? Text("")
-                : Text(model.group.groupName);
+          builder: (context, model, child) {
+            return model.isProcessing ? Text("") : Text(model.group.groupName);
           },
         ),
         actions: [_groupEditButton(context)],
         //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       body: RefreshIndicator(
-            onRefresh: () async {
-              await groupViewModel.getGroupPosts(group);
-              //in order to update the group name after the owner edit it
-              await groupViewModel.getGroupInfo(group.groupId);
-            },
-            child: _postListView(context)),
+          onRefresh: () async {
+            await groupViewModel.getGroupPosts(group);
+            //in order to update the group name after the owner edit it
+            await groupViewModel.getGroupInfo(group.groupId);
+          },
+          child: _postListView(context)),
     );
   }
 
@@ -64,7 +63,8 @@ class GroupScreen extends StatelessWidget {
           var offsetAnimation = animation.drive(tween);
           return SlideTransition(
             position: offsetAnimation,
-            child: child,);
+            child: child,
+          );
         });
   }
 
@@ -80,37 +80,60 @@ class GroupScreen extends StatelessWidget {
             return [
               PopupMenuItem(
                   value: GroupEditMenu.EDIT,
-                  child: Text("Edit Group Info", style: groupEditMenuTextStyle,)),
+                  child: Text(
+                    "Edit Group Info",
+                    style: groupEditMenuTextStyle,
+                  )),
               PopupMenuItem(
                   value: GroupEditMenu.LEAVE,
-                  child: Text("Leave Group", style: leaveGroupMenuTextStyle,)),
+                  child: Text(
+                    "Leave Group",
+                    style: leaveGroupMenuTextStyle,
+                  )),
             ];
           } else {
             return [
               PopupMenuItem(
                   value: GroupEditMenu.LEAVE,
-                  child: Text("Leave Group", style: leaveGroupMenuTextStyle,)),
+                  child: Text(
+                    "Leave Group",
+                    style: leaveGroupMenuTextStyle,
+                  )),
             ];
           }
         });
   }
 
-  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) async{
+  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     switch (selectedMenu) {
       case GroupEditMenu.EDIT:
         Navigator.push(
-            context, _createRoute(context, GroupInfoDetailScreen(isEditable: true, group: group,)));
+            context,
+            _createRoute(
+                context,
+                GroupInfoDetailScreen(
+                  isEditable: true,
+                  group: group,
+                )));
         break;
       case GroupEditMenu.LEAVE:
-        //todo show popup dialog
-        await groupViewModel.leaveGroup(group);
-        Navigator.pop(context);
+        showConfirmDialog(
+            context: context,
+            titleString: "Leave the group?",
+            contentString: "",
+            onConfirmed: (isConfirmed) async{
+              if(isConfirmed) {
+                await groupViewModel.leaveGroup(group);
+                Navigator.pop(context);
+              }
+            },
+            yesText: Text("Leave", style: showConfirmDialogRedTextStyle,),
+            noText: Text("Cancel"));
         break;
     }
   }
-
 
 //------------------------------------------------------------------------------------------------ body
 
@@ -118,34 +141,29 @@ class GroupScreen extends StatelessWidget {
     return Consumer<GroupViewModel>(
       builder: (context, model, child) {
         return model.isProcessing
-            ? Center(child: CircularProgressIndicator(),)
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
             : ListView.builder(
-            itemCount: model.posts.length,
-            itemBuilder: (context, int index) {
-              final post = model.posts[index];
-              return Card(
-                elevation: 2.0,
-                child: ListTile(
-                  trailing: AudioPlayButton(audioUrl: post.audioUrl),
-                  subtitle: Text(post.userName),
-                  title: RichText(
-                      text: TextSpan(
-                          style: DefaultTextStyle
-                              .of(context)
-                              .style,
-                          children: [
-                            TextSpan(text: post.title, style: postTitleTextStyle),
-                            TextSpan(text: "  "),
-                            TextSpan(text: "(${post.audioDuration})",
-                                style: postAudioDurationTextStyle),
-                          ]
-                      )),
-                ),
-              );
-            });
+                itemCount: model.posts.length,
+                itemBuilder: (context, int index) {
+                  final post = model.posts[index];
+                  return Card(
+                    elevation: 2.0,
+                    child: ListTile(
+                      trailing: AudioPlayButton(audioUrl: post.audioUrl),
+                      subtitle: Text(post.userName),
+                      title: RichText(
+                          text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                        TextSpan(text: post.title, style: postTitleTextStyle),
+                        TextSpan(text: "  "),
+                        TextSpan(
+                            text: "(${post.audioDuration})", style: postAudioDurationTextStyle),
+                      ])),
+                    ),
+                  );
+                });
       },
     );
   }
-
-
 }

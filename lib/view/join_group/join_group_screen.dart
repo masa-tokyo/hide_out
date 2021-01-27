@@ -16,7 +16,7 @@ class JoinGroupScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Join a Group"),
         leading: IconButton(
-          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen())),
+          onPressed: () => Navigator.pushReplacement(context, _createRoute(context, HomeScreen())),
           icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),)
         ,
       ),
@@ -24,8 +24,8 @@ class JoinGroupScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Consumer<JoinGroupViewModel>(builder: (context, model, child) {
           return model.isProcessing
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
+              ? Center(child: CircularProgressIndicator())
+              : ListView.builder(
               itemCount: model.groups.length,
               itemBuilder: (context, int index) {
                 final group = model.groups[index];
@@ -39,7 +39,8 @@ class JoinGroupScreen extends StatelessWidget {
                     onTap: () => _openGroupDetailScreen(context, group),
                     child: ListTile(
                       title: Text(group.groupName),
-                      subtitle: Text(group.description, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      subtitle: Text(group.description, maxLines: 1, overflow: TextOverflow
+                          .ellipsis,),
                       trailing: Icon(Icons.arrow_forward_ios_rounded),
                     ),
                   ),
@@ -51,7 +52,6 @@ class JoinGroupScreen extends StatelessWidget {
   }
 
   _openGroupDetailScreen(BuildContext context, Group group) {
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -59,4 +59,20 @@ class JoinGroupScreen extends StatelessWidget {
       ),
     );
   }
+
+  Route<Object> _createRoute(BuildContext context, Widget screen) {
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = Offset(1.0, 0.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,);
+        });
+  }
+
 }

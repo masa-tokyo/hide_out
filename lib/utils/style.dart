@@ -7,6 +7,7 @@ const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0,);
 const listTileTitleTextStyle = TextStyle(fontSize: 22.0,);
 const buttonEnabledTextStyle = TextStyle(color: Colors.black87, fontWeight: FontWeight.bold);
 const buttonNotEnabledTextStyle = TextStyle(color: Colors.black26,);
+const showConfirmDialogRedTextStyle = TextStyle(color: Colors.redAccent,);
 
 //Home
 const homeScreenLabelTextStyle = TextStyle(fontSize: 18.0,);
@@ -20,6 +21,8 @@ const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);
+const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
+
 
 //Group
 const postTitleTextStyle = TextStyle(fontSize: 16.0, color: Colors.black87);

@@ -5,7 +5,6 @@ class Group {
   final String groupName;
   final String description;
   final String ownerId;
-  //todo need groupMadeDateTime to order on HomeScreen?
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
