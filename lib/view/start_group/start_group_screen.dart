@@ -14,15 +14,17 @@ class StartGroupScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Start a New Group"),
       ),
-      body: Column(
-        children: [
-          GroupNamePart(),
-          AboutGroupPart(),
-          SizedBox(
-            height: 12.0,
-          ),
-          _doneButton(context),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            GroupNamePart(),
+            AboutGroupPart(),
+            SizedBox(
+              height: 12.0,
+            ),
+            _doneButton(context),
+          ],
+        ),
       ),
     );
   }

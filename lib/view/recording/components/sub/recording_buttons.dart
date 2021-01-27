@@ -311,6 +311,14 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       await recordingViewModel.postRecording(_path, displayTime, widget.group);
     });
 
+
+    //change RecordingButtonStatus for not showing AlertDialog next time closing the screen
+    _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
+
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
+
+
     Navigator.pop(context);
 
     //todo show toast message "post was successful"

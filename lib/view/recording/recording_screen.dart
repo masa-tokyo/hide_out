@@ -60,6 +60,7 @@ class RecordingScreen extends StatelessWidget {
                 if(isConfirmed) {
                   Navigator.pop(context);
                   await recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+                  print(recordingViewModel.recordingButtonStatus);
                 }
               },
               yesText: Text("Discard", style: showConfirmDialogRedTextStyle,),

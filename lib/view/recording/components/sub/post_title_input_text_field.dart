@@ -30,7 +30,7 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
         controller: _titleController,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "No Title"
+          hintText: "(No Title)"
         ),
 
       ),

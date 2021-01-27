@@ -30,7 +30,7 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
       child: TextField(
         controller: _groupNameController,
         maxLines: null,
-        keyboardType: TextInputType.name,
+        keyboardType: TextInputType.text,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black26),

@@ -37,7 +37,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
     await groupViewModel.getGroupInfo(widget.group.groupId);
 
     _groupNameController.text = groupViewModel.group.groupName;
-    _descriptionController.text = groupViewModel.group.groupName;
+    _descriptionController.text = groupViewModel.group.description;
 
   }
 
@@ -54,9 +54,11 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: widget.isEditable
-      ? _editableGroupInfo()
-      : _viewOnlyGroupInfo(),
+      body: SingleChildScrollView(
+        child: widget.isEditable
+        ? _editableGroupInfo()
+        : _viewOnlyGroupInfo(),
+      ),
     );
   }
 
