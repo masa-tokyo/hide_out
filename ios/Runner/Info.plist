@@ -17,13 +17,38 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.289406628812-kba2qnnqdq9ud5mik5tk2uvmhcom2voo</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app does not use Apple Music.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app does not use the information for calendar.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app does not use the camera.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app does not use the information for contacts.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone to record your speech.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app does not use the information for motion.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app does not use the information for speech recognition.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,37 +66,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
-	<!-- Google Sign-in Section -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.289406628812-kba2qnnqdq9ud5mik5tk2uvmhcom2voo</string>
-			</array>
-		</dict>
-	</array>
-	<!-- End of the Google Sign-in Section -->
-	<!-- Flutter_Sound Section -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses the microphone to record your speech.</string>
-	<!-- End of Flutter_Sound Section -->
-	<!-- Description for Apple Connect -->
-	<key>NSContactsUsageDescription</key>
-	<string>This app does not use the information for contacts.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>This app does not use the information for calendar.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app does not use the camera.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>This app does not use Apple Music.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>This app does not use the information for motion.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app does not use the information for speech recognition.</string>
-	<!-- End of Description for Apple Connect -->
 </dict>
 </plist>

@@ -17,9 +17,13 @@ class HomeScreen extends StatelessWidget {
             onRefresh: () => homeScreenViewModel.getMyGroup(),
             child: Column(
               children: [
-                SizedBox(height: 24.0,),
+                SizedBox(
+                  height: 26.0,
+                ),
                 MyGroupPart(),
-                SizedBox(height: 28.0,),
+                SizedBox(
+                  height: 28.0,
+                ),
                 NewGroupPart(),
               ],
             ),

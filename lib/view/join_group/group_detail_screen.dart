@@ -81,21 +81,21 @@ class GroupDetailScreen extends StatelessWidget {
     );
   }
 
-  _openGroupScreen(BuildContext context, Group group) async{
+  _openGroupScreen(BuildContext context, Group group) async {
     final joinGroupViewModel = Provider.of<JoinGroupViewModel>(context, listen: false);
     await joinGroupViewModel.joinGroup(group);
 
     Navigator.pushReplacement(
-      context, _createRoute(context, group),
+      context,
+      _createRoute(context, group),
     );
     //todo show alert dialog?
   }
 
   Route<Object> _createRoute(BuildContext context, Group group) {
-
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => GroupScreen(group: group),
-        transitionsBuilder: (context, animation, secondaryAnimation, child){
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;
           var curve = Curves.ease;
@@ -103,9 +103,8 @@ class GroupDetailScreen extends StatelessWidget {
           var offsetAnimation = animation.drive(tween);
           return SlideTransition(
             position: offsetAnimation,
-            child: child,);
-
+            child: child,
+          );
         });
   }
-
 }
