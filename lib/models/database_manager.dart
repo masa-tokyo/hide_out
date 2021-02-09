@@ -83,6 +83,7 @@ class DatabaseManager {
     if (queryOnGroups.docs.length == 0) return List();
 
     var results = List<Group>();
+    if(groupIds.length == 0) return List(); //in the case that users left all groups
     await _db.collection("groups").where("groupId", whereIn: groupIds).limit(10).get()
     .then((value) {
       value.docs.forEach((element) {
@@ -130,14 +131,25 @@ class DatabaseManager {
     if (queryOnGroups.docs.length == 0) return List();
 
     var results = List<Group>();
-   
-    await _db.collection("groups").where("groupId", whereNotIn: groupIds).get()
-    .then((value) {
-      value.docs.forEach((element) {
-        results.add(Group.fromMap(element.data()));
+
+    //if currentUser does not belong to any group, get all the groups
+    if(groupIds.length == 0) {
+      await _db.collection("groups").get()
+                .then((value) {
+                  value.docs.forEach((element) {
+                    results.add(Group.fromMap(element.data()));
+                  });
+                });
+    } else{
+      await _db.collection("groups").where("groupId", whereNotIn: groupIds).get()
+          .then((value) {
+        value.docs.forEach((element) {
+          results.add(Group.fromMap(element.data()));
+        });
       });
-    });
- 
+
+    }
+
     return results;
 
   }

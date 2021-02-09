@@ -26,31 +26,36 @@ class MyGroupPart extends StatelessWidget {
           builder: (context, model, child) {
             return model.isProcessing
               ? Center(child: CircularProgressIndicator(),)
-              : ListView.builder(
+              : model.groups.isEmpty
+                ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Container(
+                  width: double.infinity,
+                  child: Text("Join or Start a Group!")),
+                )
+                : ListView.builder(
                 shrinkWrap: true,
-                itemCount: model.groups == null
-                ? 0
-                : model.groups.length,
+                itemCount: model.groups.length,
                 itemBuilder: (context, int index) {
                   final group = model.groups[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        elevation: 2.0,
+                        child: InkWell(
+                          splashColor: Colors.blueGrey,
+                          onTap: () => _openGroupScreen(context, group),
+                          child: ListTile(
+                            title: Text(group.groupName, style: listTileTitleTextStyle,),
+                            trailing: Icon(Icons.arrow_forward_ios_rounded),
+                            dense: true,
+                          ),
+                        ),
                       ),
-                      elevation: 2.0,
-                      child: InkWell(
-                        splashColor: Colors.blueGrey,
-                        onTap: () => _openGroupScreen(context, group),
-                         child: ListTile(
-                           title: Text(group.groupName, style: listTileTitleTextStyle,),
-                           trailing: Icon(Icons.arrow_forward_ios_rounded),
-                           dense: true,
-                         ),
-                      ),
-                    ),
-                  );
+                    );
                 });
           },
         ),

@@ -30,7 +30,9 @@ class GroupScreen extends StatelessWidget {
       appBar: AppBar(
         title: Consumer<GroupViewModel>(
           builder: (context, model, child) {
-            return model.isProcessing ? Text("") : Text(model.group.groupName);
+            return model.isProcessing
+                ? Text("")
+                : Text(model.group.groupName);
           },
         ),
         actions: [_groupEditButton(context)],
