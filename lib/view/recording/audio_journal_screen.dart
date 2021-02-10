@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'components/journal_description_part.dart';
+import 'components/journal_timer_part.dart';
+
 
 class AudioJournalScreen extends StatelessWidget {
   @override
@@ -17,12 +20,20 @@ class AudioJournalScreen extends StatelessWidget {
               child: Text("Skip")),
         ],
       ),
-      body: Column(
-        children: [
-          //JournalDescriptionPart(),
-          //todo
-          //JournalTimerPart(),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 36.0),
+              child: JournalDescriptionPart(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 52.0),
+              child: JournalTimerPart(),
+            ),
+          ],
+        ),
       ),
     );
   }

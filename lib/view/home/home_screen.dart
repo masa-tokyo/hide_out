@@ -36,13 +36,22 @@ class HomeScreen extends StatelessWidget {
   }
 
  Widget _floatingActionButton(BuildContext context) {
-   final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
-   return homeScreenViewModel.groups.length == 0
-   //todo when coming back from JoinGroup without joining, floating action button appears
-       ? Container()
-       : FloatingActionButton(
-       child: Icon(Icons.keyboard_voice),
-       onPressed: () => _openAudioJournalScreen(context));
+     final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+
+     //todo when users join/start a group, leave it, and come back to HomeScreen, floatingActionButton is available.
+    return FutureBuilder(
+        future: homeScreenViewModel.checkMyGroup(),
+        builder: (context, AsyncSnapshot<bool> snapshot){
+          if (snapshot.hasData){
+            return snapshot.data
+                ? FloatingActionButton(
+                  child: Icon(Icons.keyboard_voice),
+                  onPressed: () => _openAudioJournalScreen(context))
+                : Container();
+          } else {
+            return Container();
+          }
+        });
  }
 
 

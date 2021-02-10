@@ -8,9 +8,12 @@ const listTileTitleTextStyle = TextStyle(fontSize: 22.0,);
 const buttonEnabledTextStyle = TextStyle(color: Colors.black87, fontWeight: FontWeight.bold);
 const buttonNotEnabledTextStyle = TextStyle(color: Colors.black26,);
 const showConfirmDialogRedTextStyle = TextStyle(color: Colors.redAccent,);
+const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
+
 
 //Home
 const homeScreenLabelTextStyle = TextStyle(fontSize: 18.0,);
+const newGroupIntroTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.grey);
 
 
 
@@ -21,7 +24,7 @@ const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);
-const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
+const preparationTextStyle = TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
 
 
 //Group

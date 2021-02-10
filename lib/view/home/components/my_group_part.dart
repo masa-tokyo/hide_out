@@ -21,42 +21,18 @@ class MyGroupPart extends StatelessWidget {
             style: homeScreenLabelTextStyle,
           ),
         ),
-        SizedBox(height: 8.0,),
+        SizedBox(
+          height: 8.0,
+        ),
         Consumer<HomeScreenViewModel>(
           builder: (context, model, child) {
             return model.isProcessing
-              ? Center(child: CircularProgressIndicator(),)
-              : model.groups.isEmpty
-                ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Container(
-                  width: double.infinity,
-                  child: Text("Join or Start a Group!")),
-                )
-                : ListView.builder(
-                shrinkWrap: true,
-                itemCount: model.groups.length,
-                itemBuilder: (context, int index) {
-                  final group = model.groups[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        elevation: 2.0,
-                        child: InkWell(
-                          splashColor: Colors.blueGrey,
-                          onTap: () => _openGroupScreen(context, group),
-                          child: ListTile(
-                            title: Text(group.groupName, style: listTileTitleTextStyle,),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                            dense: true,
-                          ),
-                        ),
-                      ),
-                    );
-                });
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : model.groups.isEmpty
+                    ? _newGroupIntro()
+                    : _myGroupListView(model);
           },
         ),
       ],
@@ -70,5 +46,58 @@ class MyGroupPart extends StatelessWidget {
         builder: (_) => GroupScreen(group: group),
       ),
     );
+  }
+
+  Widget _newGroupIntro() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Container(
+        width: double.infinity,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Text(
+              "↓ Join/Start a Group ↓",
+              style: newGroupIntroTextStyle,
+              textAlign: TextAlign.center,),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _myGroupListView(HomeScreenViewModel model) {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: model.groups.length,
+        itemBuilder: (context, int index) {
+          final group = model.groups[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              elevation: 2.0,
+              child: InkWell(
+                splashColor: Colors.blueGrey,
+                onTap: () => _openGroupScreen(context, group),
+                child: ListTile(
+                  title: Text(
+                    group.groupName,
+                    style: listTileTitleTextStyle,
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios_rounded),
+                  dense: true,
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

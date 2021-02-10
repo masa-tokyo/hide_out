@@ -73,6 +73,14 @@ class GroupRepository extends ChangeNotifier{
     await dbManager.leaveGroup(group.groupId, currentUser.userId);
   }
 
+  Future<bool> checkMyGroup(User currentUser) async{
+    var groups;
+     groups = await dbManager.getGroupsByUserId(currentUser.userId);
+     if(groups.length == 0) return false;
+     return true;
+
+  }
+
 
 
 }
