@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/view/recording/preparation_note_screen.dart';
 
 import 'components/journal_description_part.dart';
 import 'components/journal_timer_part.dart';
@@ -15,8 +16,7 @@ class AudioJournalScreen extends StatelessWidget {
         title: Text("Audio Journal"),
         actions: [
           FlatButton(
-            //todo go to next screen
-              onPressed: null,
+              onPressed: () => _openPreparationNoteScreen(context),
               child: Text("Skip")),
         ],
       ),
@@ -36,5 +36,10 @@ class AudioJournalScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _openPreparationNoteScreen(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PreparationNoteScreen()));
+
   }
 }

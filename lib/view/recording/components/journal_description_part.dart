@@ -8,7 +8,17 @@ class JournalDescriptionPart extends StatelessWidget {
       children: [
         SizedBox(height: 12.0,),
         Text("Preparation", style: preparationTextStyle,),
-        Text("Look Back Today with voice"),
+        SizedBox(height: 12.0,),
+        Text("Look Back Today with Questions:"),
+        SizedBox(height: 8.0,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("-What did you do?"),
+            Text("-What did you feel about them?"),
+            Text("-What did you learn from them?"),
+          ],
+        ),
       ],
     );
   }
