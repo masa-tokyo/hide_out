@@ -54,6 +54,9 @@ dependencies:
 
   assets_audio_player: ^2.0.13+1
 
+  tuple: ^1.0.3
+
+
 
 
 dev_dependencies:

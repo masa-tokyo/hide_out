@@ -5,7 +5,6 @@ import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
 import 'package:voice_put/view/group/group_info_detail_screen.dart';
-import 'package:voice_put/view/recording/recording_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 import 'components/audio_play_button.dart';
@@ -23,10 +22,6 @@ class GroupScreen extends StatelessWidget {
     Future(() => groupViewModel.getGroupInfo(group.groupId));
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.keyboard_voice),
-        onPressed: () => _openRecordingScreen(context),
-      ),
       appBar: AppBar(
         title: Consumer<GroupViewModel>(
           builder: (context, model, child) {
@@ -48,11 +43,6 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  //---------------------------------------------------------------------------------------------- FloatingActionButton
-
-  _openRecordingScreen(BuildContext context) {
-    Navigator.of(context).push(_createRoute(context, RecordingScreen(group: group)));
-  }
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
     return PageRouteBuilder(

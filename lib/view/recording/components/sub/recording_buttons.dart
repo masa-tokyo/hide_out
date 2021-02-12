@@ -9,15 +9,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/recording/send_to_group_screen.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
-  final Group group;
-
-  RecordingButtons({@required this.group});
 
   @override
   _RecordingButtonsState createState() => _RecordingButtonsState();
@@ -39,9 +36,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         _isRecorderInitiated = true;
       });
     });
-
-    _stopWatchTimer.rawTime.listen((value) =>
-    print('rawTime $value ${StopWatchTimer.getDisplayTime(value)}'));
 
     super.initState();
   }
@@ -86,7 +80,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     return Column(
       children: [
         _timeDisplay(),
-        SizedBox(height: 80.0,),
+        SizedBox(height: 60.0,),
         button
       ],
     );
@@ -306,11 +300,14 @@ class _RecordingButtonsState extends State<RecordingButtons> {
               : true,
           milliSecond: false);
 
-      //post the recording
-      final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-      await recordingViewModel.postRecording(_path, displayTime, widget.group);
+
+      Navigator.push(context, MaterialPageRoute(builder: (_) => SendToGroupScreen(path: _path, audioDuration: displayTime,),),);
+
     });
 
+
+    //todo do not change the state even after moving to SendToGroupScreen by regarding when coming back
+    //todo after post was successful on SendToGroupScreen, change the state and reset the timer
 
     //change RecordingButtonStatus for not showing AlertDialog next time closing the screen
     _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
@@ -319,7 +316,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
 
 
-    Navigator.pop(context);
 
     //todo show toast message "post was successful"
 

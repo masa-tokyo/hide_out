@@ -1,32 +1,30 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
-import 'package:voice_put/view/recording/components/post_title_part.dart';
+import 'package:voice_put/view/recording/components/post_description_part.dart';
 import 'package:voice_put/view/recording/components/recording_button_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingScreen extends StatelessWidget {
-  final Group group;
+  final String noteText;
 
-  RecordingScreen({@required this.group});
+  RecordingScreen({@required this.noteText});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("New Recording"),
-        leading: _closeButton(context),
+        leading: _backButton(context),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          PostTitlePart(),
-          SizedBox(
-            height: 1.0,
-          ),
+          PostDescriptionPart(noteText: noteText,),
           SizedBox(
             height: 1.0,
           ),
@@ -34,19 +32,18 @@ class RecordingScreen extends StatelessWidget {
             height: 1.0,
           ),
           RecordingButtonPart(
-            group: group,
           ),
         ],
       ),
     );
   }
 
-  Widget _closeButton(BuildContext context) {
+  Widget _backButton(BuildContext context) {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
 
     return IconButton(
         icon: Icon(
-          Icons.close,
+          Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
           color: Colors.white,
         ),
         onPressed: () {

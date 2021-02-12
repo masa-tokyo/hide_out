@@ -22,8 +22,15 @@ class RecordingViewModel extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  List<Group> _groups = List();
+  List<Group> get groups => _groups;
+
   RecordingButtonStatus _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
   RecordingButtonStatus get recordingButtonStatus => _recordingButtonStatus;
+
+  List<String> _groupIds = List();
+  List<String> get groupIds => _groupIds;
+
 
   User get currentUser => UserRepository.currentUser;
 
@@ -51,6 +58,28 @@ class RecordingViewModel extends ChangeNotifier{
     _recordingButtonStatus = recordingButtonStatus;
 
   }
+
+  Future<void> getMyGroup() async{
+    await groupRepository.getGroupsByUserId(currentUser);
+  }
+
+  onMyGroupObtained(GroupRepository groupRepository) {
+    _isProcessing = groupRepository.isProcessing;
+    _groups = groupRepository.groups;
+    notifyListeners();
+  }
+
+  void removeGroupId(String groupId) {
+    _groupIds.remove(groupId);
+    notifyListeners();
+  }
+
+  void addGroupId(String groupId) {
+    _groupIds.add(groupId);
+    notifyListeners();
+  }
+
+
 
 
 

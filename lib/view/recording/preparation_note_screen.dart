@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/recording/recording_screen.dart';
 
 class PreparationNoteScreen extends StatefulWidget {
   @override
@@ -26,11 +27,10 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notes"),
+        title: Text("Note"),
         actions: [
           FlatButton(
-              //todo go to next screen
-              onPressed: null,
+              onPressed: () => _openRecordingScreen(),
               child: Text("Skip")),
         ],
       ),
@@ -83,7 +83,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            color: _isNextButtonAvailable ? Colors.lightBlue: Colors.grey,
+            color: _isNextButtonAvailable ? Colors.lightBlue : Colors.grey,
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",
@@ -94,9 +94,10 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   }
 
   _openRecordingScreen() {
-    //todo open RecordingScreen with text data
-    print("open RecordingScreen");
+    Navigator.push(
+      context, MaterialPageRoute(builder: (_) => RecordingScreen(noteText: _controller.text),),);
   }
+
 
   _onTextFieldUpdated() {
     if (_controller.text.isEmpty) {
