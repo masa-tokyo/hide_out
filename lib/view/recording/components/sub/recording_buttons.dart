@@ -310,7 +310,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     //todo after post was successful on SendToGroupScreen, change the state and reset the timer
 
     //change RecordingButtonStatus for not showing AlertDialog next time closing the screen
-    _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
+    //_recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
 
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);

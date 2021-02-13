@@ -41,5 +41,6 @@ class AudioJournalScreen extends StatelessWidget {
   _openPreparationNoteScreen(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => PreparationNoteScreen()));
 
+
   }
 }

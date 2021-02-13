@@ -20,7 +20,7 @@ class PostRepository extends ChangeNotifier{
 
 
   Future<void> postRecording(User currentUser,
-      Group group,
+      String groupId,
       String title,
       File audioFile,
       String audioDuration,) async {
@@ -35,7 +35,7 @@ class PostRepository extends ChangeNotifier{
     final post = Post(
       postId: Uuid().v1(),
       userId: currentUser.userId,
-      groupId: group.groupId,
+      groupId: groupId,
       userName: currentUser.inAppUserName,
       title: title,
       audioUrl: audioUrl,

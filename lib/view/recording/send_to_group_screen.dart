@@ -99,16 +99,22 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
 
  }
 
-  _onDoneButtonPressed() {
+  _onDoneButtonPressed() async{
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
-    //todo post recording with groupIds
+    //todo animation
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
 
   }
 
 
 }
 
-//--------------------------------------------------------------------------------------------------- ChooseGroupButton
+//--------------------------------------------------------------------------------------------------- ChooseGroupButton class
 
 class ChooseGroupButton extends StatefulWidget {
   final bool isChooseGroupButtonPressed;
