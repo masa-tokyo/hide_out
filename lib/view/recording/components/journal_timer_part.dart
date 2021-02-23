@@ -24,6 +24,7 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
     return Column(
       children: [
         _timeDisplay(),
+        SizedBox(height: 8.0,),
         _audioJournalButton()
       ],
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
@@ -25,9 +28,7 @@ class GroupScreen extends StatelessWidget {
       appBar: AppBar(
         title: Consumer<GroupViewModel>(
           builder: (context, model, child) {
-            return model.isProcessing
-                ? Text("")
-                : Text(model.group.groupName);
+            return model.isProcessing ? Text("") : Text(model.group.groupName);
           },
         ),
         actions: [_groupEditButton(context)],
@@ -42,7 +43,6 @@ class GroupScreen extends StatelessWidget {
           child: _postListView(context)),
     );
   }
-
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
     return PageRouteBuilder(
@@ -115,14 +115,17 @@ class GroupScreen extends StatelessWidget {
             context: context,
             titleString: "Leave the group?",
             contentString: "",
-            onConfirmed: (isConfirmed) async{
-              if(isConfirmed) {
+            onConfirmed: (isConfirmed) async {
+              if (isConfirmed) {
                 await groupViewModel.leaveGroup(group);
                 Navigator.pop(context);
               }
             },
-            yesText: Text("Leave", style: showConfirmDialogRedTextStyle,),
-            noText: Text("Cancel"));
+            yesText: Text(
+              "Leave",
+              style: showConfirmDialogYesTextStyle,
+            ),
+            noText: Text("Cancel", style: showConfirmDialogNoTextStyle,));
         break;
     }
   }
@@ -142,20 +145,72 @@ class GroupScreen extends StatelessWidget {
                   final post = model.posts[index];
                   return Card(
                     elevation: 2.0,
-                    child: ListTile(
-                      trailing: AudioPlayButton(audioUrl: post.audioUrl),
-                      subtitle: Text(post.userName),
-                      title: RichText(
-                          text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
-                        TextSpan(text: post.title, style: postTitleTextStyle),
-                        TextSpan(text: "  "),
-                        TextSpan(
-                            text: "(${post.audioDuration})", style: postAudioDurationTextStyle),
-                      ])),
-                    ),
+                    child: post.userId == model.currentUser.userId
+                        ? Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            actionExtentRatio: 0.25,
+                            child: ListTile(
+                              trailing: AudioPlayButton(audioUrl: post.audioUrl),
+                              subtitle: Text(post.userName),
+                              title: RichText(
+                                  text: TextSpan(
+                                      style: DefaultTextStyle.of(context).style,
+                                      children: [
+                                    TextSpan(text: post.title, style: postTitleTextStyle),
+                                    TextSpan(text: "  "),
+                                    TextSpan(
+                                        text: "(${post.audioDuration})",
+                                        style: postAudioDurationTextStyle),
+                                  ])),
+                            ),
+                            secondaryActions: [
+                              IconSlideAction(
+                                caption: "Delete",
+                                icon: Icons.delete,
+                                color: Colors.redAccent,
+                                onTap: () => _onDeleteTapped(context, post),
+                              )
+                            ],
+                          )
+                        : ListTile(
+                            trailing: AudioPlayButton(audioUrl: post.audioUrl),
+                            subtitle: Text(post.userName),
+                            title: RichText(
+                                text:
+                                    TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                              TextSpan(text: post.title, style: postTitleTextStyle),
+                              TextSpan(text: "  "),
+                              TextSpan(
+                                  text: "(${post.audioDuration})",
+                                  style: postAudioDurationTextStyle),
+                            ])),
+                          ),
                   );
                 });
       },
     );
+  }
+
+  _onDeleteTapped(BuildContext context, Post post) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    showConfirmDialog(
+        context: context,
+        titleString: "Delete the post?",
+        contentString: "You will permanently lose the data.",
+        onConfirmed: (isConfirmed) async{
+          if(isConfirmed){
+            await groupViewModel.deletePost(post);
+            Fluttertoast.showToast(
+              msg: "Post Deleted",
+              gravity: ToastGravity.CENTER
+            );
+
+            await groupViewModel.getGroupPosts(group);
+          }
+        },
+        yesText: Text("Delete", style: showConfirmDialogYesTextStyle,),
+        noText: Text("Cancel", style: showConfirmDialogNoTextStyle,));
+
   }
 }

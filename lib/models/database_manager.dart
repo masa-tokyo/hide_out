@@ -203,6 +203,10 @@ class DatabaseManager {
 
  }
 
+ Future<void> deletePost(String postId) async{
+    await _db.collection("posts").doc(postId).delete();
+ }
+
 
 
 

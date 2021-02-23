@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/join_group/group_detail_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 import 'dart:io';
@@ -16,7 +15,7 @@ class JoinGroupScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Join a Group"),
         leading: IconButton(
-          onPressed: () => Navigator.pushReplacement(context, _createRoute(context, HomeScreen())),
+          onPressed: () => Navigator.pop(context),
           icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),)
         ,
       ),
@@ -60,19 +59,5 @@ class JoinGroupScreen extends StatelessWidget {
     );
   }
 
-  Route<Object> _createRoute(BuildContext context, Widget screen) {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,);
-        });
-  }
 
 }

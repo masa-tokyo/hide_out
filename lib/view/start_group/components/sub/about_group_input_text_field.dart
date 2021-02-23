@@ -28,7 +28,7 @@ class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: _descriptionController,
-        maxLines: null,
+        maxLines: 15,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
@@ -37,7 +37,7 @@ class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black),
             ),
-            hintText: "Describe your group..."
+            hintText: "Describe your group."
         ),
       ),
     );

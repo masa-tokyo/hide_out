@@ -32,7 +32,7 @@ class JoinGroupViewModel extends ChangeNotifier {
 
   onGroupsExceptForMineObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
-    _groups = groupRepository.groups;
+    _groups = groupRepository.otherGroups;
     notifyListeners();
 
   }

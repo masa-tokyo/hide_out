@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
-import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
@@ -61,4 +60,8 @@ class PostRepository extends ChangeNotifier{
 
 
   }
+
+ Future<void> deletePost(String postId) async{
+    await dbManager.deletePost(postId);
+ }
 }

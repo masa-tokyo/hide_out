@@ -27,7 +27,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   onMyGroupObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
-    _groups = groupRepository.groups;
+    _groups = groupRepository.myGroups;
     notifyListeners();
   }
 

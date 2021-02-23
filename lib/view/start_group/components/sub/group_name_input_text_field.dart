@@ -38,7 +38,7 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black),
           ),
-          hintText: "Type your group name..."
+          hintText: "Type your group name."
         ),
         autofocus: true,
       ),

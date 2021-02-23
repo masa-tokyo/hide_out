@@ -8,8 +8,13 @@ class GroupRepository extends ChangeNotifier{
 
   GroupRepository({this.dbManager});
 
-  List<Group> _groups = <Group>[];
-  List<Group> get groups => _groups;
+  List<Group> _myGroups = <Group>[];
+  List<Group> get myGroups => _myGroups;
+
+  List<Group> _otherGroups = <Group>[];
+  List<Group> get otherGroups => _otherGroups;
+
+
 
   Group _group;
   Group get group => _group;
@@ -33,7 +38,7 @@ class GroupRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _groups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
 
     _isProcessing = false;
     notifyListeners();
@@ -44,7 +49,7 @@ class GroupRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _groups = await dbManager.getGroupsExceptForMine(currentUser.userId);
+    _otherGroups = await dbManager.getGroupsExceptForMine(currentUser.userId);
 
     _isProcessing = false;
     notifyListeners();

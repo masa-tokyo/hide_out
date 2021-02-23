@@ -36,21 +36,13 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
-              height: 32.0,
-            ),
             Text(
               "Preparation",
               style: preparationTextStyle,
             ),
-            SizedBox(
-              height: 32.0,
-            ),
             _textField(),
-            SizedBox(
-              height: 32.0,
-            ),
             _nextButton(),
           ],
         ),

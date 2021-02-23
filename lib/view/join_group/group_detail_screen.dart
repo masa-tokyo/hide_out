@@ -22,9 +22,12 @@ class GroupDetailScreen extends StatelessWidget {
           SizedBox(
             height: 36.0,
           ),
-          Text(
-            group.groupName,
-            style: groupDetailNameTextStyle,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              group.groupName,
+              style: groupDetailNameTextStyle,
+            ),
           ),
           SizedBox(
             height: 36.0,
@@ -36,7 +39,7 @@ class GroupDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
                   "About",
-                  style: groupDetailDescriptionTextStyle,
+                  style: groupDetailAboutTextStyle,
                 ),
               ),
               SizedBox(
@@ -45,6 +48,7 @@ class GroupDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
+                  width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(),
                       borderRadius: BorderRadius.circular(8.0),
@@ -60,7 +64,7 @@ class GroupDetailScreen extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 16.0,
+            height: 24.0,
           ),
           _joinButton(context)
         ],
@@ -70,13 +74,17 @@ class GroupDetailScreen extends StatelessWidget {
 
   Widget _joinButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 260.0), //todo [check] how about other devices?
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        width: double.infinity,
+        child: RaisedButton(
+          color: Colors.lightBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          onPressed: () => _openGroupScreen(context, group),
+          child: Text("Join"),
         ),
-        onPressed: () => _openGroupScreen(context, group),
-        child: Text("Join"),
       ),
     );
   }

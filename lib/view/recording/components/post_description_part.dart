@@ -12,7 +12,7 @@ class PostDescriptionPart extends StatelessWidget {
     return Column(
       children: [
         PostTitleInputTextField(),
-        SizedBox(height: 24.0,),
+        SizedBox(height: 12.0,),
         PostNoteTextField(noteText: noteText),
       ],
     );

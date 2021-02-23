@@ -80,7 +80,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     return Column(
       children: [
         _timeDisplay(),
-        SizedBox(height: 60.0,),
+        SizedBox(height: 8.0,),
         button
       ],
     );

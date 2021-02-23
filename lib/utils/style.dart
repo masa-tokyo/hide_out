@@ -7,7 +7,8 @@ const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0,);
 const listTileTitleTextStyle = TextStyle(fontSize: 22.0,);
 const buttonEnabledTextStyle = TextStyle(color: Colors.black87, fontWeight: FontWeight.bold);
 const buttonNotEnabledTextStyle = TextStyle(color: Colors.black87,);
-const showConfirmDialogRedTextStyle = TextStyle(color: Colors.redAccent,);
+const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
+const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
 const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
 
 
@@ -18,8 +19,8 @@ const newGroupIntroTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.
 
 
 //JoinGroupScreen
-const groupDetailNameTextStyle = TextStyle(fontSize: 24.0, color: Colors.black87);
-const groupDetailAboutTextStyle = TextStyle(fontSize: 22.0, color: Colors.black87);
+const groupDetailNameTextStyle = TextStyle(fontSize: 22.0, color: Colors.black87, fontWeight: FontWeight.bold);
+const groupDetailAboutTextStyle = TextStyle(fontSize: 18.0, color: Colors.black87);
 const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 //Recording

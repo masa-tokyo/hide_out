@@ -22,15 +22,9 @@ class RecordingScreen extends StatelessWidget {
         leading: _backButton(context),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           PostDescriptionPart(noteText: noteText,),
-          SizedBox(
-            height: 1.0,
-          ),
-          SizedBox(
-            height: 1.0,
-          ),
           RecordingButtonPart(
           ),
         ],
@@ -60,8 +54,8 @@ class RecordingScreen extends StatelessWidget {
                   print(recordingViewModel.recordingButtonStatus);
                 }
               },
-              yesText: Text("Discard", style: showConfirmDialogRedTextStyle,),
-              noText: Text("Cancel"),
+              yesText: Text("Discard", style: showConfirmDialogYesTextStyle,),
+              noText: Text("Cancel", style: showConfirmDialogNoTextStyle,),
             );
           } else{
             Navigator.pop(context);

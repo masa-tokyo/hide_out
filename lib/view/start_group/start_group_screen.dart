@@ -33,18 +33,23 @@ class StartGroupScreen extends StatelessWidget {
     return Consumer<StartGroupViewModel>(
       builder: (context, model, child) {
         return Padding(
-          padding: const EdgeInsets.only(left: 260.0), //todo [check] how about other devices?
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Container(
+            width: double.infinity,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              onPressed: (model.groupName != "" && model.description != "")
+                  ? () => _registerGroup(context)
+                  : null,
+              color: model.groupName != "" && model.description != ""
+              ? Colors.lightBlue : Colors.grey,
+              child: Text("Done",
+                  style: (model.groupName != "" && model.description != "")
+                      ? buttonEnabledTextStyle
+                      : buttonNotEnabledTextStyle),
             ),
-            onPressed: (model.groupName != "" && model.description != "")
-                ? () => _registerGroup(context)
-                : null,
-            child: Text("Done",
-                style: (model.groupName != "" && model.description != "")
-                    ? buttonEnabledTextStyle
-                    : buttonNotEnabledTextStyle),
           ),
         );
       },

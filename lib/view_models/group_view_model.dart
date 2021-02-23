@@ -50,6 +50,9 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deletePost(Post post) async{
+    await postRepository.deletePost(post.postId);
+  }
 
 
   //-------------------------------------------------------------------------------------------------- Audio methods
@@ -123,6 +126,8 @@ class GroupViewModel extends ChangeNotifier {
   Future<void> leaveGroup(Group group) async{
     await groupRepository.leaveGroup(group, currentUser);
   }
+
+
 
 
 
