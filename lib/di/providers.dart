@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:voice_put/models/audio_play_manager.dart';
@@ -40,14 +41,13 @@ List<SingleChildWidget> dependentModels = [
     ),
   ),
 ];
+
+
 List<SingleChildWidget> viewModels = [
-  ChangeNotifierProxyProvider<UserRepository, LoginViewModel>(
-    create: (context) => LoginViewModel(
-      userRepository: Provider.of<UserRepository>(context, listen: false),
-    ),
-    update: (context, userRepository, viewModel) =>
-        viewModel..onUserRepositoryUpdated(userRepository),
-  ),
+  ChangeNotifierProvider<LoginViewModel>(
+      create: (context) => LoginViewModel(
+        userRepository: Provider.of<UserRepository>(context, listen: false),
+      )),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository, StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),

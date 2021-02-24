@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 //Common
-const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white30);
+const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0,);
 const listTileTitleTextStyle = TextStyle(fontSize: 22.0,);
 const buttonEnabledTextStyle = TextStyle(color: Colors.black87, fontWeight: FontWeight.bold);

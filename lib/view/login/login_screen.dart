@@ -20,9 +20,9 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   ButtonWithImage(
                       onPressed: () => _signUp(context),
-                      color: Colors.white30,
-                      imagePath: "assets/images/google.png",
-                      label: "Sign Up With Google")
+                      color: Color(0xFF4285F4),
+                      imagePath: "assets/images/btn_google_dark_normal_ios.png",
+                      label: "Sign up with Google")
                 ],
               );
             },
@@ -35,11 +35,14 @@ class LoginScreen extends StatelessWidget {
 
   _signUp(BuildContext context) async {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+
     await loginViewModel.signUp(); //todo[check] should divide sign up and sign in??
+
 
     if (!loginViewModel.isSuccessful) {
       Fluttertoast.showToast(msg: "Sign up failed");
     } else {
+
       _openHomeScreen(context);
     }
   }

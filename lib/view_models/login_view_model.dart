@@ -17,15 +17,16 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<void> signUp() async{
-
-    await userRepository.signUp();
-
-  }
-
-  onUserRepositoryUpdated(UserRepository userRepository) {
-    _isSuccessful = userRepository.isSuccessful;
-    _isProcessing = userRepository.isProcessing;
+    _isProcessing = true;
     notifyListeners();
+
+    _isSuccessful = await userRepository.signUp();
+
+    _isProcessing = false;
+    notifyListeners();
+
   }
+
+
 
 }

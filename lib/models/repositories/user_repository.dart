@@ -11,12 +11,6 @@ class UserRepository extends ChangeNotifier{
 
   static User currentUser;
 
-  bool _isProcessing = false;
-  bool get isProcessing => _isProcessing;
-
-  bool _isSuccessful = false;
-  bool get isSuccessful => _isSuccessful;
-
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -30,9 +24,7 @@ class UserRepository extends ChangeNotifier{
     return false;
   }
 
-  Future<void> signUp() async {
-    _isProcessing = true;
-    notifyListeners();
+  Future<bool> signUp() async {
 
     try {
       GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
@@ -45,7 +37,7 @@ class UserRepository extends ChangeNotifier{
 
       final firebaseUser = (await _auth.signInWithCredential(credential)).user;
       if (firebaseUser == null) {
-        _isSuccessful = false;
+        return false;
       }
 
       final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
@@ -54,15 +46,13 @@ class UserRepository extends ChangeNotifier{
         await dbManager.insertUser(_convertToUser(firebaseUser));
       }
       currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
-      _isSuccessful = true;
+      return true;
+
 
     } catch (error) {
       print("sign in error caught: $error");
-      _isSuccessful = false;
-
+      return false;
     }
-    _isProcessing = false;
-    notifyListeners();
 
   }
 

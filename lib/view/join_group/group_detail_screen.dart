@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/view/group/group_screen.dart';
@@ -93,26 +94,13 @@ class GroupDetailScreen extends StatelessWidget {
     final joinGroupViewModel = Provider.of<JoinGroupViewModel>(context, listen: false);
     await joinGroupViewModel.joinGroup(group);
 
-    Navigator.pushReplacement(
-      context,
-      _createRoute(context, group),
-    );
-    //todo show alert dialog?
+    Navigator.pop(context);
+    Navigator.pop(context);
+
+    Fluttertoast.showToast(
+        msg: "Done!",
+        gravity: ToastGravity.CENTER);
+
   }
 
-  Route<Object> _createRoute(BuildContext context, Group group) {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => GroupScreen(group: group),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(0.0, 1.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        });
-  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/view/start_group/components/about_group_part.dart';
@@ -60,8 +61,11 @@ class StartGroupScreen extends StatelessWidget {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
     await startGroupViewModel.registerGroup();
 
-    //todo while processing circularIndicator, after processing pop up "done!"
-    Navigator.of(context).pushReplacement(_createRoute(context));
+    Navigator.pop(context);
+    Fluttertoast.showToast(
+        msg: "Done!",
+        gravity: ToastGravity.CENTER);
+
 
   }
 
