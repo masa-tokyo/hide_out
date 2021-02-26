@@ -62,6 +62,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
     );
   }
 
+
   //----------------------------------------------------------------------------------------------Editable
   Widget _editableGroupInfo() {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
