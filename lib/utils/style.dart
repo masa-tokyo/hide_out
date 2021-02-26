@@ -9,7 +9,7 @@ const buttonEnabledTextStyle = TextStyle(color: Colors.black87, fontWeight: Font
 const buttonNotEnabledTextStyle = TextStyle(color: Colors.black87,);
 const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
 const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
-const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
+const timeDisplayTextStyle = TextStyle(fontSize: 48.0,);
 
 
 //Home
@@ -26,6 +26,7 @@ const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);
 const preparationTextStyle = TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
+const audioJournalButtonTextStyle = TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 
 
 //Group

@@ -27,24 +27,33 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Note"),
+        title: Center(child: Text("Note")),
         actions: [
+          FlatButton(
+              onPressed: () => FocusScope.of(context).requestFocus(FocusNode()),
+              child: Icon(Icons.done),
+              // shape: CircleBorder(side: BorderSide(
+              //   color:Colors.transparent
+              // )),
+          ),
           FlatButton(
               onPressed: () => _openRecordingScreen(),
               child: Text("Skip")),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "Preparation",
-              style: preparationTextStyle,
-            ),
-            _textField(),
-            _nextButton(),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "Preparation",
+                style: preparationTextStyle,
+              ),
+              _textField(),
+              _nextButton(),
+            ],
+          ),
         ),
       ),
     );

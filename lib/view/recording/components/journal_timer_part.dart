@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/utils/style.dart';
@@ -5,18 +7,23 @@ import 'package:voice_put/utils/style.dart';
 import '../preparation_note_screen.dart';
 
 class JournalTimerPart extends StatefulWidget {
+  final Widget screen;
+
+  JournalTimerPart({@required this.screen});
+
   @override
   _JournalTimerPartState createState() => _JournalTimerPartState();
 }
 
 class _JournalTimerPartState extends State<JournalTimerPart> {
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
   bool _isSpeaking = false;
+  Timer _timer;
+  int _intTime = 60;
 
   @override
   void dispose() {
     super.dispose();
-    _stopWatchTimer.dispose();
+    _timer.cancel();
   }
 
   @override
@@ -24,28 +31,28 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
     return Column(
       children: [
         _timeDisplay(),
-        SizedBox(height: 8.0,),
+        SizedBox(height: 64.0,),
         _audioJournalButton()
       ],
     );
   }
 
   Widget _timeDisplay() {
-    return StreamBuilder<int>(
-        stream: _stopWatchTimer.rawTime,
-        initialData: 0,
-        builder: (context, snapshot) {
-          return Text(StopWatchTimer.getDisplayTime(
-              snapshot.data,
-              hours: snapshot.data < 3600000
-                  ? false
-                  : true,
-              milliSecond: false),
-            style: timeDisplayTextStyle,);
-        }
+
+    var duration = Duration(
+      seconds:_intTime
     );
 
+    return Text(_calculatedDurationString(duration),
+      style: timeDisplayTextStyle,);
   }
+
+  String _calculatedDurationString(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "${twoDigits(duration.inMinutes)}:$twoDigitSeconds";
+  }
+
 
   Widget _audioJournalButton() {
     return _isSpeaking
@@ -56,93 +63,82 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
   //----------------------------------------------------------------------------------------------------- before speaking
 
   _beforeSpeakingButton() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _backwardCircle(),
-        _forwardCircle(context),
-      ],
-    );
-  }
-
-  Widget _backwardCircle() {
-    return  Container(
-      width: 100.0,
-      height: 100.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.grey,
-          width: 2.0,
-        ),
-      ),
-    );
-  }
-
-  Widget _forwardCircle(BuildContext context) {
     return Container(
-      width: 80.0,
-      height: 80.0,
+      width: 120.0,
+      height: 120.0,
       child: RaisedButton(
-        onPressed: () => _onCircleButtonPressed(context),
-        elevation: 3.0,
-        color: Colors.redAccent,
+        child: Text("Speak", style: audioJournalButtonTextStyle,),
+        onPressed: () => _onBeforeSpeakingButtonPressed(context),
+        elevation: 2.0,
+        color: Colors.white30,
         shape: CircleBorder(
         ),
       ),
     );
+
   }
-  _onCircleButtonPressed(BuildContext context) {
-    //start stopwatch
-    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+
+  _onBeforeSpeakingButtonPressed(BuildContext context) {
+    //start countdown
+    _startTimer();
 
     setState(() {
       _isSpeaking = true;
     });
   }
+  void _startTimer() {
+    final oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec,
+            (timer) {
+      if(_intTime == 0){
+        setState(() {
+          timer.cancel();
+          Navigator.push(context, MaterialPageRoute(builder: (_) => widget.screen));
+
+        });
+      } else {
+        setState(() {
+          _intTime--;
+        });
+      }
+            });
+  }
+
 
   //----------------------------------------------------------------------------------------------------- during speaking
 
   _duringSpeakingButton() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _backwardCircle(),
-        _forwardRectangle(context),
-      ],
-    );
-
-  }
-
-  _forwardRectangle(BuildContext context) {
     return Container(
-      width: 60.0,
-      height: 60.0,
+      width: 120.0,
+      height: 120.0,
       child: RaisedButton(
-        onPressed: () => _onRectangleButtonPressed(context),
-        elevation: 3.0,
-        color: Colors.redAccent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+        child: Text("Finish", style: audioJournalButtonTextStyle,),
+        onPressed: () => _onDuringSpeakingButtonPressed(context),
+        elevation: 2.0,
+        color: Colors.white30,
+        shape: CircleBorder(
         ),
       ),
     );
-
   }
 
-  _onRectangleButtonPressed(BuildContext context) async{
 
-    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+  _onDuringSpeakingButtonPressed(BuildContext context) async{
+    //stop countdown
+    _timer.cancel();
+
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => widget.screen));
 
     setState(() {
       _isSpeaking = false;
+      _intTime = 60;
     });
 
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => PreparationNoteScreen()));
-
-    _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
 
   }
+
+
 
 
 }
