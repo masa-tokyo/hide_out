@@ -27,18 +27,24 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
         title: Text("Send to"),
       ),
       body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 16.0,),
-            Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
-              selector: (context, viewModel) => Tuple2(viewModel.groups, viewModel.isProcessing),
-                builder: (context, data, child){
-                  return data.item2
-                      ? CircularProgressIndicator()
-                      : _myGroupListView(data.item1);
-                }),
-            _doneButton(),
-          ],
+        child: Consumer<RecordingViewModel>(
+          builder: (context, model, child){
+            return model.isProcessing
+                ? CircularProgressIndicator()
+                : Column(
+              children: [
+                SizedBox(height: 16.0,),
+                Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
+                    selector: (context, viewModel) => Tuple2(viewModel.groups, viewModel.isProcessing),
+                    builder: (context, data, child){
+                      return data.item2
+                          ? CircularProgressIndicator()
+                          : _myGroupListView(data.item1);
+                    }),
+                _doneButton(),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -103,7 +109,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
-    //todo animation
+    Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);

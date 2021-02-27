@@ -10,6 +10,7 @@ class PreparationNoteScreen extends StatefulWidget {
 class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   TextEditingController _controller = TextEditingController();
   bool _isNextButtonAvailable = false;
+  bool _isTyping = false;
 
   @override
   void initState() {
@@ -27,33 +28,35 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Note")),
+        title: _isTyping ? Container() : Center(child: Text("Note")),
         actions: [
-          FlatButton(
-              onPressed: () => FocusScope.of(context).requestFocus(FocusNode()),
+          _isTyping
+          ? FlatButton(
+              onPressed: (){
+                FocusScope.of(context).requestFocus(FocusNode());
+                setState(() {
+                  _isTyping = false;
+                });
+              },
               child: Icon(Icons.done),
-              // shape: CircleBorder(side: BorderSide(
-              //   color:Colors.transparent
-              // )),
-          ),
-          FlatButton(
+          )
+          : FlatButton(
               onPressed: () => _openRecordingScreen(),
               child: Text("Skip")),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                "Preparation",
-                style: preparationTextStyle,
-              ),
-              _textField(),
-              _nextButton(),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround
+          ,
+          children: [
+            Text(
+              "Preparation",
+              style: preparationTextStyle,
+            ),
+            _textField(),
+            _nextButton(),
+          ],
         ),
       ),
     );
@@ -71,9 +74,17 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
           border: OutlineInputBorder(),
           hintText: "Make a brief summary of your idea.",
         ),
+        onTap: () => _onTextFieldTapped(),
       ),
     );
   }
+
+  _onTextFieldTapped() {
+    setState(() {
+      _isTyping = true;
+    });
+  }
+
 
   _nextButton() {
     return Padding(
@@ -111,4 +122,5 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
       });
     }
   }
+
 }

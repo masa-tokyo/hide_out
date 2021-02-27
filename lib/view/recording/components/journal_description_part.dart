@@ -7,6 +7,11 @@ class JournalDescriptionPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(questionString, style: preparationTextStyle,);
+    return Column(
+      children: [
+        SizedBox(height:54.0),
+        Text(questionString, style: preparationTextStyle,),
+      ],
+    );
   }
 }

@@ -80,13 +80,14 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
 
 
   _onBeforeSpeakingButtonPressed(BuildContext context) {
-    //start countdown
+    //todo start countdown
     _startTimer();
 
     setState(() {
       _isSpeaking = true;
     });
   }
+
   void _startTimer() {
     final oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec,
