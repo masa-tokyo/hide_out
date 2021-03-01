@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
@@ -30,7 +31,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
         child: Consumer<RecordingViewModel>(
           builder: (context, model, child){
             return model.isProcessing
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : Column(
               children: [
                 SizedBox(height: 16.0,),
@@ -114,6 +115,10 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
+
+    Fluttertoast.showToast(
+        msg: "Done",
+        gravity: ToastGravity.CENTER);
 
   }
 

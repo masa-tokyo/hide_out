@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voice_put/view_models/recording_view_model.dart';
 
 class PostNoteTextField extends StatefulWidget {
   final String noteText;
@@ -20,7 +22,7 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
 
   @override
   Widget build(BuildContext context) {
-    var maxLines = 15;
+    var maxLines = 10;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
@@ -31,8 +33,14 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
           border: OutlineInputBorder(),
           hintText: "Note",
         ),
+        onTap: () => _updateForKeyboard(context),
       ),
     );
 
+  }
+
+  _updateForKeyboard(BuildContext context) {
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    recordingViewModel.updateForTyping();
   }
 }

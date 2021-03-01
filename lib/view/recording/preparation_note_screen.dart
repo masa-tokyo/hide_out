@@ -38,7 +38,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
                   _isTyping = false;
                 });
               },
-              child: Icon(Icons.done),
+              child: Icon(Icons.keyboard_arrow_down),
           )
           : FlatButton(
               onPressed: () => _openRecordingScreen(),
@@ -50,7 +50,8 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround
           ,
           children: [
-            Text(
+            _isTyping ? SizedBox(height: 10.0,)
+            : Text(
               "Preparation",
               style: preparationTextStyle,
             ),
@@ -63,7 +64,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   }
 
   _textField() {
-    var maxLines = 20;
+    var maxLines = 12;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
@@ -105,9 +106,11 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
     );
   }
 
-  _openRecordingScreen() {
-    Navigator.push(
+  _openRecordingScreen() async{
+   await Navigator.push(
       context, MaterialPageRoute(builder: (_) => RecordingScreen(noteText: _controller.text),),);
+    FocusScope.of(context).requestFocus(FocusNode());
+    _isTyping = false;
   }
 
 

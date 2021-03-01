@@ -22,6 +22,9 @@ class RecordingViewModel extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  bool _isTyping = false;
+  bool get isTyping => _isTyping;
+
   List<Group> _groups = List();
   List<Group> get groups => _groups;
 
@@ -84,6 +87,15 @@ class RecordingViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+ void updateForNotTyping() {
+    _isTyping = false;
+    notifyListeners();
+ }
+
+  void updateForTyping() {
+    _isTyping = true;
+    notifyListeners();
+  }
 
 
 

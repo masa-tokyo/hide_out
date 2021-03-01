@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/utils/style.dart';
 
-import '../preparation_note_screen.dart';
 
 class JournalTimerPart extends StatefulWidget {
   final Widget screen;

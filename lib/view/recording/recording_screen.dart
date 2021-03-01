@@ -16,17 +16,36 @@ class RecordingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text("New Recording"),
         leading: _backButton(context),
+        title: Consumer<RecordingViewModel>(
+          builder: (context, model, child) {
+            return model.isTyping ? Container() : Text("New Recording");
+          },
+        ),
+        actions: [
+          Consumer<RecordingViewModel>(builder: (context, model, child) {
+            return model.isTyping
+                ? FlatButton(
+                    onPressed: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      recordingViewModel.updateForNotTyping();
+                    },
+                    child: Icon(Icons.keyboard_arrow_down),
+                  )
+                : Container();
+          }),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          PostDescriptionPart(noteText: noteText,),
-          RecordingButtonPart(
+          PostDescriptionPart(
+            noteText: noteText,
           ),
+          RecordingButtonPart(),
         ],
       ),
     );
@@ -41,23 +60,33 @@ class RecordingScreen extends StatelessWidget {
           color: Colors.white,
         ),
         onPressed: () {
-          if (recordingViewModel.recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING
-              || recordingViewModel.recordingButtonStatus == RecordingButtonStatus.AFTER_RECORDING){
+          recordingViewModel.updateForNotTyping();
+
+          if (recordingViewModel.recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING ||
+              recordingViewModel.recordingButtonStatus == RecordingButtonStatus.AFTER_RECORDING) {
             showConfirmDialog(
               context: context,
               titleString: "Quit Recording?",
               contentString: "If you tap 'Discard', you will lose the data.",
-              onConfirmed: (isConfirmed)async{
-                if(isConfirmed) {
+              onConfirmed: (isConfirmed) async {
+                if (isConfirmed) {
                   Navigator.pop(context);
-                  await recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+                  await recordingViewModel
+                      .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
                   print(recordingViewModel.recordingButtonStatus);
                 }
               },
-              yesText: Text("Discard", style: showConfirmDialogYesTextStyle,),
-              noText: Text("Cancel", style: showConfirmDialogNoTextStyle,),
+              yesText: Text(
+                "Discard",
+                style: showConfirmDialogYesTextStyle,
+              ),
+              noText: Text(
+                "Cancel",
+                style: showConfirmDialogNoTextStyle,
+              ),
             );
-          } else{
+          } else {
+            recordingViewModel.updateForNotTyping();
             Navigator.pop(context);
           }
         });

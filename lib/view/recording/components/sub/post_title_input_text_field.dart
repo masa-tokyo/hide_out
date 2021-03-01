@@ -28,21 +28,25 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
         controller: _titleController,
+        //todo when typing is finished with keyboard, isTyping = false
+        keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: "(No Title)"
         ),
-
+        onTap: () => _updateForKeyboard(context),
       ),
     );
   }
 
+  _updateForKeyboard(BuildContext context) {
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    recordingViewModel.updateForTyping();
+  }
 
   _onTitleUpdated() {
   final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
   recordingViewModel.title = _titleController.text;
-
-  //todo "isTextEnabled" necessary? "No title"
 
   }
 

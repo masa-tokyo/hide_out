@@ -63,12 +63,12 @@ class HomeScreen extends StatelessWidget {
         //1st screen
         AudioJournalScreen(
           icon: Icon(Icons.close),
-          questionString: "What did you do today?",
+          questionString: "Anything impressive today?",
 
           //2nd screen
           screen: AudioJournalScreen(
             icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
-            questionString: "Anything interesting?",
+            questionString: "Why?",
             screen: PreparationNoteScreen(),
           ),)));
   }

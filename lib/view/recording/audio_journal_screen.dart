@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/view/recording/preparation_note_screen.dart';
 
 import 'components/journal_description_part.dart';
 import 'components/journal_timer_part.dart';
