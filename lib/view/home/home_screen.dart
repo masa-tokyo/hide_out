@@ -62,15 +62,22 @@ class HomeScreen extends StatelessWidget {
     Navigator.of(context).push(_createRoute(context,
         //1st screen
         AudioJournalScreen(
+          questionString: "What did you do today?",
           icon: Icon(Icons.close),
-          questionString: "Anything impressive today?",
 
           //2nd screen
           screen: AudioJournalScreen(
             icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
-            questionString: "Why?",
-            screen: PreparationNoteScreen(),
-          ),)));
+            questionString: "Anything impressive today?",
+
+            //3rd screen
+            screen: AudioJournalScreen(
+              icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
+              questionString: "Why?",
+              screen: PreparationNoteScreen(),
+            ),),)
+        //1st screen
+));
   }
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
