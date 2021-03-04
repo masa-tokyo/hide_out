@@ -45,7 +45,7 @@ class StartGroupScreen extends StatelessWidget {
                   ? () => _registerGroup(context)
                   : null,
               color: model.groupName != "" && model.description != ""
-              ? Colors.lightBlue : Colors.grey,
+              ? Theme.of(context).primaryColor : Colors.grey,
               child: Text("Done",
                   style: (model.groupName != "" && model.description != "")
                       ? buttonEnabledTextStyle

@@ -15,7 +15,6 @@ class GroupDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Join This Group?"),
       ),
       body: Column(
         children: [
@@ -50,11 +49,11 @@ class GroupDetailScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                     decoration: BoxDecoration(
-                      border: Border.all(),
+                      color: boxDecorationColor,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Text(
                         group.description,
                         style: groupDetailDescriptionTextStyle,
@@ -78,7 +77,7 @@ class GroupDetailScreen extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: RaisedButton(
-          color: Colors.lightBlue,
+          color: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

@@ -102,12 +102,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
         maxLines: null,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black26),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
+            filled: true,
             hintText: "Type your group name..."),
       ),
     );
@@ -127,13 +122,9 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
         maxLines: null,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black26),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
-            hintText: "Describe your group..."),
+          hintText: "Describe your group...",
+          filled: true,
+        ),
       ),
     );
   }
@@ -154,7 +145,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
         child: RaisedButton(
           color: (_groupNameController.text != groupViewModel.group.groupName ||
                   _descriptionController.text != groupViewModel.group.description)
-              ? Colors.lightBlue
+              ? Theme.of(context).primaryColor
               : Colors.grey,
           onPressed: () => _updateInfo(),
           child: Text(

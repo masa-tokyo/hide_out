@@ -5,6 +5,7 @@ import 'package:voice_put/di/providers.dart';
 import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/login/login_screen.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
+import 'package:voice_put/utils/style.dart';
 
 void main() async{
 
@@ -28,6 +29,30 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "VoicePut",
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.cyan,
+        scaffoldBackgroundColor: Color(0xFFE0F7FA),
+        appBarTheme: AppBarTheme(
+          color: Color(0xFFE0F7FA)
+        ),
+        primaryIconTheme: IconThemeData.fallback().copyWith(
+          color: primaryIconColor
+        ),
+        primaryTextTheme: const TextTheme().copyWith(
+          headline6: TextStyle().copyWith(
+           color: primaryTextColor
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          fillColor: textFieldFillColor,
+        )
+      ),
       home: FutureBuilder(
         future: loginViewModel.isSignIn(),
         builder: (context, AsyncSnapshot<bool> snapshot){

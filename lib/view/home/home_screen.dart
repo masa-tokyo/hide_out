@@ -48,6 +48,7 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.hasData) {
             return snapshot.data
                 ? FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
                 child: Icon(Icons.keyboard_voice),
                 onPressed: () => _openAudioJournalScreen(context))
                 : Container();
@@ -74,6 +75,8 @@ class HomeScreen extends StatelessWidget {
             screen: AudioJournalScreen(
               icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
               questionString: "Why?",
+              
+              //4th screen
               screen: PreparationNoteScreen(),
             ),),)
         //1st screen

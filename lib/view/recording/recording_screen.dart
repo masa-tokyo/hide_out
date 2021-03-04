@@ -57,7 +57,6 @@ class RecordingScreen extends StatelessWidget {
     return IconButton(
         icon: Icon(
           Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-          color: Colors.white,
         ),
         onPressed: () {
           recordingViewModel.updateForNotTyping();

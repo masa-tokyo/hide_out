@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 
+//Color
+const boxDecorationColor = Colors.white;
+const textFieldFillColor = Colors.white;
+const primaryTextColor = Colors.black87;
+const primaryIconColor = Colors.black87;
+
 //Common
 const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0,);

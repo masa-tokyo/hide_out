@@ -32,7 +32,8 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "(No Title)"
+          hintText: "(No Title)",
+          filled: true,
         ),
         onTap: () => _updateForKeyboard(context),
       ),

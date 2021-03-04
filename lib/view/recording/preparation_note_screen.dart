@@ -74,6 +74,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: "Make a brief summary of your idea.",
+          filled: true,
         ),
         onTap: () => _onTextFieldTapped(),
       ),
@@ -96,7 +97,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            color: _isNextButtonAvailable ? Colors.lightBlue : Colors.grey,
+            color: _isNextButtonAvailable ? Theme.of(context).primaryColor : Colors.grey,
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",

@@ -92,7 +92,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                shape: RoundedRectangleBorder(
                    borderRadius: BorderRadius.circular(8.0)
                ),
-               color: model.groupIds.isEmpty ? Colors.grey : Colors.lightBlue,
+               color: model.groupIds.isEmpty ? Colors.grey : Theme.of(context).primaryColor,
                child: Text("Done", style: model.groupIds.isEmpty ? buttonNotEnabledTextStyle : buttonEnabledTextStyle,),
                onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
          },
@@ -110,6 +110,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
+    Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);

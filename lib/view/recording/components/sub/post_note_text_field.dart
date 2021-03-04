@@ -32,6 +32,7 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: "Note",
+          filled: true,
         ),
         onTap: () => _updateForKeyboard(context),
       ),

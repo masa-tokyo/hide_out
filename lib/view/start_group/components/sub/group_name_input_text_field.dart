@@ -32,15 +32,9 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
         maxLines: null,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black26),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
-          ),
+          filled: true,
           hintText: "Type your group name."
         ),
-        autofocus: true,
       ),
     );
   }

@@ -10,6 +10,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
           child: Consumer<LoginViewModel>(
             builder: (context, model, child){
