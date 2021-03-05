@@ -30,10 +30,11 @@ class MyApp extends StatelessWidget {
       title: "VoicePut",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.cyan,
-        scaffoldBackgroundColor: Color(0xFFE0F7FA),
+        primaryColor: primaryColor,
+        accentColor: accentColor,
+        scaffoldBackgroundColor: backgroundThemeColor,
         appBarTheme: AppBarTheme(
-          color: Color(0xFFE0F7FA)
+          color: backgroundThemeColor
         ),
         primaryIconTheme: IconThemeData.fallback().copyWith(
           color: primaryIconColor

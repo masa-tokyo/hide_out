@@ -21,7 +21,7 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    _timer.cancel(); //todo erase this when skip button becomes able to cancel the timer
   }
 
   @override

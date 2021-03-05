@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:voice_put/view/common/components/rounded_raised_button.dart';
 import 'package:voice_put/view/join_group/join_group_screen.dart';
 import 'package:voice_put/view/start_group/start_group_screen.dart';
-import 'package:voice_put/utils/style.dart';
 
 class NewGroupPart extends StatelessWidget {
   @override
@@ -10,13 +9,6 @@ class NewGroupPart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 28.0),
-          child: Text(
-            "New Group",
-            style: homeScreenLabelTextStyle,
-          ),
-        ),
         SizedBox(
           height: 12.0,
         ),

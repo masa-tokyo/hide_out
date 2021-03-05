@@ -97,6 +97,11 @@ class RecordingViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  //todo delete it if unnecessary @SendToGroupScreen
+  Future<bool> checkMyGroup() async{
+    return await groupRepository.checkMyGroup(currentUser);
+  }
+
 
 
 

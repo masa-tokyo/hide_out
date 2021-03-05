@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/home/components/new_group_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class SendToGroupScreen extends StatefulWidget {
@@ -11,12 +12,13 @@ class SendToGroupScreen extends StatefulWidget {
   final String audioDuration;
 
   SendToGroupScreen({@required this.audioDuration, @required this.path});
+
   @override
   _SendToGroupScreenState createState() => _SendToGroupScreenState();
 }
 
 class _SendToGroupScreenState extends State<SendToGroupScreen> {
-  List<bool>  _chooseGroupButtonBooleans = List();
+  List<bool> _chooseGroupButtonBooleans = List();
 
   @override
   Widget build(BuildContext context) {
@@ -29,33 +31,42 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
       ),
       body: Center(
         child: Consumer<RecordingViewModel>(
-          builder: (context, model, child){
+          builder: (context, model, child) {
             return model.isProcessing
                 ? Center(child: CircularProgressIndicator())
-                : Column(
-              children: [
-                SizedBox(height: 16.0,),
-                Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
-                    selector: (context, viewModel) => Tuple2(viewModel.groups, viewModel.isProcessing),
-                    builder: (context, data, child){
-                      return data.item2
-                          ? CircularProgressIndicator()
-                          : _myGroupListView(data.item1);
-                    }),
-                _doneButton(),
-              ],
-            );
+                : model.groups.isEmpty
+                    ? Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: NewGroupPart(),
+                    )
+                    : Column(
+                        children: [
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
+                              selector: (context, viewModel) =>
+                                  Tuple2(viewModel.groups, viewModel.isProcessing),
+                              builder: (context, data, child) {
+                                return data.item2
+                                    ? CircularProgressIndicator()
+                                    : _myGroupListView(data.item1);
+                              }),
+                          _doneButton(),
+                        ],
+                      );
           },
         ),
       ),
     );
   }
 
+
   Widget _myGroupListView(List<Group> groups) {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: groups.length,
-        itemBuilder: (context, int index){
+        itemBuilder: (context, int index) {
           final group = groups[index];
           //todo when playing the audio independently on GroupScreen, check these comments, then erase them
           // for (var i = 0; i < model.groups.length; i++){
@@ -70,43 +81,41 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
               elevation: 2.0,
               child: ListTile(
                 title: Text(group.groupName),
-                trailing: ChooseGroupButton(/*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/ groupId: group.groupId,),
+                trailing: ChooseGroupButton(
+                  /*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/
+                  groupId: group.groupId,
+                ),
               ),
             ),
           );
         });
   }
 
-
   //--------------------------------------------------------------------------------------------------- _doneButton()
 
- Widget _doneButton() {
+  Widget _doneButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Container(
+        width: double.infinity,
+        child: Consumer<RecordingViewModel>(
+          builder: (context, model, child) {
+            return RaisedButton(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                color: model.groupIds.isEmpty ? Colors.grey : Theme.of(context).primaryColor,
+                child: Text(
+                  "Done",
+                  style:
+                      model.groupIds.isEmpty ? buttonNotEnabledTextStyle : buttonEnabledTextStyle,
+                ),
+                onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
+          },
+        ),
+      ),
+    );
+  }
 
-   return Padding(
-     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-     child: Container(
-       width: double.infinity,
-       child: Consumer<RecordingViewModel>(
-         builder: (context, model, child){
-           return RaisedButton(
-               shape: RoundedRectangleBorder(
-                   borderRadius: BorderRadius.circular(8.0)
-               ),
-               color: model.groupIds.isEmpty ? Colors.grey : Theme.of(context).primaryColor,
-               child: Text("Done", style: model.groupIds.isEmpty ? buttonNotEnabledTextStyle : buttonEnabledTextStyle,),
-               onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
-         },
-       ),
-     ),
-   );
-
-
-
-
-
- }
-
-  _onDoneButtonPressed() async{
+  _onDoneButtonPressed() async {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
@@ -117,12 +126,8 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     Navigator.pop(context);
     Navigator.pop(context);
 
-    Fluttertoast.showToast(
-        msg: "Done",
-        gravity: ToastGravity.CENTER);
-
+    Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
   }
-
 
 }
 
@@ -131,6 +136,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
 class ChooseGroupButton extends StatefulWidget {
   final bool isChooseGroupButtonPressed;
   final String groupId;
+
   ChooseGroupButton({this.groupId, this.isChooseGroupButtonPressed});
 
   @override
@@ -142,22 +148,19 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
 
   @override
   void initState() {
-   // _isChooseGroupButtonPressed = widget.isChooseGroupButtonPressed;
+    // _isChooseGroupButtonPressed = widget.isChooseGroupButtonPressed;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return _isChooseGroupButtonPressed
-        ? _undoButton()
-        : _sendButton();
-
+    return _isChooseGroupButtonPressed ? _undoButton() : _sendButton();
   }
 
   Widget _undoButton() {
-    return RaisedButton(
-        child: Text("Undo"),
-        onPressed:() => _onUndoButtonPressed());
+    return RaisedButton(child: Text("Undo"), onPressed: () => _onUndoButtonPressed());
   }
+
   _onUndoButtonPressed() {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     recordingViewModel.removeGroupId(widget.groupId);
@@ -165,14 +168,10 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
     setState(() {
       _isChooseGroupButtonPressed = false;
     });
-
   }
 
-
   Widget _sendButton() {
-    return RaisedButton(
-        child: Text("Send"),
-        onPressed: () => _onSendButtonPressed());
+    return RaisedButton(child: Text("Send"), onPressed: () => _onSendButtonPressed());
   }
 
   _onSendButtonPressed() {
@@ -182,10 +181,5 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
     setState(() {
       _isChooseGroupButtonPressed = true;
     });
-
   }
-
-
-
 }
-

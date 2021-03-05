@@ -6,6 +6,10 @@ const boxDecorationColor = Colors.white;
 const textFieldFillColor = Colors.white;
 const primaryTextColor = Colors.black87;
 const primaryIconColor = Colors.black87;
+const backgroundThemeColor = Color(0xFFE0F7FA);
+const primaryColor = Colors.cyan;
+const accentColor = Colors.cyan;
+
 
 //Common
 const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
@@ -31,7 +35,7 @@ const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);
-const preparationTextStyle = TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, decoration: TextDecoration.underline);
+const preparationTextStyle = TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold,);
 const audioJournalButtonTextStyle = TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/audio_journal_screen.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatelessWidget {
           child: RefreshIndicator(
             onRefresh: () => homeScreenViewModel.getMyGroup(),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 26.0,
@@ -28,6 +30,13 @@ class HomeScreen extends StatelessWidget {
                 MyGroupPart(),
                 SizedBox(
                   height: 28.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 28.0),
+                  child: Text(
+                    "New Group",
+                    style: homeScreenLabelTextStyle,
+                  ),
                 ),
                 NewGroupPart(),
               ],
@@ -39,28 +48,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _floatingActionButton(BuildContext context) {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
-
-    //todo when users join/start a group, leave it, and come back to HomeScreen, floatingActionButton is available.
-    return FutureBuilder(
-        future: homeScreenViewModel.checkMyGroup(),
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data
-                ? FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Icon(Icons.keyboard_voice),
-                onPressed: () => _openAudioJournalScreen(context))
-                : Container();
-          } else {
-            return Container();
-          }
-        });
+    return FloatingActionButton(
+        child: Icon(Icons.keyboard_voice),
+        onPressed: () => _openAudioJournalScreen(context));
   }
 
-
   _openAudioJournalScreen(BuildContext context) {
-    Navigator.of(context).push(_createRoute(context,
+    Navigator.of(context).push(_createRoute(
+        context,
         //1st screen
         AudioJournalScreen(
           questionString: "What did you do today?",
@@ -75,12 +70,14 @@ class HomeScreen extends StatelessWidget {
             screen: AudioJournalScreen(
               icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
               questionString: "Why?",
-              
+
               //4th screen
               screen: PreparationNoteScreen(),
-            ),),)
+            ),
+          ),
+        )
         //1st screen
-));
+        ));
   }
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
@@ -98,6 +95,4 @@ class HomeScreen extends StatelessWidget {
           );
         });
   }
-
-
 }

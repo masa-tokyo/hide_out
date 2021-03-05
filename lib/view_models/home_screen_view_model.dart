@@ -32,8 +32,5 @@ class HomeScreenViewModel extends ChangeNotifier {
   }
 
 
-  Future<bool> checkMyGroup() async{
-    return await groupRepository.checkMyGroup(currentUser);
-  }
 
 }
