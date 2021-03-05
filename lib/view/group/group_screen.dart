@@ -150,6 +150,11 @@ class GroupScreen extends StatelessWidget {
                             actionPane: SlidableDrawerActionPane(),
                             actionExtentRatio: 0.25,
                             child: ListTile(
+                              onTap: (){
+                                //todo why cannot delete post?
+                                print("post userId: ${post.userId}");
+                                print("currentUserId: ${model.currentUser.userId}");
+                              },
                               trailing: AudioPlayButton(audioUrl: post.audioUrl),
                               subtitle: Text(post.userName),
                               title: RichText(
