@@ -17,36 +17,39 @@ class RecordingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    return Scaffold(
-      appBar: AppBar(
-        leading: _backButton(context),
-        title: Consumer<RecordingViewModel>(
-          builder: (context, model, child) {
-            return model.isTyping ? Container() : Text("New Recording");
-          },
-        ),
-        actions: [
-          Consumer<RecordingViewModel>(builder: (context, model, child) {
-            return model.isTyping
-                ? FlatButton(
-                    onPressed: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      recordingViewModel.updateForNotTyping();
-                    },
-                    child: Icon(Icons.keyboard_arrow_down),
-                  )
-                : Container();
-          }),
-        ],
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          PostDescriptionPart(
-            noteText: noteText,
+    return GestureDetector(
+      onTap: () => _unFocusKeyboard(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: _backButton(context),
+          title: Consumer<RecordingViewModel>(
+            builder: (context, model, child) {
+              return model.isTyping ? Container() : Text("New Recording");
+            },
           ),
-          RecordingButtonPart(),
-        ],
+          actions: [
+            Consumer<RecordingViewModel>(builder: (context, model, child) {
+              return model.isTyping
+                  ? FlatButton(
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        recordingViewModel.updateForNotTyping();
+                      },
+                      child: Icon(Icons.keyboard_arrow_down),
+                    )
+                  : Container();
+            }),
+          ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            PostDescriptionPart(
+              noteText: noteText,
+            ),
+            RecordingButtonPart(),
+          ],
+        ),
       ),
     );
   }
@@ -59,8 +62,6 @@ class RecordingScreen extends StatelessWidget {
           Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
         ),
         onPressed: () {
-          recordingViewModel.updateForNotTyping();
-
           if (recordingViewModel.recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING ||
               recordingViewModel.recordingButtonStatus == RecordingButtonStatus.AFTER_RECORDING) {
             showConfirmDialog(
@@ -72,7 +73,6 @@ class RecordingScreen extends StatelessWidget {
                   Navigator.pop(context);
                   await recordingViewModel
                       .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
-                  print(recordingViewModel.recordingButtonStatus);
                 }
               },
               yesText: Text(
@@ -89,5 +89,15 @@ class RecordingScreen extends StatelessWidget {
             Navigator.pop(context);
           }
         });
+  }
+
+  _unFocusKeyboard(BuildContext context) {
+    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus.unfocus();
+      recordingViewModel.updateForNotTyping();
+    }
   }
 }

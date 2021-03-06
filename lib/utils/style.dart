@@ -9,6 +9,7 @@ const primaryIconColor = Colors.black87;
 const backgroundThemeColor = Color(0xFFE0F7FA);
 const primaryColor = Colors.cyan;
 const accentColor = Colors.cyan;
+const nextScreenButtonColor = Colors.cyan;
 
 
 //Common

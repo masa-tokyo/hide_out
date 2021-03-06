@@ -27,8 +27,8 @@ class _PostTitleInputTextFieldState extends State<PostTitleInputTextField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
+        autofocus: true,
         controller: _titleController,
-        //todo when typing is finished with keyboard, isTyping = false
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           border: OutlineInputBorder(),

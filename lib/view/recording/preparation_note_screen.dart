@@ -26,38 +26,41 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: _isTyping ? Container() : Center(child: Text("Note")),
-        actions: [
-          _isTyping
-          ? FlatButton(
-              onPressed: (){
-                FocusScope.of(context).requestFocus(FocusNode());
+    return GestureDetector(
+      onTap: () => _unFocusKeyboard(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: _isTyping ? Container() : Center(child: Text("Note")),
+          actions: [
+            _isTyping
+                ? FlatButton(
+              onPressed: () {
+                FocusScope.of(context).unfocus();
                 setState(() {
                   _isTyping = false;
                 });
               },
               child: Icon(Icons.keyboard_arrow_down),
-          )
-          : FlatButton(
-              onPressed: () => _openRecordingScreen(),
-              child: Text("Skip")),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround
-          ,
-          children: [
-            _isTyping ? SizedBox(height: 10.0,)
-            : Text(
-              "Preparation",
-              style: preparationTextStyle,
-            ),
-            _textField(),
-            _nextButton(),
+            )
+                : FlatButton(
+                onPressed: () => _openRecordingScreen(),
+                child: Text("Skip")),
           ],
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround
+            ,
+            children: [
+              _isTyping ? SizedBox(height: 10.0,)
+                  : Text(
+                "Preparation",
+                style: preparationTextStyle,
+              ),
+              _textField(),
+              _nextButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -97,7 +100,9 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            color: _isNextButtonAvailable ? Theme.of(context).primaryColor : Colors.grey,
+            color: _isNextButtonAvailable ? Theme
+                .of(context)
+                .primaryColor : Colors.grey,
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",
@@ -107,10 +112,10 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
     );
   }
 
-  _openRecordingScreen() async{
-   await Navigator.push(
+  _openRecordingScreen() async {
+    await Navigator.push(
       context, MaterialPageRoute(builder: (_) => RecordingScreen(noteText: _controller.text),),);
-    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
     _isTyping = false;
   }
 
@@ -127,4 +132,13 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
     }
   }
 
+  _unFocusKeyboard() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus.unfocus();
+      setState(() {
+        _isTyping = false;
+      });
+    }
+  }
 }

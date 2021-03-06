@@ -26,43 +26,54 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
-    return MaterialApp(
-      title: "VoicePut",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: primaryColor,
-        accentColor: accentColor,
-        scaffoldBackgroundColor: backgroundThemeColor,
-        appBarTheme: AppBarTheme(
-          color: backgroundThemeColor
+    return GestureDetector(
+      //todo unnecessary if adding this on every screen?
+      onTap: () => _unFocusKeyboard(context),
+      child: MaterialApp(
+        title: "VoicePut",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primaryColor: primaryColor,
+            accentColor: accentColor,
+            scaffoldBackgroundColor: backgroundThemeColor,
+            appBarTheme: AppBarTheme(
+                color: backgroundThemeColor
+            ),
+            primaryIconTheme: IconThemeData.fallback().copyWith(
+                color: primaryIconColor
+            ),
+            primaryTextTheme: const TextTheme().copyWith(
+              headline6: TextStyle().copyWith(
+                  color: primaryTextColor
+              ),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+              ),
+              fillColor: textFieldFillColor,
+            )
         ),
-        primaryIconTheme: IconThemeData.fallback().copyWith(
-          color: primaryIconColor
+        home: FutureBuilder(
+          future: loginViewModel.isSignIn(),
+          builder: (context, AsyncSnapshot<bool> snapshot) {
+            return (snapshot.hasData && snapshot.data)
+                ? HomeScreen()
+                : LoginScreen();
+          },
         ),
-        primaryTextTheme: const TextTheme().copyWith(
-          headline6: TextStyle().copyWith(
-           color: primaryTextColor
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-          ),
-          fillColor: textFieldFillColor,
-        )
-      ),
-      home: FutureBuilder(
-        future: loginViewModel.isSignIn(),
-        builder: (context, AsyncSnapshot<bool> snapshot){
-          return (snapshot.hasData && snapshot.data)
-              ? HomeScreen()
-              : LoginScreen();
-        },
-      ),
 
+      ),
     );
+  }
+
+  _unFocusKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus.unfocus();
+    }
   }
 }

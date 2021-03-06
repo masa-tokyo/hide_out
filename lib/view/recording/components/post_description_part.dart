@@ -11,7 +11,6 @@ class PostDescriptionPart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PostTitleInputTextField(),
         SizedBox(height: 12.0,),
         PostNoteTextField(noteText: noteText),
       ],

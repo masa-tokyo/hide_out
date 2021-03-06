@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/recording/post_title_screen.dart';
 import 'package:voice_put/view/recording/send_to_group_screen.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
@@ -25,6 +26,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   FlutterSoundRecorder _flutterSoundRecorder = FlutterSoundRecorder();
   bool _isRecorderInitiated = false;
   String _path = "";
+  String _displayTime = "";
 
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
@@ -266,6 +268,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
 
+    print("_recordingButtonStatus: $_recordingButtonStatus");
 
   }
 
@@ -290,35 +293,18 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   _onSendButtonPressed() async{
 
+    var displayTime;
 
-    _stopWatchTimer.rawTime.listen((event) async{
-      var displayTime;
+     await _stopWatchTimer.rawTime.listen((event) {
 
-      displayTime =  StopWatchTimer.getDisplayTime(event,
+      displayTime = StopWatchTimer.getDisplayTime(event,
           hours: event < 3600000
               ? false
               : true,
           milliSecond: false);
-
-
-      Navigator.push(context, MaterialPageRoute(builder: (_) => SendToGroupScreen(path: _path, audioDuration: displayTime,),),);
-
     });
 
-
-    //todo do not change the state even after moving to SendToGroupScreen by regarding when coming back
-    //todo after post was successful on SendToGroupScreen, change the state and reset the timer
-
-    //change RecordingButtonStatus for not showing AlertDialog next time closing the screen
-    //_recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
-
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
-
-
-
-    //todo show toast message "post was successful"
-
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PostTitleScreen(path: _path, audioDuration: displayTime,),),);
 
   }
 
@@ -355,6 +341,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     await _flutterSoundRecorder.stopRecorder();
 
   }
+
+
 
 
 

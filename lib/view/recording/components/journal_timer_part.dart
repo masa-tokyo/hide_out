@@ -18,6 +18,8 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
   Timer _timer;
   int _intTime = 60;
 
+
+
   @override
   void dispose() {
     super.dispose();

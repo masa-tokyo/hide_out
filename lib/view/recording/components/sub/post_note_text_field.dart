@@ -22,7 +22,7 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
 
   @override
   Widget build(BuildContext context) {
-    var maxLines = 10;
+    var maxLines = 12;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
