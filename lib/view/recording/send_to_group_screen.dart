@@ -19,7 +19,7 @@ class SendToGroupScreen extends StatefulWidget {
 }
 
 class _SendToGroupScreenState extends State<SendToGroupScreen> {
-  List<bool> _chooseGroupButtonBooleans = List();
+  List<bool> _chooseGroupButtonBooleans = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,9 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : model.groups.isEmpty
                     ? Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: NewGroupPart(),
-                    )
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: NewGroupPart(),
+                      )
                     : Column(
                         children: [
                           SizedBox(
@@ -62,7 +62,6 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     );
   }
 
-
   Widget _myGroupListView(List<Group> groups) {
     return ListView.builder(
         shrinkWrap: true,
@@ -79,6 +78,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
+              color: listTileColor,
               elevation: 2.0,
               child: ListTile(
                 title: Text(group.groupName),
@@ -101,9 +101,16 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
         width: double.infinity,
         child: Consumer<RecordingViewModel>(
           builder: (context, model, child) {
-            return RaisedButton(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                color: model.groupIds.isEmpty ? Colors.grey : Theme.of(context).primaryColor,
+            return ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      model.groupIds.isEmpty ? buttonNotEnabledColor : buttonEnabledColor),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
                 child: Text(
                   "Done",
                   style:
@@ -126,13 +133,11 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
-    Navigator.pop(context);
 
     recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
 
     Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
   }
-
 }
 
 //--------------------------------------------------------------------------------------------------- ChooseGroupButton class
@@ -162,7 +167,12 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   }
 
   Widget _undoButton() {
-    return RaisedButton(child: Text("Undo"), onPressed: () => _onUndoButtonPressed());
+    return ElevatedButton(
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)))),
+        child: Text("Undo", style: sendOrUndoButtonTextStyle,),
+        onPressed: () => _onUndoButtonPressed());
   }
 
   _onUndoButtonPressed() {
@@ -175,7 +185,15 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   }
 
   Widget _sendButton() {
-    return RaisedButton(child: Text("Send"), onPressed: () => _onSendButtonPressed());
+    return ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+          ),
+          backgroundColor: MaterialStateProperty.all(sendToGroupButtonColor),
+        ),
+        child: Text("Send", style: sendOrUndoButtonTextStyle,),
+        onPressed: () => _onSendButtonPressed());
   }
 
   _onSendButtonPressed() {

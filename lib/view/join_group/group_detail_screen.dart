@@ -35,7 +35,7 @@ class GroupDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: const EdgeInsets.only(left: 18.0),
                 child: Text(
                   "About",
                   style: groupDetailAboutTextStyle,
@@ -49,7 +49,7 @@ class GroupDetailScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                     decoration: BoxDecoration(
-                      color: boxDecorationColor,
+                      color: textFieldFillColor,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Padding(
@@ -76,10 +76,14 @@ class GroupDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         width: double.infinity,
-        child: RaisedButton(
-          color: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+        child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(buttonEnabledColor),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
           ),
           onPressed: () => _openGroupScreen(context, group),
           child: Text("Join"),

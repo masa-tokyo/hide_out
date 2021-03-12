@@ -30,10 +30,10 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
       onTap: () => _unFocusKeyboard(),
       child: Scaffold(
         appBar: AppBar(
-          title: _isTyping ? Container() : Center(child: Text("Note")),
+          title: _isTyping ? Container() : Center(child: Text("Preparation 3/3")),
           actions: [
             _isTyping
-                ? FlatButton(
+                ? TextButton(
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 setState(() {
@@ -42,21 +42,15 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
               },
               child: Icon(Icons.keyboard_arrow_down),
             )
-                : FlatButton(
+                : TextButton(
                 onPressed: () => _openRecordingScreen(),
                 child: Text("Skip")),
           ],
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround
-            ,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _isTyping ? SizedBox(height: 10.0,)
-                  : Text(
-                "Preparation",
-                style: preparationTextStyle,
-              ),
               _textField(),
               _nextButton(),
             ],
@@ -68,19 +62,24 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
 
   _textField() {
     var maxLines = 12;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: TextField(
-        controller: _controller,
-        maxLines: maxLines,
-        keyboardType: TextInputType.multiline,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Make a brief summary of your idea.",
-          filled: true,
+    return Column(
+      children: [
+        SizedBox(height: 8.0,),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: TextField(
+            controller: _controller,
+            maxLines: maxLines,
+            keyboardType: TextInputType.multiline,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Make a brief summary of your idea.",
+              filled: true,
+            ),
+            onTap: () => _onTextFieldTapped(),
+          ),
         ),
-        onTap: () => _onTextFieldTapped(),
-      ),
+      ],
     );
   }
 
@@ -96,13 +95,15 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
-        child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+        child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                _isNextButtonAvailable ? buttonEnabledColor : buttonNotEnabledColor
+              ),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),),
             ),
-            color: _isNextButtonAvailable ? Theme
-                .of(context)
-                .primaryColor : Colors.grey,
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",

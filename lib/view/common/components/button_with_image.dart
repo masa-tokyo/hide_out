@@ -14,12 +14,16 @@ class ButtonWithImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0)
+      child: ElevatedButton(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0)
+              ),
+            ),
+            backgroundColor: MaterialStateProperty.all<Color>(color)
           ),
           onPressed: onPressed,
-          color: color,
           child: Row(
             children: [
               Image.asset(imagePath),

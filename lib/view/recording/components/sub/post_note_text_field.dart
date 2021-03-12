@@ -31,7 +31,7 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "Note",
+          hintText: "Make a brief summary of your idea.",
           filled: true,
         ),
         onTap: () => _updateForKeyboard(context),

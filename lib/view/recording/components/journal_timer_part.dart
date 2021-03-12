@@ -66,13 +66,15 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
     return Container(
       width: 120.0,
       height: 120.0,
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text("Speak", style: audioJournalButtonTextStyle,),
         onPressed: () => _onBeforeSpeakingButtonPressed(context),
-        elevation: 2.0,
-        color: Colors.white30,
-        shape: CircleBorder(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all<double>(2.0),
+          backgroundColor: MaterialStateProperty.all(audioJournalButtonColor),
+          shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
         ),
+
       ),
     );
 
@@ -96,6 +98,7 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
         setState(() {
           timer.cancel();
           Navigator.push(context, MaterialPageRoute(builder: (_) => widget.screen));
+          _intTime = 60;
 
         });
       } else {
@@ -113,12 +116,13 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
     return Container(
       width: 120.0,
       height: 120.0,
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text("Finish", style: audioJournalButtonTextStyle,),
         onPressed: () => _onDuringSpeakingButtonPressed(context),
-        elevation: 2.0,
-        color: Colors.white30,
-        shape: CircleBorder(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all<double>(2.0),
+          backgroundColor: MaterialStateProperty.all<Color>(audioJournalButtonColor),
+          shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
         ),
       ),
     );

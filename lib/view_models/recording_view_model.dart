@@ -25,13 +25,13 @@ class RecordingViewModel extends ChangeNotifier{
   bool _isTyping = false;
   bool get isTyping => _isTyping;
 
-  List<Group> _groups = List();
+  List<Group> _groups = [];
   List<Group> get groups => _groups;
 
   RecordingButtonStatus _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
   RecordingButtonStatus get recordingButtonStatus => _recordingButtonStatus;
 
-  List<String> _groupIds = List();
+  List<String> _groupIds = [];
   List<String> get groupIds => _groupIds;
 
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/utils/style.dart';
 
 showConfirmDialog(
 {
@@ -37,16 +38,17 @@ class ConfirmDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
+      backgroundColor: confirmDialogBackgroundColor,
       title: Text(titleString),
       content: Text(contentString),
       actions: [
-        FlatButton(
+        TextButton(
             onPressed:(){
               Navigator.pop(context);
               onConfirmed(false);
             },
             child: noText),
-        FlatButton(
+        TextButton(
             onPressed:(){
               Navigator.pop(context);
               onConfirmed(true);

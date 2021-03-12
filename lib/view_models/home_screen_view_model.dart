@@ -15,7 +15,7 @@ class HomeScreenViewModel extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
-  List<Group> _groups = List();
+  List<Group> _groups = [];
   List<Group> get groups => _groups;
 
   Future<void> getMyGroup() async{

@@ -4,8 +4,9 @@ import 'package:voice_put/utils/style.dart';
 class RoundedRaisedButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
+  final Color color;
 
-  RoundedRaisedButton({@required this.label, @required this.onPressed,});
+  RoundedRaisedButton({@required this.label, @required this.onPressed, @required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +14,15 @@ class RoundedRaisedButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
-        child: RaisedButton(
+        child: ElevatedButton(
             onPressed: onPressed,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+              ),
+              backgroundColor: MaterialStateProperty.all<Color>(color)
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),

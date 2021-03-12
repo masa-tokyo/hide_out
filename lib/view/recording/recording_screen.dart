@@ -30,7 +30,7 @@ class RecordingScreen extends StatelessWidget {
           actions: [
             Consumer<RecordingViewModel>(builder: (context, model, child) {
               return model.isTyping
-                  ? FlatButton(
+                  ? TextButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
                         recordingViewModel.updateForNotTyping();
@@ -41,13 +41,22 @@ class RecordingScreen extends StatelessWidget {
             }),
           ],
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            PostDescriptionPart(
-              noteText: noteText,
-            ),
-            RecordingButtonPart(),
+        body:
+
+        CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  PostDescriptionPart(
+                    noteText: noteText,
+                  ),
+                  RecordingButtonPart(),
+                ],
+              ),
+            )
           ],
         ),
       ),

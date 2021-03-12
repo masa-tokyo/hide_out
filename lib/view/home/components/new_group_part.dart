@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/components/rounded_raised_button.dart';
 import 'package:voice_put/view/join_group/join_group_screen.dart';
 import 'package:voice_put/view/start_group/start_group_screen.dart';
@@ -15,11 +16,15 @@ class NewGroupPart extends StatelessWidget {
         RoundedRaisedButton(
           label: "Start a New Group",
           onPressed: () => _openStartGroupScreen(context),
+          color: startOrJoinGroupButtonColor,
         ),
         SizedBox(
           height: 12.0,
         ),
-        RoundedRaisedButton(onPressed: () => _openJoinGroupScreen(context), label: "Join a Group"),
+        RoundedRaisedButton(
+            onPressed: () => _openJoinGroupScreen(context),
+            label: "Join a Group",
+            color: startOrJoinGroupButtonColor,),
       ],
     );
   }

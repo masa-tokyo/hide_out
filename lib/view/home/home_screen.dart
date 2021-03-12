@@ -39,6 +39,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 NewGroupPart(),
+                SizedBox(height: 28.0,),
               ],
             ),
           ),
@@ -58,22 +59,22 @@ class HomeScreen extends StatelessWidget {
         context,
         //1st screen
         AudioJournalScreen(
-          questionString: "What did you do today?",
+          titleString: "Preparation 1/3",
+          questionString1: "What did you do today?",
+          questionString2: "",
+          questionString3: "",
           icon: Icon(Icons.close),
 
           //2nd screen
           screen: AudioJournalScreen(
             icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
-            questionString: "Anything impressive today?",
+            titleString: "Preparation 2/3",
+            questionString1: "Anything impressive?",
+            questionString2: "&",
+            questionString3: "why?",
 
             //3rd screen
-            screen: AudioJournalScreen(
-              icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
-              questionString: "Why?",
-
-              //4th screen
-              screen: PreparationNoteScreen(),
-            ),
+            screen: PreparationNoteScreen()
           ),
         )
         //1st screen

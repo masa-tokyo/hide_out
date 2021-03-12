@@ -12,7 +12,6 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/post_title_screen.dart';
-import 'package:voice_put/view/recording/send_to_group_screen.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
@@ -26,7 +25,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   FlutterSoundRecorder _flutterSoundRecorder = FlutterSoundRecorder();
   bool _isRecorderInitiated = false;
   String _path = "";
-  String _displayTime = "";
 
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
@@ -136,12 +134,14 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     return Container(
       width: 80.0,
       height: 80.0,
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () => _onCircleButtonPressed(context),
-        elevation: 3.0,
-        color: Colors.redAccent,
-        shape: CircleBorder(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all(3.0),
+          backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+          shape: MaterialStateProperty.all(CircleBorder()),
         ),
+        child: Container(),
       ),
     );
   }
@@ -182,13 +182,16 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     return Container(
       width: 60.0,
       height: 60.0,
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () => _onRectangleButtonPressed(context),
-        elevation: 3.0,
-        color: Colors.redAccent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all(3.0),
+          backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),),
         ),
+        child: Container(),
       ),
     );
   }
@@ -230,11 +233,13 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         Container(
           width: 80.0,
           height: 80.0,
-          child: RaisedButton(
-            elevation: 3.0,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(3.0),
+              shape: MaterialStateProperty.all(CircleBorder()),
+            ),
             onPressed: () => _onAgainButtonPressed(context),
             child: FaIcon(FontAwesomeIcons.undo, size: 30.0,),
-            shape: CircleBorder(),
           ),
         ),
         SizedBox(height: 8.0,),
@@ -268,7 +273,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
 
-    print("_recordingButtonStatus: $_recordingButtonStatus");
 
   }
 
@@ -278,11 +282,13 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         Container(
           width: 80.0,
           height: 80.0,
-          child: RaisedButton(
-            elevation: 3.0,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(3.0),
+              shape: MaterialStateProperty.all(CircleBorder()),
+            ),
             onPressed: () => _onSendButtonPressed(),
             child: Icon(Icons.send, size: 30.0,),
-            shape: CircleBorder(),
           ),
         ),
         SizedBox(height: 8.0,),
@@ -291,7 +297,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     );
   }
 
-  _onSendButtonPressed() async{
+ _onSendButtonPressed() async{
 
     var displayTime;
 

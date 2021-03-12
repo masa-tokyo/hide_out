@@ -74,16 +74,16 @@ class DatabaseManager {
 
     //get groupIds on "users"
     final queryOnUsers = await _db.collection("users").get();
-    if (queryOnUsers.docs.length == 0) return List();
+    if (queryOnUsers.docs.length == 0) return [];
 
     var groupIds = await getGroupIds(userId);
 
     //get groups on "groups"
     final queryOnGroups = await _db.collection("groups").get();
-    if (queryOnGroups.docs.length == 0) return List();
+    if (queryOnGroups.docs.length == 0) return [];
 
-    var results = List<Group>();
-    if(groupIds.length == 0) return List(); //in the case that users left all groups
+    var results = <Group>[];
+    if(groupIds.length == 0) return []; //in the case that users left all groups
     await _db.collection("groups").where("groupId", whereIn: groupIds).limit(10).get()
     .then((value) {
       value.docs.forEach((element) {
@@ -108,9 +108,9 @@ class DatabaseManager {
 
   Future<List<String>> getGroupIds(String userId) async{
     final query = await _db.collection("users").doc(userId).collection("groups").limit(10).get();
-    if(query.docs.length == 0) return List();
+    if(query.docs.length == 0) return [];
 
-    var results = List<String>();
+    var results = <String>[];
      query.docs.forEach((element) {
       results.add(element.data()["groupId"]);
     });
@@ -121,16 +121,16 @@ class DatabaseManager {
   Future<List<Group>> getGroupsExceptForMine(String userId) async{
     //get groupIds on "users" to exclude
     final queryOnUsers = await _db.collection("users").get();
-    if (queryOnUsers.docs.length == 0) return List();
+    if (queryOnUsers.docs.length == 0) return [];
 
     var groupIds = await getGroupIds(userId);
 
 
     //get groups except for the ones currentUser already belongs to
     final queryOnGroups = await _db.collection("groups").get();
-    if (queryOnGroups.docs.length == 0) return List();
+    if (queryOnGroups.docs.length == 0) return [];
 
-    var results = List<Group>();
+    var results = <Group>[];
 
     //if currentUser does not belong to any group, get all the groups
     if(groupIds.length == 0) {
@@ -161,9 +161,9 @@ class DatabaseManager {
 
  Future<List<Post>> getPostsByGroup(String groupId) async{
     final query = await _db.collection("posts").get();
-    if (query.docs.length == 0) return List();
+    if (query.docs.length == 0) return [];
 
-    var results = List<Post>();
+    var results = <Post>[];
 
     await _db.collection("posts").where("groupId", isEqualTo: groupId).orderBy("postDateTime", descending: true).get()
     .then((value) {

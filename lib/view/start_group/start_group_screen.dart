@@ -37,15 +37,17 @@ class StartGroupScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
             width: double.infinity,
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: model.groupName != "" && model.description != ""
+                ? MaterialStateProperty.all<Color>(buttonEnabledColor) : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+                shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),),
               ),
               onPressed: (model.groupName != "" && model.description != "")
                   ? () => _registerGroup(context)
                   : null,
-              color: model.groupName != "" && model.description != ""
-              ? Theme.of(context).primaryColor : Colors.grey,
               child: Text("Done",
                   style: (model.groupName != "" && model.description != "")
                       ? buttonEnabledTextStyle

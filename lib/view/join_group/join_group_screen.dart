@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/join_group/group_detail_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 import 'dart:io';
@@ -29,6 +30,7 @@ class JoinGroupScreen extends StatelessWidget {
               itemBuilder: (context, int index) {
                 final group = model.groups[index];
                 return Card(
+                  color: listTileColor,
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),

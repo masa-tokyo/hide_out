@@ -55,7 +55,18 @@ class MyApp extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.transparent),
               ),
               fillColor: textFieldFillColor,
+            ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(elevatedButtonBackgroundColor),
+              foregroundColor: MaterialStateProperty.all<Color>(elevatedButtonForegroundColor),
             )
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all<Color>(textButtonForeGroundColor)
+            )
+          )
         ),
         home: FutureBuilder(
           future: loginViewModel.isSignIn(),

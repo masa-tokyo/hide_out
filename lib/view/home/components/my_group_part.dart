@@ -15,7 +15,7 @@ class MyGroupPart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 28.0),
+          padding: const EdgeInsets.only(left: 24.0),
           child: Text(
             "My Group",
             style: homeScreenLabelTextStyle,
@@ -55,14 +55,13 @@ class MyGroupPart extends StatelessWidget {
         width: double.infinity,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            border: Border.all(
-            ),
+            color: textFieldFillColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
-              "↓ Join/Start a Group ↓",
+              "↓ Join/Start a Group",
               style: newGroupIntroTextStyle,
               textAlign: TextAlign.center,),
           ),
@@ -80,6 +79,7 @@ class MyGroupPart extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
+              color: listTileColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -88,9 +88,12 @@ class MyGroupPart extends StatelessWidget {
                 splashColor: Colors.blueGrey,
                 onTap: () => _openGroupScreen(context, group),
                 child: ListTile(
-                  title: Text(
-                    group.groupName,
-                    style: listTileTitleTextStyle,
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Text(
+                      group.groupName,
+                      style: listTileTitleTextStyle,
+                    ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios_rounded),
                   dense: true,

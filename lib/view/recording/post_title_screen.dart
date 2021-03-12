@@ -34,11 +34,14 @@ class PostTitleScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
-        child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+        child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(3.0),
+              backgroundColor: MaterialStateProperty.all(nextScreenButtonColor),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),),
             ),
-            color: nextScreenButtonColor,
             onPressed: () => _openSendToGroupScreen(context),
             child: Text(
               "Next",

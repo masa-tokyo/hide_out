@@ -142,11 +142,18 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
-        child: RaisedButton(
-          color: (_groupNameController.text != groupViewModel.group.groupName ||
-                  _descriptionController.text != groupViewModel.group.description)
-              ? Theme.of(context).primaryColor
-              : Colors.grey,
+        child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: (_groupNameController.text != groupViewModel.group.groupName ||
+                _descriptionController.text != groupViewModel.group.description)
+                ? MaterialStateProperty.all<Color>(buttonEnabledColor)
+                : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            )
+          ),
           onPressed: () => _updateInfo(),
           child: Text(
             "Save",
@@ -154,9 +161,6 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
                     _descriptionController.text != groupViewModel.group.description)
                 ? buttonEnabledTextStyle
                 : buttonNotEnabledTextStyle,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
           ),
         ),
       ),

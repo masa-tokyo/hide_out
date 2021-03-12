@@ -65,6 +65,10 @@ class GroupScreen extends StatelessWidget {
   Widget _groupEditButton(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     return PopupMenuButton(
+        color: popupMenuButtonColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
         icon: Icon(Icons.more_vert),
         onSelected: (value) => _onPopupMenuSelected(context, value),
         itemBuilder: (context) {
@@ -133,66 +137,70 @@ class GroupScreen extends StatelessWidget {
 //------------------------------------------------------------------------------------------------ body
 
   Widget _postListView(BuildContext context) {
-    return Consumer<GroupViewModel>(
-      builder: (context, model, child) {
-        return model.isProcessing
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : ListView.builder(
-                itemCount: model.posts.length,
-                itemBuilder: (context, int index) {
-                  final post = model.posts[index];
-                  return Card(
-                    elevation: 2.0,
-                    child: post.userId == model.currentUser.userId
-                        ? Slidable(
-                            actionPane: SlidableDrawerActionPane(),
-                            actionExtentRatio: 0.25,
-                            child: ListTile(
-                              onTap: (){
-                                //todo why cannot delete post?
-                                print("post userId: ${post.userId}");
-                                print("currentUserId: ${model.currentUser.userId}");
-                              },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Consumer<GroupViewModel>(
+        builder: (context, model, child) {
+          return model.isProcessing
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  itemCount: model.posts.length,
+                  itemBuilder: (context, int index) {
+                    final post = model.posts[index];
+                    return Card(
+                      color: listTileColor,
+                      elevation: 2.0,
+                      child: post.userId == model.currentUser.userId
+                          ? Slidable(
+                              actionPane: SlidableDrawerActionPane(),
+                              actionExtentRatio: 0.25,
+                              child: ListTile(
+                                onTap: (){
+                                  //todo why cannot delete post? @hello!! llllll & group 2
+                                  print("post userId: ${post.userId}");
+                                  print("currentUserId: ${model.currentUser.userId}");
+                                },
+                                trailing: AudioPlayButton(audioUrl: post.audioUrl),
+                                subtitle: Text(post.userName),
+                                title: RichText(
+                                    text: TextSpan(
+                                        style: DefaultTextStyle.of(context).style,
+                                        children: [
+                                      TextSpan(text: post.title, style: postTitleTextStyle),
+                                      TextSpan(text: "  "),
+                                      TextSpan(
+                                          text: "(${post.audioDuration})",
+                                          style: postAudioDurationTextStyle),
+                                    ])),
+                              ),
+                              secondaryActions: [
+                                IconSlideAction(
+                                  caption: "Delete",
+                                  icon: Icons.delete,
+                                  color: Colors.redAccent,
+                                  onTap: () => _onDeleteTapped(context, post),
+                                )
+                              ],
+                            )
+                          : ListTile(
                               trailing: AudioPlayButton(audioUrl: post.audioUrl),
                               subtitle: Text(post.userName),
                               title: RichText(
-                                  text: TextSpan(
-                                      style: DefaultTextStyle.of(context).style,
-                                      children: [
-                                    TextSpan(text: post.title, style: postTitleTextStyle),
-                                    TextSpan(text: "  "),
-                                    TextSpan(
-                                        text: "(${post.audioDuration})",
-                                        style: postAudioDurationTextStyle),
-                                  ])),
+                                  text:
+                                      TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                                TextSpan(text: post.title, style: postTitleTextStyle),
+                                TextSpan(text: "  "),
+                                TextSpan(
+                                    text: "(${post.audioDuration})",
+                                    style: postAudioDurationTextStyle),
+                              ])),
                             ),
-                            secondaryActions: [
-                              IconSlideAction(
-                                caption: "Delete",
-                                icon: Icons.delete,
-                                color: Colors.redAccent,
-                                onTap: () => _onDeleteTapped(context, post),
-                              )
-                            ],
-                          )
-                        : ListTile(
-                            trailing: AudioPlayButton(audioUrl: post.audioUrl),
-                            subtitle: Text(post.userName),
-                            title: RichText(
-                                text:
-                                    TextSpan(style: DefaultTextStyle.of(context).style, children: [
-                              TextSpan(text: post.title, style: postTitleTextStyle),
-                              TextSpan(text: "  "),
-                              TextSpan(
-                                  text: "(${post.audioDuration})",
-                                  style: postAudioDurationTextStyle),
-                            ])),
-                          ),
-                  );
-                });
-      },
+                    );
+                  });
+        },
+      ),
     );
   }
 
