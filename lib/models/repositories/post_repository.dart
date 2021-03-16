@@ -64,4 +64,13 @@ class PostRepository extends ChangeNotifier{
  Future<void> deletePost(String postId) async{
     await dbManager.deletePost(postId);
  }
+
+  Future<void> insertListener(String postId, String userId) async{
+    await dbManager.insertListener(postId, userId);
+  }
+
+  Future<bool> isListened(String postId) async{
+    return await dbManager.isListened(postId);
+  }
+
 }

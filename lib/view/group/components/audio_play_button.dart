@@ -1,10 +1,14 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:voice_put/view_models/group_view_model.dart';
 
 class AudioPlayButton extends StatefulWidget {
   final String audioUrl;
+  final bool isPostUser;
+  final String postId;
 
-  AudioPlayButton({@required this.audioUrl});
+  AudioPlayButton({@required this.audioUrl, @required this.isPostUser, this.postId});
 
   @override
   _AudioPlayButtonState createState() => _AudioPlayButtonState();
@@ -32,11 +36,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   }
 
 
-  _onButtonPressed(){
-    setState(() {
-      _isPlaying = !_isPlaying;
-    });
-  }
+
 
   _onAudioFinished(){
     setState(() {
@@ -48,7 +48,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
 
   Widget _notPlayingButton() {
     return InkWell(
-      onTap: () => _onButtonPressed(),
+      onTap: () => _onNotPlayingButtonPressed(),
       child: Card(
         elevation: 3.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
@@ -65,13 +65,24 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
     );
   }
 
+  _onNotPlayingButtonPressed(){
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    if (!widget.isPostUser) {
+      groupViewModel.insertListener(widget.postId);
+
+    }
+
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
+  }
 
   //-------------------------------------------------------------------------------------------------DURING_PLAYING
 
   Widget _duringPlayingButton() {
 
     return InkWell(
-      onTap: () => _onButtonPressed(),
+      onTap: () => _onDuringPlayingButtonPressed(),
       child: Card(
         elevation: 3.0,
         shape: RoundedRectangleBorder(
@@ -87,6 +98,12 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
         ),
       ),
     );
+  }
+
+  _onDuringPlayingButtonPressed(){
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
   }
 
 }

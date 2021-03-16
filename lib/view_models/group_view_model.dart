@@ -39,6 +39,8 @@ class GroupViewModel extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
+  //-------------------------------------------------------------------------------------------------- Post Repository
+
   Future<void> getGroupPosts(Group group) async{
 
     await postRepository.getPostsByGroup(group.groupId);
@@ -54,6 +56,13 @@ class GroupViewModel extends ChangeNotifier {
     await postRepository.deletePost(post.postId);
   }
 
+  Future<void> insertListener(String postId) async{
+    await postRepository.insertListener(postId, currentUser.userId);
+  }
+
+  Future<bool> isListened(Post post) async{
+    return await postRepository.isListened(post.postId);
+  }
 
   //-------------------------------------------------------------------------------------------------- Audio methods
 
@@ -126,6 +135,9 @@ class GroupViewModel extends ChangeNotifier {
   Future<void> leaveGroup(Group group) async{
     await groupRepository.leaveGroup(group, currentUser);
   }
+
+
+
 
 
 

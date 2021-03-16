@@ -53,7 +53,6 @@ class HomeScreen extends StatelessWidget {
         child: Icon(Icons.keyboard_voice),
         onPressed: () => _openAudioJournalScreen(context));
   }
-
   _openAudioJournalScreen(BuildContext context) {
     Navigator.of(context).push(_createRoute(
         context,
@@ -80,6 +79,7 @@ class HomeScreen extends StatelessWidget {
         //1st screen
         ));
   }
+
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
     return PageRouteBuilder(

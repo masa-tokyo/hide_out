@@ -52,6 +52,10 @@ class DatabaseManager {
     await _db.collection("posts").doc(post.postId).set(post.toMap());
  }
 
+ Future<void> insertListener(String postId, String userId) async{
+    await _db.collection("posts").doc(postId).collection("listeners").doc(userId).set({"userId": userId});
+ }
+
 
 
   //--------------------------------------------------------------------------------------------------Read
@@ -182,6 +186,12 @@ class DatabaseManager {
     return false;
   }
 
+  Future<bool> isListened(String postId) async{
+    final query = await _db.collection("posts").doc(postId).collection("listeners").get();
+    if(query.docs.length == 0) return false;
+    return true;
+
+  }
 
 
   //--------------------------------------------------------------------------------------------------Update
@@ -204,8 +214,14 @@ class DatabaseManager {
  }
 
  Future<void> deletePost(String postId) async{
+
+    //todo why cannot delete "listeners" part?
+   await _db.collection("posts").doc(postId).collection("listeners").doc().delete();
     await _db.collection("posts").doc(postId).delete();
  }
+
+
+
 
 
 

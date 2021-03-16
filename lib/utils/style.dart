@@ -26,6 +26,8 @@ final confirmDialogBackgroundColor = Colors.grey[200];
 
 //Group
 final popupMenuButtonColor = Colors.white;
+final currentUserListTileColor = Colors.cyan[50];
+
 
 
 //SendToGroup
