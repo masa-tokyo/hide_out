@@ -69,7 +69,6 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     if (!widget.isPostUser) {
       groupViewModel.insertListener(widget.postId);
-
     }
 
     setState(() {

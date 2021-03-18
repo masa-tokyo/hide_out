@@ -53,7 +53,8 @@ class DatabaseManager {
  }
 
  Future<void> insertListener(String postId, String userId) async{
-    await _db.collection("posts").doc(postId).collection("listeners").doc(userId).set({"userId": userId});
+   //insert userId only once
+   await _db.collection("posts").doc(postId).collection("listeners").doc(userId).set({"userId": userId});
  }
 
 
@@ -215,16 +216,16 @@ class DatabaseManager {
 
  Future<void> deletePost(String postId) async{
 
-    //todo why cannot delete "listeners" part?
-   await _db.collection("posts").doc(postId).collection("listeners").doc().delete();
+   //delete "listeners" first
+   await _db.collection("posts").doc(postId).collection("listeners").get().then((value) {
+     for (DocumentSnapshot doc in value.docs){
+      doc.reference.delete();
+     }
+   });
+
+   //delete post
     await _db.collection("posts").doc(postId).delete();
  }
-
-
-
-
-
-
 
 
 }

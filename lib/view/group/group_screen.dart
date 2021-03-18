@@ -145,71 +145,93 @@ class GroupScreen extends StatelessWidget {
         builder: (context, model, child) {
           return model.isProcessing
               ? Center(
-                  child: CircularProgressIndicator(),
-                )
+            child: CircularProgressIndicator(),
+          )
               : ListView.builder(
-                  itemCount: model.posts.length,
-                  itemBuilder: (context, int index){
-                    final post = model.posts[index];
-                    return Card(
-                      color: post.userId == model.currentUser.userId
-                      ? currentUserListTileColor : listTileColor,
-                      elevation: 2.0,
-                      child: post.userId == model.currentUser.userId
-                          ? Column(
-                            children: [
-                              Slidable(
-                                  actionPane: SlidableDrawerActionPane(),
-                                  actionExtentRatio: 0.25,
-                                  child: ListTile(
-                                    trailing: AudioPlayButton(audioUrl: post.audioUrl, isPostUser: true,),
-                                    subtitle: Text(post.userName),
-                                    title: RichText(
-                                        text: TextSpan(
-                                            style: DefaultTextStyle.of(context).style,
-                                            children: [
-                                          TextSpan(text: post.title, style: postTitleTextStyle),
-                                          TextSpan(text: "  "),
-                                          TextSpan(
-                                              text: "(${post.audioDuration})",
-                                              style: postAudioDurationTextStyle),
-                                        ])),
-                                  ),
-                                  secondaryActions: [
-                                    IconSlideAction(
-                                      caption: "Delete",
-                                      icon: Icons.delete,
-                                      color: Colors.redAccent,
-                                      onTap: () => _onDeleteTapped(context, post),
-                                    )
-                                  ],
-                                ),
-                              FutureBuilder(
-                                  future: groupViewModel.isListened(post),
-                                  builder: (context, AsyncSnapshot<bool> snapshot){
-                                    if(snapshot.hasData && snapshot.data){
-                                      return Text("Listened");
-                                    } else {
-                                      return Container();
-                                    }
-                                  }),
+              itemCount: model.posts.length,
+              itemBuilder: (context, int index) {
+                final post = model.posts[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    post.userId == model.currentUser.userId
+                        ? Padding(
+                          padding: const EdgeInsets.only(left: 24.0),
+                          child: Card(color: currentUserListTileColor,
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0)
+                          ),
+                          child:
+                          Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            actionExtentRatio: 0.25,
+                            child: ListTile(
+                              trailing: AudioPlayButton(
+                                audioUrl: post.audioUrl, isPostUser: true,),
+                              title: RichText(
+                                  text: TextSpan(
+                                      style: DefaultTextStyle
+                                          .of(context)
+                                          .style,
+                                      children: [
+                                        TextSpan(text: post.title, style: postTitleTextStyle),
+                                        TextSpan(text: "  "),
+                                        TextSpan(
+                                            text: "(${post.audioDuration})",
+                                            style: postAudioDurationTextStyle),
+                                      ])),
+                            ),
+                            secondaryActions: [
+                              IconSlideAction(
+                                caption: "Delete",
+                                icon: Icons.delete,
+                                color: Colors.redAccent,
+                                onTap: () => _onDeleteTapped(context, post),
+                              )
                             ],
                           )
-                          : ListTile(
-                              trailing: AudioPlayButton(audioUrl: post.audioUrl, isPostUser: false, postId: post.postId,),
-                              subtitle: Text(post.userName),
-                              title: RichText(
-                                  text:
-                                      TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                    ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.only(right: 24.0),
+                          child: Card(
+                      color: listTileColor,
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0)
+                      ),
+                      child: ListTile(
+                          trailing: AudioPlayButton(
+                            audioUrl: post.audioUrl, isPostUser: false, postId: post.postId,),
+                          subtitle: Text(post.userName),
+                          title: RichText(
+                              text:
+                              TextSpan(style: DefaultTextStyle
+                                  .of(context)
+                                  .style, children: [
                                 TextSpan(text: post.title, style: postTitleTextStyle),
                                 TextSpan(text: "  "),
                                 TextSpan(
                                     text: "(${post.audioDuration})",
                                     style: postAudioDurationTextStyle),
                               ])),
-                            ),
-                    );
-                  });
+                      ),
+                    ),
+                        ),
+                    post.userId == model.currentUser.userId
+                        ? FutureBuilder(
+                        future: groupViewModel.isListened(post),
+                        builder: (context, AsyncSnapshot<bool> snapshot) {
+                          if (snapshot.hasData && snapshot.data) {
+                            return Text("Listened", style: listenedDescriptionTextStyle,);
+                          } else {
+                            return Container();
+                          }
+                        }) : Container(),
+                  ],
+                );
+              });
         },
       ),
     );
@@ -222,12 +244,12 @@ class GroupScreen extends StatelessWidget {
         context: context,
         titleString: "Delete the post?",
         contentString: "You will permanently lose the data.",
-        onConfirmed: (isConfirmed) async{
-          if(isConfirmed){
+        onConfirmed: (isConfirmed) async {
+          if (isConfirmed) {
             await groupViewModel.deletePost(post);
             Fluttertoast.showToast(
-              msg: "Post Deleted",
-              gravity: ToastGravity.CENTER
+                msg: "Post Deleted",
+                gravity: ToastGravity.CENTER
             );
 
             await groupViewModel.getGroupPosts(group);
@@ -235,6 +257,5 @@ class GroupScreen extends StatelessWidget {
         },
         yesText: Text("Delete", style: showConfirmDialogYesTextStyle,),
         noText: Text("Cancel", style: showConfirmDialogNoTextStyle,));
-
   }
 }

@@ -71,3 +71,4 @@ const postTitleTextStyle = TextStyle(fontSize: 16.0, color: Colors.black87);
 const postAudioDurationTextStyle = TextStyle(fontSize: 14.0,color: Colors.black54);
 const leaveGroupMenuTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.red);
 const groupEditMenuTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold,);
+const listenedDescriptionTextStyle = TextStyle(fontSize: 14.0, color: Colors.black54);
