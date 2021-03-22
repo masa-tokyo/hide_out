@@ -33,7 +33,7 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
           filled: true,
-          hintText: "Type your group name."
+          hintText: "Topic to talk about in the group."
         ),
       ),
     );

@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
     return GestureDetector(
-      //todo unnecessary if adding this on every screen?
       onTap: () => _unFocusKeyboard(context),
       child: MaterialApp(
         title: "VoicePut",
@@ -71,12 +70,18 @@ class MyApp extends StatelessWidget {
         home: FutureBuilder(
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
-            return (snapshot.hasData && snapshot.data)
-                ? HomeScreen()
-                : LoginScreen();
+            if (snapshot.hasData && snapshot.data){
+              return HomeScreen();
+            } else if (snapshot.hasData && !snapshot.data){
+              return LoginScreen();
+            } else {
+              return Scaffold(
+                body: Center(child
+                    : CircularProgressIndicator()),
+              );
+            }
           },
         ),
-
       ),
     );
   }

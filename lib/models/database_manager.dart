@@ -202,6 +202,9 @@ class DatabaseManager {
   }
 
 
+ Future<void> updateUserInfo(User user) async{
+    await _db.collection("users").doc(user.userId).update(user.toMap());
+ }
 
   //--------------------------------------------------------------------------------------------------Delete
 
@@ -226,6 +229,7 @@ class DatabaseManager {
    //delete post
     await _db.collection("posts").doc(postId).delete();
  }
+
 
 
 }

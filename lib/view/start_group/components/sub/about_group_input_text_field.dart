@@ -28,10 +28,10 @@ class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: _descriptionController,
-        maxLines: 8,
+        maxLines: 5,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
-            hintText: "Describe your group.",
+            hintText: "Please explain why you want to make this group with some examples to talk about",
             filled: true,
         ),
       ),

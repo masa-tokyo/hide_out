@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/join_group/group_detail_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
-import 'dart:io';
 
 class JoinGroupScreen extends StatelessWidget {
+  final bool isSignedUp;
+  JoinGroupScreen({@required this.isSignedUp});
+
   @override
   Widget build(BuildContext context) {
     final joinGroupViewModel = Provider.of<JoinGroupViewModel>(context, listen: false);
@@ -14,52 +15,116 @@ class JoinGroupScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Join a Group"),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),)
-        ,
+        title: Text("Join Group"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<JoinGroupViewModel>(builder: (context, model, child) {
+      body: Center(
+          child: Column(
+        children: [
+          SizedBox(
+            height: 32.0,
+          ),
+          Text(
+            "Pick your favorite topics to talk about.",
+            style: instructionTextStyle,
+          ),
+          SizedBox(
+            height: 32.0,
+          ),
+          _groupGridView(context),
+          SizedBox(
+            height: 24.0,
+          ),
+          _doneButton(context),
+        ],
+      )),
+    );
+  }
+
+
+  Widget _groupGridView(BuildContext context) {
+    var deviceData = MediaQuery.of(context);
+
+    return Container(
+      height: 0.6 * deviceData.size.height,
+      child: Consumer<JoinGroupViewModel>(
+        builder: (context, model, child) {
           return model.isProcessing
-              ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
-              itemCount: model.groups.length,
-              itemBuilder: (context, int index) {
-                final group = model.groups[index];
-                return Card(
-                  color: listTileColor,
-                  elevation: 2.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.blueGrey,
-                    onTap: () => _openGroupDetailScreen(context, group),
-                    child: ListTile(
-                      title: Text(group.groupName),
-                      subtitle: Text(group.description, maxLines: 1, overflow: TextOverflow
-                          .ellipsis,),
-                      trailing: Icon(Icons.arrow_forward_ios_rounded),
-                    ),
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: GridView.count(
+                    childAspectRatio: 2.4,
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    children: List.generate(model.groups.length, (int index) {
+                      final group = model.groups[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                model.chosenGroups.contains(group)
+                                    ? buttonChosenColor
+                                    : buttonNotChosenColor),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                side: BorderSide(color: model.chosenGroups.contains(group)
+                                    ? Colors.transparent
+                                    : notChosenButtonBorderSideColor
+                                ),
+                              ),
+                            ),
+                          ),
+                          onPressed: () => _onGroupChosen(context, group),
+                          child: Text(group.groupName, style: groupNameCardTextStyle,),
+                        ),
+                      );
+                    }),
                   ),
                 );
-              });
-        }),
+        },
       ),
     );
   }
 
-  _openGroupDetailScreen(BuildContext context, Group group) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: ((_) => GroupDetailScreen(group: group)),
+  _onGroupChosen(BuildContext context, Group group) {
+    final joinGroupViewModel = Provider.of<JoinGroupViewModel>(context, listen: false);
+    joinGroupViewModel.chooseGroup(group);
+  }
+
+  Widget _doneButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Consumer<JoinGroupViewModel>(
+        builder: (context, model, child) {
+          return Container(
+            width: double.infinity,
+            child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                  model.chosenGroups.isEmpty ? buttonNotEnabledColor : buttonEnabledColor,
+                )),
+                onPressed: () => _onDoneButtonPressed(context),
+                child: Text(
+                  "Done",
+                  style: enablingButtonTextStyle,
+                ),
+            ),
+          );
+        },
       ),
     );
   }
 
+  _onDoneButtonPressed(BuildContext context) {
+    final joinGroupViewModel = Provider.of<JoinGroupViewModel>(context, listen: false);
+    joinGroupViewModel.joinGroup();
 
+    Navigator.pop(context);
+    if (isSignedUp) Navigator.pop(context);
+
+  }
 }

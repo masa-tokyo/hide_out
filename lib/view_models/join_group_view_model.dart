@@ -18,6 +18,10 @@ class JoinGroupViewModel extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  List<Group> _chosenGroups = <Group>[];
+  List<Group> get chosenGroups => _chosenGroups;
+
+
 
 
   Future<void> getGroupsExceptForMine() async{
@@ -26,16 +30,29 @@ class JoinGroupViewModel extends ChangeNotifier {
 
   }
 
-  Future<void> joinGroup(Group group) async{
-   await groupRepository.joinGroup(group, currentUser);
+  Future<void> joinGroup() async{
+   await groupRepository.joinGroup(chosenGroups, currentUser);
+
+   _chosenGroups = [];
+
   }
 
   onGroupsExceptForMineObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
     _groups = groupRepository.otherGroups;
     notifyListeners();
-
   }
+
+  void chooseGroup(Group group) {
+    if (!_chosenGroups.contains(group)){
+      _chosenGroups.add(group);
+    } else {
+      _chosenGroups.remove(group);
+    }
+    notifyListeners();
+  }
+
+
 
 
 }

@@ -82,7 +82,7 @@ class _JournalTimerPartState extends State<JournalTimerPart> {
 
 
   _onBeforeSpeakingButtonPressed(BuildContext context) {
-    //todo start countdown
+    //start countdown
     _startTimer();
 
     setState(() {

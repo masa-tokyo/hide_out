@@ -58,7 +58,6 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
   Widget _editableGroupInfo() {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
-    //todo activate RefreshIndicator. If unable to do it, pushReplacement in order to create GroupScreen(StatelessWidget) again
     return RefreshIndicator(
       onRefresh: () async {
         //in order to update after the owner edit the info and open it again
@@ -157,10 +156,7 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
           onPressed: () => _updateInfo(),
           child: Text(
             "Save",
-            style: (_groupNameController.text != groupViewModel.group.groupName ||
-                    _descriptionController.text != groupViewModel.group.description)
-                ? buttonEnabledTextStyle
-                : buttonNotEnabledTextStyle,
+            style: enablingButtonTextStyle
           ),
         ),
       ),
@@ -190,7 +186,6 @@ class _GroupInfoDetailScreenState extends State<GroupInfoDetailScreen> {
   }
 
   //----------------------------------------------------------------------------------------------View Only
-//todo if GroupInfo from participants is necessary?
   Widget _viewOnlyGroupInfo() {
     return Container();
   }

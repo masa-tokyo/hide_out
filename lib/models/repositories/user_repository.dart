@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
+import 'package:voice_put/utils/constants.dart';
 
 class UserRepository extends ChangeNotifier{
   final DatabaseManager dbManager;
@@ -24,7 +25,7 @@ class UserRepository extends ChangeNotifier{
     return false;
   }
 
-  Future<bool> signUp() async {
+  Future<LoginScreenStatus> signInOrSignUp() async {
 
     try {
       GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
@@ -37,21 +38,27 @@ class UserRepository extends ChangeNotifier{
 
       final firebaseUser = (await _auth.signInWithCredential(credential)).user;
       if (firebaseUser == null) {
-        return false;
+        return LoginScreenStatus.FAILED;
       }
 
       final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
 
       if(!isUserExistedInDb) {
+        //Sign up
         await dbManager.insertUser(_convertToUser(firebaseUser));
-      }
-      currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
-      return true;
+        currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+        return LoginScreenStatus.SIGNED_UP;
 
+      } else {
+        //Sign in
+        currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+        return LoginScreenStatus.SIGNED_IN;
+      }
 
     } catch (error) {
       print("sign in error caught: $error");
-      return false;
+      return LoginScreenStatus.FAILED;
+
     }
 
   }
@@ -67,5 +74,16 @@ class UserRepository extends ChangeNotifier{
 
   Future<void> registerGroupIdOnUsers(String groupId) async{
     await dbManager.registerGroupIdOnUsers(groupId, currentUser.userId);
+  }
+
+  Future<void> updateUserName(String userName) async{
+    var user = User(
+        userId: currentUser.userId,
+        displayName: currentUser.displayName,
+        inAppUserName: userName,
+        photoUrl: currentUser.photoUrl);
+    await dbManager.updateUserInfo(user);
+
+
   }
 }

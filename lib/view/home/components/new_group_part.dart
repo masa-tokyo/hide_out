@@ -14,17 +14,18 @@ class NewGroupPart extends StatelessWidget {
           height: 12.0,
         ),
         RoundedRaisedButton(
-          label: "Start a New Group",
-          onPressed: () => _openStartGroupScreen(context),
+          onPressed: () => _openJoinGroupScreen(context),
+          label: "Join Group",
           color: startOrJoinGroupButtonColor,
         ),
         SizedBox(
           height: 12.0,
         ),
         RoundedRaisedButton(
-            onPressed: () => _openJoinGroupScreen(context),
-            label: "Join a Group",
-            color: startOrJoinGroupButtonColor,),
+          label: "Start New Group",
+          onPressed: () => _openStartGroupScreen(context),
+          color: startOrJoinGroupButtonColor,
+        ),
       ],
     );
   }
@@ -34,28 +35,17 @@ class NewGroupPart extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => StartGroupScreen(),
+
       ),
     );
   }
 
   _openJoinGroupScreen(BuildContext context) {
     Navigator.push(
-      context, _createRoute(context, JoinGroupScreen())
+      context,
+      MaterialPageRoute(
+        builder: (_) => JoinGroupScreen(isSignedUp: false),
+      ),
     );
   }
-  Route<Object> _createRoute(BuildContext context, Widget screen) {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,);
-        });
-  }
-
 }

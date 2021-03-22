@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
+import 'package:voice_put/utils/constants.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final UserRepository userRepository;
 
   LoginViewModel({this.userRepository});
 
-  bool _isSuccessful = false;
-  bool get isSuccessful => _isSuccessful;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
+
+  LoginScreenStatus _loginScreenStatus = LoginScreenStatus.FAILED;
+  LoginScreenStatus get loginScreenStatus => _loginScreenStatus;
 
   Future<bool> isSignIn() async{
     return await userRepository.isSignIn();
   }
 
-  Future<void> signUp() async{
+  Future<void> signInOrSignUp() async{
     _isProcessing = true;
     notifyListeners();
 
-    _isSuccessful = await userRepository.signUp();
+    _loginScreenStatus = await userRepository.signInOrSignUp();
 
     _isProcessing = false;
     notifyListeners();
 
+  }
+
+  Future<void> updateUserName(String userName) async{
+    await userRepository.updateUserName(userName);
   }
 
 

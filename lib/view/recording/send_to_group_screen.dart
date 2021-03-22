@@ -113,8 +113,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                 ),
                 child: Text(
                   "Done",
-                  style:
-                      model.groupIds.isEmpty ? buttonNotEnabledTextStyle : buttonEnabledTextStyle,
+                  style: enablingButtonTextStyle,
                 ),
                 onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
           },
@@ -127,8 +126,6 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
-    Navigator.pop(context);
-    Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);

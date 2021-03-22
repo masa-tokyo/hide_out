@@ -22,6 +22,10 @@ const audioJournalButtonColor = Colors.white30;
 final startOrJoinGroupButtonColor = Colors.grey[200];
 final listTileColor = Colors.grey[100];
 final confirmDialogBackgroundColor = Colors.grey[200];
+final buttonNotChosenColor = Colors.white;
+const buttonChosenColor = Colors.cyan;
+const notChosenButtonBorderSideColor = Colors.black54;
+
 
 
 //Group
@@ -39,12 +43,14 @@ final sendToGroupButtonColor = Colors.cyan;
 const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.black87);
 const listTileTitleTextStyle = TextStyle(fontSize: 18.0,);
-const buttonEnabledTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-const buttonNotEnabledTextStyle = TextStyle(color: Colors.white,fontWeight: FontWeight.bold);
+const enablingButtonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
 const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
 const timeDisplayTextStyle = TextStyle(fontSize: 48.0,);
+const instructionTextStyle = TextStyle(fontSize: 18.0);
 
+//Login
+const googleIconButtonColor = Color(0xFF4285F4);
 
 //Home
 const homeScreenLabelTextStyle = TextStyle(fontSize: 18.0, color: Color(0xFF757575)); //= Colors.grey[600]
@@ -57,6 +63,7 @@ const startGroupLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF7575
 const groupDetailNameTextStyle = TextStyle(fontSize: 22.0, color: Colors.black87, fontWeight: FontWeight.bold);
 const groupDetailAboutTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
+const groupNameCardTextStyle = TextStyle(color: Colors.black54);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);

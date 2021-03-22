@@ -9,12 +9,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/post_title_screen.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
+  final RecordingOpenMode from;
+  final Group group;
+
+  RecordingButtons({@required this.from, @required this.group});
 
   @override
   _RecordingButtonsState createState() => _RecordingButtonsState();
@@ -250,9 +255,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   _onAgainButtonPressed(BuildContext context) async{
 
-    //todo pop up dialog to make sure?
-
-
     //delete the recording
     var outputFile = File(_path);
     if (outputFile.existsSync()){
@@ -310,7 +312,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
           milliSecond: false);
     });
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PostTitleScreen(path: _path, audioDuration: displayTime,),),);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PostTitleScreen(path: _path, audioDuration: displayTime, from: widget.from, group: widget.group,),),);
 
   }
 

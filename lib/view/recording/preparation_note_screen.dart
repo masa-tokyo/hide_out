@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/recording_screen.dart';
 
 class PreparationNoteScreen extends StatefulWidget {
+  final RecordingOpenMode from;
+  final Group group;
+
+  PreparationNoteScreen({@required this.from, @required this.group});
+
   @override
   _PreparationNoteScreenState createState() => _PreparationNoteScreenState();
 }
@@ -30,7 +37,8 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
       onTap: () => _unFocusKeyboard(),
       child: Scaffold(
         appBar: AppBar(
-          title: _isTyping ? Container() : Center(child: Text("Preparation 3/3")),
+          leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+          title: _isTyping ? Container() : Center(child: Text("Preparation")),
           actions: [
             _isTyping
                 ? TextButton(
@@ -107,7 +115,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",
-              style: _isNextButtonAvailable ? buttonEnabledTextStyle : buttonNotEnabledTextStyle,
+              style: enablingButtonTextStyle,
             )),
       ),
     );
@@ -115,7 +123,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
 
   _openRecordingScreen() async {
     await Navigator.push(
-      context, MaterialPageRoute(builder: (_) => RecordingScreen(noteText: _controller.text),),);
+      context, MaterialPageRoute(builder: (_) => RecordingScreen(noteText: _controller.text, from: widget.from, group: widget.group,),),);
     FocusScope.of(context).unfocus();
     _isTyping = false;
   }

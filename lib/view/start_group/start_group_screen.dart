@@ -8,12 +8,11 @@ import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/start_group_view_model.dart';
 
 class StartGroupScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Start a New Group"),
+        title: Text("Start New Group"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -34,27 +33,29 @@ class StartGroupScreen extends StatelessWidget {
     return Consumer<StartGroupViewModel>(
       builder: (context, model, child) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: model.groupName != "" && model.description != ""
-                ? MaterialStateProperty.all<Color>(buttonEnabledColor) : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
-                shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: model.groupName != "" && model.description != ""
+                      ? MaterialStateProperty.all<Color>(buttonEnabledColor)
+                      : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                onPressed: (model.groupName != "" && model.description != "")
+                    ? () => _registerGroup(context)
+                    : null,
+                child: Text(
+                  "Done",
+                  style: enablingButtonTextStyle,
+                ),
               ),
-              onPressed: (model.groupName != "" && model.description != "")
-                  ? () => _registerGroup(context)
-                  : null,
-              child: Text("Done",
-                  style: (model.groupName != "" && model.description != "")
-                      ? buttonEnabledTextStyle
-                      : buttonNotEnabledTextStyle),
-            ),
-          ),
-        );
+            ));
       },
     );
   }
@@ -64,28 +65,25 @@ class StartGroupScreen extends StatelessWidget {
     await startGroupViewModel.registerGroup();
 
     Navigator.pop(context);
-    Fluttertoast.showToast(
-        msg: "Done!",
-        gravity: ToastGravity.CENTER);
-
-
+    Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
   }
 
   Route<Object> _createRoute(BuildContext context) {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
 
     return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => GroupScreen(group: startGroupViewModel.group),
-        transitionsBuilder: (context, animation, secondaryAnimation, child){
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            GroupScreen(group: startGroupViewModel.group),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
           var offsetAnimation = animation.drive(tween);
           return SlideTransition(
-              position: offsetAnimation,
-              child: child,);
-          
+            position: offsetAnimation,
+            child: child,
+          );
         });
   }
 }

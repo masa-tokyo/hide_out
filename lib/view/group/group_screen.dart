@@ -8,6 +8,7 @@ import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
 import 'package:voice_put/view/group/group_info_detail_screen.dart';
+import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 import 'components/audio_play_button.dart';
@@ -25,6 +26,7 @@ class GroupScreen extends StatelessWidget {
     Future(() => groupViewModel.getGroupInfo(group.groupId));
 
     return Scaffold(
+      floatingActionButton: _floatingActionButton(context),
       appBar: AppBar(
         title: Consumer<GroupViewModel>(
           builder: (context, model, child) {
@@ -32,7 +34,6 @@ class GroupScreen extends StatelessWidget {
           },
         ),
         actions: [_groupEditButton(context)],
-        //todo when coming from StartGroupScreen, change back_arrow to close button
       ),
       body: RefreshIndicator(
           onRefresh: () async {
@@ -59,6 +60,18 @@ class GroupScreen extends StatelessWidget {
           );
         });
   }
+
+  //---------------------------------------------------------------------------------------------- FloatingActionButton
+  _floatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+        child: Icon(Icons.keyboard_voice),
+        onPressed: () => _openPreparationNoteScreen(context));
+
+  }
+  _openPreparationNoteScreen(BuildContext context) {
+    Navigator.push(context, _createRoute(context, PreparationNoteScreen(from: RecordingOpenMode.FROM_GROUP, group: group,)));
+  }
+
 
   //---------------------------------------------------------------------------------------------- AppBar
 
@@ -258,4 +271,6 @@ class GroupScreen extends StatelessWidget {
         yesText: Text("Delete", style: showConfirmDialogYesTextStyle,),
         noText: Text("Cancel", style: showConfirmDialogNoTextStyle,));
   }
+
+
 }

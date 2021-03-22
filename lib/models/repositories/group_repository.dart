@@ -59,8 +59,11 @@ class GroupRepository extends ChangeNotifier{
 
   }
 
-  Future<void> joinGroup(Group group, User currentUser) async{
-    await dbManager.joinGroup(group.groupId, currentUser.userId);
+  Future<void> joinGroup(List<Group> chosenGroups, User currentUser) async{
+
+    chosenGroups.forEach((element) async {
+      await dbManager.joinGroup(element.groupId, currentUser.userId);
+    });
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
     _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
@@ -91,13 +94,7 @@ class GroupRepository extends ChangeNotifier{
 
   }
 
-  Future<bool> checkMyGroup(User currentUser) async{
-    var groups;
-     groups = await dbManager.getGroupsByUserId(currentUser.userId);
-     if(groups.length == 0) return false;
-     return true;
 
-  }
 
 
 

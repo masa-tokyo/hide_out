@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
@@ -11,8 +12,10 @@ import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingScreen extends StatelessWidget {
   final String noteText;
+  final RecordingOpenMode from;
+  final Group group;
 
-  RecordingScreen({@required this.noteText});
+  RecordingScreen({@required this.noteText, @required this.from, @required this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +44,7 @@ class RecordingScreen extends StatelessWidget {
             }),
           ],
         ),
-        body:
-
-        CustomScrollView(
+        body: CustomScrollView(
           slivers: [
             SliverFillRemaining(
               hasScrollBody: false,
@@ -53,7 +54,7 @@ class RecordingScreen extends StatelessWidget {
                   PostDescriptionPart(
                     noteText: noteText,
                   ),
-                  RecordingButtonPart(),
+                  RecordingButtonPart(from: from, group: group),
                 ],
               ),
             )

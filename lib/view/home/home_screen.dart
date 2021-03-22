@@ -1,9 +1,8 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/recording/audio_journal_screen.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
 
@@ -39,7 +38,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 NewGroupPart(),
-                SizedBox(height: 28.0,),
+                SizedBox(
+                  height: 28.0,
+                ),
               ],
             ),
           ),
@@ -50,36 +51,18 @@ class HomeScreen extends StatelessWidget {
 
   Widget _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
-        child: Icon(Icons.keyboard_voice),
-        onPressed: () => _openAudioJournalScreen(context));
+        child: Icon(Icons.keyboard_voice), onPressed: () => _openAudioJournalScreen(context));
   }
+
   _openAudioJournalScreen(BuildContext context) {
     Navigator.of(context).push(_createRoute(
-        context,
-        //1st screen
-        AudioJournalScreen(
-          titleString: "Preparation 1/3",
-          questionString1: "What did you do today?",
-          questionString2: "",
-          questionString3: "",
-          icon: Icon(Icons.close),
-
-          //2nd screen
-          screen: AudioJournalScreen(
-            icon: Platform.isIOS ? Icon(Icons.arrow_back_ios) : Icon(Icons.arrow_back),
-            titleString: "Preparation 2/3",
-            questionString1: "Anything impressive?",
-            questionString2: "&",
-            questionString3: "why?",
-
-            //3rd screen
-            screen: PreparationNoteScreen()
-          ),
-        )
-        //1st screen
-        ));
+      context,
+      PreparationNoteScreen(
+        from: RecordingOpenMode.FROM_HOME,
+        group: null,
+      ),
+    ));
   }
-
 
   Route<Object> _createRoute(BuildContext context, Widget screen) {
     return PageRouteBuilder(
