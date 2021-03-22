@@ -49,6 +49,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+
   Widget _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
         child: Icon(Icons.keyboard_voice), onPressed: () => _openAudioJournalScreen(context));
