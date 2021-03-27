@@ -32,16 +32,15 @@ class NewGroupPart extends StatelessWidget {
   }
 
   _openStartGroupScreen(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (_) => StartGroupScreen(),
-    //
-    //   ),
-    // );
-    //
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => StartGroupScreen(),
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => UserNameInputScreen()));
+      ),
+    );
+
+
 
 
   }
