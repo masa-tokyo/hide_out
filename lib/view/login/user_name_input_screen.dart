@@ -28,7 +28,6 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: null,
         title: Text("Name"),
       ),
       body: Column(

@@ -152,24 +152,33 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   }
 
   _onCircleButtonPressed(BuildContext context) async{
-    //start recording
-    if (!_isRecorderInitiated) {
-      print("recorder is not initiated");
-      return null;
+    
+    try {
+
+      //start recording
+      if (!_isRecorderInitiated) {
+        print("recorder is not initiated");
+        return null;
+      }
+
+      await _startRecording();
+
+      //start stopwatch
+      _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+
+      //change RecordingButtonStatus from BEFORE to DURING
+      setState(() {
+        _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
+      });
+      final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+      await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
+
+
+    } catch(e) {
+      print("error: $e");
     }
 
-    await _startRecording();
-
-    //start stopwatch
-    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-
-
-    //change RecordingButtonStatus from BEFORE to DURING
-    setState(() {
-      _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
-    });
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
   }
 
 //----------------------------------------------------------------------------------------------DURING_RECORDING

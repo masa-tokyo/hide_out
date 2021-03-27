@@ -68,6 +68,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   _openUserNameInputScreen(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_)=> UserNameInputScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UserNameInputScreen()));
   }
 }
