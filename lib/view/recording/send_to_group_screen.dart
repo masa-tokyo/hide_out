@@ -51,7 +51,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                               builder: (context, data, child) {
                                 return data.item2
                                     ? CircularProgressIndicator()
-                                    : _myGroupListView(data.item1);
+                                    : _myGroupListView(context, data.item1);
                               }),
                           _doneButton(),
                         ],
@@ -62,34 +62,39 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     );
   }
 
-  Widget _myGroupListView(List<Group> groups) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: groups.length,
-        itemBuilder: (context, int index) {
-          final group = groups[index];
-          //todo when playing the audio independently on GroupScreen, check these comments, then erase them
-          // for (var i = 0; i < model.groups.length; i++){
-          //   _chooseGroupButtonBooleans.length = groups.length;
-          //   _chooseGroupButtonBooleans[i] = false;
-          // }
-          // var isChooseGroupButtonPressed = _chooseGroupButtonBooleans[index];
+  Widget _myGroupListView(BuildContext context, List<Group> groups) {
+    var deviceData = MediaQuery.of(context);
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Card(
-              color: listTileColor,
-              elevation: 2.0,
-              child: ListTile(
-                title: Text(group.groupName),
-                trailing: ChooseGroupButton(
-                  /*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/
-                  groupId: group.groupId,
+    return Container(
+      height: 0.7 * deviceData.size.height,
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: groups.length,
+          itemBuilder: (context, int index) {
+            final group = groups[index];
+            //todo when playing the audio independently on GroupScreen, check these comments, then erase them
+            // for (var i = 0; i < model.groups.length; i++){
+            //   _chooseGroupButtonBooleans.length = groups.length;
+            //   _chooseGroupButtonBooleans[i] = false;
+            // }
+            // var isChooseGroupButtonPressed = _chooseGroupButtonBooleans[index];
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Card(
+                color: listTileColor,
+                elevation: 2.0,
+                child: ListTile(
+                  title: Text(group.groupName),
+                  trailing: ChooseGroupButton(
+                    /*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/
+                    groupId: group.groupId,
+                  ),
                 ),
               ),
-            ),
-          );
-        });
+            );
+          }),
+    );
   }
 
   //--------------------------------------------------------------------------------------------------- _doneButton()

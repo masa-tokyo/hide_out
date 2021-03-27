@@ -31,7 +31,7 @@ class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
         maxLines: 5,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
-            hintText: "Please explain why you want to make this group with some examples to talk about",
+            hintText: "Please explain what you want to talk about in this group.",
             filled: true,
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 
 class JoinGroupScreen extends StatelessWidget {
@@ -124,7 +125,26 @@ class JoinGroupScreen extends StatelessWidget {
     joinGroupViewModel.joinGroup();
 
     Navigator.pop(context);
-    if (isSignedUp) Navigator.pop(context);
+    if (isSignedUp){
+      Navigator.pushReplacement(context, _createRoute(context, HomeScreen()));
+    }
 
+  }
+
+  Route<Object> _createRoute(BuildContext context, Widget screen) {
+
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child){
+          var begin = Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,);
+
+        });
   }
 }

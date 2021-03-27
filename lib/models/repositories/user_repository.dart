@@ -77,12 +77,12 @@ class UserRepository extends ChangeNotifier{
   }
 
   Future<void> updateUserName(String userName) async{
-    var user = User(
+     currentUser = User(
         userId: currentUser.userId,
         displayName: currentUser.displayName,
         inAppUserName: userName,
         photoUrl: currentUser.photoUrl);
-    await dbManager.updateUserInfo(user);
+    await dbManager.updateUserInfo(currentUser);
 
 
   }
