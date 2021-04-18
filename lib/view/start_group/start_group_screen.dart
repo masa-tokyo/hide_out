@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/view/start_group/components/about_group_part.dart';
+import 'package:voice_put/view/start_group/components/auto_exit_period_part.dart';
 import 'package:voice_put/view/start_group/components/group_name_part.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/start_group_view_model.dart';
@@ -16,8 +17,10 @@ class StartGroupScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GroupNamePart(),
+            AutoExitPeriodPart(),
             AboutGroupPart(),
             SizedBox(
               height: 12.0,

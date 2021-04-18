@@ -194,6 +194,29 @@ class DatabaseManager {
 
   }
 
+  Future<List<User>> getGroupMemberInfo(String groupId) async{
+    //get userIds at members of groups
+   final query = await _db.collection("groups").doc(groupId).collection("members").get();
+   if(query.docs.isEmpty) return <User>[];
+
+    var userIds = <String>[];
+    query.docs.forEach((element) {
+      userIds.add(element.data()["userId"]);
+    });
+
+
+    //get List of User at users
+   var groupMembers = <User>[];
+
+   await Future.forEach(userIds, (userId) async{
+     final user = await getUserInfoFromDbById(userId);
+     groupMembers.add(user);
+   });
+
+   return groupMembers;
+
+  }
+
 
   //--------------------------------------------------------------------------------------------------Update
 
@@ -229,6 +252,7 @@ class DatabaseManager {
    //delete post
     await _db.collection("posts").doc(postId).delete();
  }
+
 
 
 

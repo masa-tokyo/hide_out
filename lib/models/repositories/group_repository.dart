@@ -14,8 +14,6 @@ class GroupRepository extends ChangeNotifier{
   List<Group> _otherGroups = <Group>[];
   List<Group> get otherGroups => _otherGroups;
 
-
-
   Group _group;
   Group get group => _group;
 
@@ -93,9 +91,5 @@ class GroupRepository extends ChangeNotifier{
     notifyListeners();
 
   }
-
-
-
-
 
 }

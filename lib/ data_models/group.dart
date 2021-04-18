@@ -5,6 +5,7 @@ class Group {
   final String groupName;
   final String description;
   final String ownerId;
+  final int autoExitDays;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -13,6 +14,7 @@ class Group {
     @required this.groupName,
     @required this.description,
     @required this.ownerId,
+    @required this.autoExitDays,
   });
 
   Group copyWith({
@@ -20,11 +22,13 @@ class Group {
     String groupName,
     String description,
     String ownerId,
+    int autoExitDays,
   }) {
     if ((groupId == null || identical(groupId, this.groupId)) &&
         (groupName == null || identical(groupName, this.groupName)) &&
         (description == null || identical(description, this.description)) &&
-        (ownerId == null || identical(ownerId, this.ownerId))) {
+        (ownerId == null || identical(ownerId, this.ownerId)) &&
+        (autoExitDays == null || identical(autoExitDays, this.autoExitDays))) {
       return this;
     }
 
@@ -33,12 +37,13 @@ class Group {
       groupName: groupName ?? this.groupName,
       description: description ?? this.description,
       ownerId: ownerId ?? this.ownerId,
+      autoExitDays: autoExitDays ?? this.autoExitDays,
     );
   }
 
   @override
   String toString() {
-    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId}';
+    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, autoExitDays: $autoExitDays}';
   }
 
   @override
@@ -49,11 +54,16 @@ class Group {
           groupId == other.groupId &&
           groupName == other.groupName &&
           description == other.description &&
-          ownerId == other.ownerId);
+          ownerId == other.ownerId &&
+          autoExitDays == other.autoExitDays);
 
   @override
   int get hashCode =>
-      groupId.hashCode ^ groupName.hashCode ^ description.hashCode ^ ownerId.hashCode;
+      groupId.hashCode ^
+      groupName.hashCode ^
+      description.hashCode ^
+      ownerId.hashCode ^
+      autoExitDays.hashCode;
 
   factory Group.fromMap(Map<String, dynamic> map) {
     return new Group(
@@ -61,6 +71,7 @@ class Group {
       groupName: map['groupName'] as String,
       description: map['description'] as String,
       ownerId: map['ownerId'] as String,
+      autoExitDays: map['autoExitDays'] as int,
     );
   }
 
@@ -71,6 +82,7 @@ class Group {
       'groupName': this.groupName,
       'description': this.description,
       'ownerId': this.ownerId,
+      'autoExitDays': this.autoExitDays,
     } as Map<String, dynamic>;
   }
 

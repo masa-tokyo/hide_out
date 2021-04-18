@@ -15,6 +15,7 @@ class StartGroupViewModel extends ChangeNotifier {
 
   String groupName = "";
   String description = "";
+  int autoExitDays = 0;
 
   Group group;
 
@@ -28,12 +29,18 @@ class StartGroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateAutoExitPeriod(int intDays) {
+    autoExitDays = intDays;
+  }
+
+
   Future<void> registerGroup() async{
     group = Group(
       groupId: Uuid().v1(),
       groupName: groupName,
       description: description,
       ownerId: currentUser.userId,
+      autoExitDays: autoExitDays,
     );
 
     await userRepository.registerGroupIdOnUsers(group.groupId);
@@ -41,6 +48,7 @@ class StartGroupViewModel extends ChangeNotifier {
 
 
   }
+
 
 
 }
