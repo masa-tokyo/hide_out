@@ -94,10 +94,10 @@ class UserRepository extends ChangeNotifier{
 
   }
 
-  Future<void> getGroupMemberInfo(Group group) async{
+  Future<void> getUsersByGroupId(Group group) async{
     _isProcessing = true;
 
-    _groupMembers = await dbManager.getGroupMemberInfo(group.groupId);
+    _groupMembers = await dbManager.getUsersByGroupId(group.groupId);
 
     _isProcessing = false;
     notifyListeners();

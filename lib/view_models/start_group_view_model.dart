@@ -15,7 +15,7 @@ class StartGroupViewModel extends ChangeNotifier {
 
   String groupName = "";
   String description = "";
-  int autoExitDays = 0;
+  int autoExitDays = 4;
 
   Group group;
 

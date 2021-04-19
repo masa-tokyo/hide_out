@@ -18,9 +18,15 @@ class HomeScreenViewModel extends ChangeNotifier {
   List<Group> _groups = [];
   List<Group> get groups => _groups;
 
+  List<Group> _deletedGroups = [];
+  List<Group> get deletedGroups => _deletedGroups;
+
   Future<void> getMyGroup() async{
 
     await groupRepository.getGroupsByUserId(currentUser);
+
+    //for small group feature
+    await groupRepository.checkAutoExit(_groups, currentUser);
 
 
   }
@@ -28,6 +34,7 @@ class HomeScreenViewModel extends ChangeNotifier {
   onMyGroupObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
     _groups = groupRepository.myGroups;
+    _deletedGroups = groupRepository.deletedGroups;
     notifyListeners();
   }
 

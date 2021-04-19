@@ -55,7 +55,7 @@ class JoinGroupViewModel extends ChangeNotifier {
   }
 
   Future<void> getMemberInfo(Group group) async{
-    await userRepository.getGroupMemberInfo(group);
+    await userRepository.getUsersByGroupId(group);
   }
 
   onGroupMemberInfoObtained(UserRepository userRepository) {

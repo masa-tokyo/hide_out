@@ -22,7 +22,7 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
   @override
   void initState() {
     super.initState();
-    _intDays = _itemList[0].value;
+    _intDays = _itemList[1].value;
   }
 
   @override
