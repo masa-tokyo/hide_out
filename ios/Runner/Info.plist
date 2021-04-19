@@ -37,6 +37,8 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app does not use Apple Music.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app use bluetooth for listening to audio.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app does not use the information for calendar.</string>
 	<key>NSCameraUsageDescription</key>
