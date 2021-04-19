@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/utils/constants.dart';
@@ -11,6 +12,12 @@ class UserRepository extends ChangeNotifier{
   UserRepository({this.dbManager});
 
   static User currentUser;
+
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
+  List<User> _groupMembers = [];
+  List<User> get groupMembers => _groupMembers;
 
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
@@ -84,6 +91,16 @@ class UserRepository extends ChangeNotifier{
         photoUrl: currentUser.photoUrl);
     await dbManager.updateUserInfo(currentUser);
 
+
+  }
+
+  Future<void> getUsersByGroupId(Group group) async{
+    _isProcessing = true;
+
+    _groupMembers = await dbManager.getUsersByGroupId(group.groupId);
+
+    _isProcessing = false;
+    notifyListeners();
 
   }
 }

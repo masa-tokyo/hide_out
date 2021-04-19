@@ -62,6 +62,12 @@ class RecordingViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clearGroupIds() {
+    _groupIds.clear();
+
+  }
+
+
   updateRecordingButtonStatus(RecordingButtonStatus recordingButtonStatus) {
     _recordingButtonStatus = recordingButtonStatus;
 
@@ -96,6 +102,7 @@ class RecordingViewModel extends ChangeNotifier{
     _isTyping = true;
     notifyListeners();
   }
+
 
 
 

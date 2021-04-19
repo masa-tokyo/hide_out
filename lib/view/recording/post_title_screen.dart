@@ -25,7 +25,6 @@ class PostTitleScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
           PostTitleInputTextField(),
           SizedBox(
             height: 72.0,

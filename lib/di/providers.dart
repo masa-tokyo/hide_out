@@ -67,8 +67,9 @@ List<SingleChildWidget> viewModels = [
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, viewModel) =>
-        viewModel..onGroupsExceptForMineObtained(groupRepository),
+    update: (context, userRepository, groupRepository, viewModel) => viewModel
+      ..onGroupsExceptForMineObtained(groupRepository)
+      ..onGroupMemberInfoObtained(userRepository),
   ),
   ChangeNotifierProxyProvider2<GroupRepository, PostRepository, RecordingViewModel>(
     create: (context) => RecordingViewModel(

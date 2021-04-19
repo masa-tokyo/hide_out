@@ -22,6 +22,7 @@ const audioJournalButtonColor = Colors.white30;
 final startOrJoinGroupButtonColor = Colors.grey[200];
 final listTileColor = Colors.grey[100];
 final confirmDialogBackgroundColor = Colors.grey[200];
+final hintDialogBackgroundColor = Colors.grey[200];
 final buttonNotChosenColor = Colors.white;
 const buttonChosenColor = Colors.cyan;
 const notChosenButtonBorderSideColor = Colors.black54;
@@ -37,6 +38,11 @@ final currentUserListTileColor = Colors.cyan[50];
 //SendToGroup
 final sendToGroupButtonColor = Colors.cyan;
 
+//StartGroup
+final autoExitButtonColor = Colors.grey[200];
+
+
+
 
 //----------------------------------------------------------------------------------------------------TextStyle
 //Common
@@ -48,6 +54,7 @@ const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
 const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
 const timeDisplayTextStyle = TextStyle(fontSize: 48.0,);
 const instructionTextStyle = TextStyle(fontSize: 18.0);
+const helpDialogOkayTextStyle = TextStyle(fontSize: 18.0);
 
 //Login
 const googleIconButtonColor = Color(0xFF4285F4);
@@ -60,10 +67,10 @@ const newGroupIntroTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.
 const startGroupLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 
 //JoinGroupScreen
-const groupDetailNameTextStyle = TextStyle(fontSize: 22.0, color: Colors.black87, fontWeight: FontWeight.bold);
-const groupDetailAboutTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
+const groupDetailLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 const groupNameCardTextStyle = TextStyle(color: Colors.black54);
+const groupDetailMemberNameTextStyle = TextStyle(fontSize: 18.0, color: Color(0xFF424242)); //= Colors.grey[800]
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);

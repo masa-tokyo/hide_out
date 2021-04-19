@@ -42,7 +42,7 @@ class PostRepository extends ChangeNotifier{
       audioDuration: audioDuration,
       postDateTime: DateTime.now(),);
 
-    await dbManager.postRecording(post);
+    await dbManager.postRecording(post, currentUser.userId, groupId);
 
     _isProcessing = false;
     notifyListeners();

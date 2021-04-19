@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,8 @@ class SendToGroupScreen extends StatefulWidget {
 
 class _SendToGroupScreenState extends State<SendToGroupScreen> {
   List<bool> _chooseGroupButtonBooleans = [];
+  bool _isButtonAvailable = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +33,18 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Send to"),
+        leading: IconButton(
+          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+            recordingViewModel.clearGroupIds();
+          },
+        ),
       ),
       body: Center(
         child: Consumer<RecordingViewModel>(
           builder: (context, model, child) {
-            return model.isProcessing
-                ? Center(child: CircularProgressIndicator())
-                : model.groups.isEmpty
+            return model.groups.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: NewGroupPart(),
@@ -128,17 +137,28 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
   }
 
   _onDoneButtonPressed() async {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.postRecording(widget.path, widget.audioDuration);
+    if (_isButtonAvailable){
 
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.pop(context);
+      _isButtonAvailable = false;
 
-    recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+      final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+      await recordingViewModel.postRecording(widget.path, widget.audioDuration);
 
-    Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+
+      recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+
+      Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
+
+
+    } else {
+      //no posting several times
+      return null;
+    }
+
   }
 }
 

@@ -14,14 +14,16 @@ class GroupRepository extends ChangeNotifier{
   List<Group> _otherGroups = <Group>[];
   List<Group> get otherGroups => _otherGroups;
 
-
-
   Group _group;
   Group get group => _group;
 
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
+
+  List<Group> _deletedGroups = [];
+  List<Group> get deletedGroups => _deletedGroups;
+
 
   Future<void> registerGroup(Group group, User currentUser) async{
     await dbManager.registerGroup(group, currentUser);
@@ -47,6 +49,42 @@ class GroupRepository extends ChangeNotifier{
     notifyListeners();
 
    }
+
+  Future<void> checkAutoExit(List<Group> groups, User currentUser) async{
+    _isProcessing = true;
+    notifyListeners();
+
+    //since the list might have some data of the last time, empty it
+    _deletedGroups.clear();
+
+    await Future.forEach(groups, (group) async{
+
+      var lastPostDateTime = await dbManager.getLastPostDateTime(group, currentUser.userId);
+
+
+      //convert from Iso8601String to DateTime
+      var lastPostDateTimeAsDateTime = DateTime.parse(lastPostDateTime);
+
+      //calculate current DateTime - lastPostDateTime
+      var subtraction = DateTime.now().difference(lastPostDateTimeAsDateTime).inDays;
+
+      if(subtraction >= group.autoExitDays){
+        //delete data
+        await leaveGroup(group.groupId, currentUser);
+
+        //add the deleted group on deletedGroups
+        _deletedGroups.add(group);
+      }
+
+    });
+
+    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+
+    _isProcessing = false;
+    notifyListeners();
+
+  }
+
 
   Future<void> getGroupsExceptForMine(User currentUser) async{
     _isProcessing = true;
@@ -93,9 +131,6 @@ class GroupRepository extends ChangeNotifier{
     notifyListeners();
 
   }
-
-
-
 
 
 }

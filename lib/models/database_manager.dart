@@ -21,9 +21,9 @@ class DatabaseManager {
  Future<void> registerGroup(Group group, User currentUser) async{
     await _db.collection('groups').doc(group.groupId).set(group.toMap());
 
-    //set userId on members collection
+    //set userId and lastPostDateTime for small group on members collection
     await _db.collection("groups").doc(group.groupId)
-        .collection("members").doc(currentUser.userId).set({"userId": currentUser.userId});
+        .collection("members").doc(currentUser.userId).set({"userId": currentUser.userId, "lastPostDateTime": DateTime.now().toIso8601String()});
  }
 
   Future<void> registerGroupIdOnUsers(String groupId, String userId) async{
@@ -35,9 +35,9 @@ class DatabaseManager {
     await _db.collection("users").doc(userId)
         .collection("groups").doc(groupId).set({"groupId": groupId});
 
-    //add userId on "members" in "groups"
+    //add userId and lastPostDateTime on "members" in "groups"
     await _db.collection("groups").doc(groupId)
-        .collection("members").doc(userId).set({"userId": userId});
+        .collection("members").doc(userId).set({"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
 
   }
 
@@ -48,8 +48,11 @@ class DatabaseManager {
     return downloadUrl;
   }
 
- Future<void> postRecording(Post post) async{
+ Future<void> postRecording(Post post, String userId, String groupId) async{
     await _db.collection("posts").doc(post.postId).set(post.toMap());
+
+    //update lastPostDateTime at members collection of groups collection
+   await _db.collection("groups").doc(groupId).collection("members").doc(userId).update({"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
  }
 
  Future<void> insertListener(String postId, String userId) async{
@@ -97,17 +100,6 @@ class DatabaseManager {
     });
 
     return results;
-
-//anyways to read like this??
-    // var results = List<Group>();
-    // await _db.collection("groups").where("members").where("userId", isEqualTo: userId).get()
-    // .then((value) {
-    //   value.docs.forEach((element) {
-    //     results.add(Group.fromMap(element.data()));
-    //   });
-    // });
-    //
-    // return results;
 
   }
 
@@ -195,6 +187,41 @@ class DatabaseManager {
   }
 
 
+  Future<List<User>> getUsersByGroupId(String groupId) async{
+    //get userIds at members of groups
+   final query = await _db.collection("groups").doc(groupId).collection("members").get();
+   if(query.docs.isEmpty) return <User>[];
+
+    var userIds = <String>[];
+    query.docs.forEach((element) {
+      userIds.add(element.data()["userId"]);
+    });
+
+
+    //get List of User at users
+   var groupMembers = <User>[];
+
+   await Future.forEach(userIds, (userId) async{
+     final user = await getUserInfoFromDbById(userId);
+     groupMembers.add(user);
+   });
+
+   return groupMembers;
+
+  }
+
+  Future<String> getLastPostDateTime(Group group, String userId) async{
+
+    //get member doc at groups collection by groupId and userId
+    var member = await _db.collection("groups").doc(group.groupId).collection("members").doc(userId).get();
+
+    //get value from Map
+    return member["lastPostDateTime"];
+
+
+  }
+
+
   //--------------------------------------------------------------------------------------------------Update
 
   Future<void> updateGroupInfo(Group updatedGroup) async{
@@ -209,10 +236,10 @@ class DatabaseManager {
   //--------------------------------------------------------------------------------------------------Delete
 
  Future<void> leaveGroup(String groupId, String userId) async{
-    //delete userId at "groups"
+    //delete members at groups
    await _db.collection("groups").doc(groupId).collection("members").doc(userId).delete();
 
-   //delete groupId at "users"
+   //delete groupId at users
    await _db.collection("users").doc(userId).collection("groups").doc(groupId).delete();
 
  }
@@ -229,6 +256,8 @@ class DatabaseManager {
    //delete post
     await _db.collection("posts").doc(postId).delete();
  }
+
+
 
 
 
