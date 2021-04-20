@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/join_group/group_detail_screen.dart';
+import 'package:voice_put/view/common/group_detail_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 import 'dart:io';
 
@@ -60,7 +61,7 @@ class JoinGroupScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: ((_) => GroupDetailScreen(group: group, isSignedUp: isSignedUp,)),
+        builder: ((_) => GroupDetailScreen(group: group, from: GroupDetailScreenOpenMode.JOIN,)),
       ),
     );
   }

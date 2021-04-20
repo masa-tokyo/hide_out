@@ -76,7 +76,7 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
             )
           ),
             onPressed: () => _controller.text.isEmpty ? null : _onNextButtonPressed(),
-            child: Text("Next", style: enablingButtonTextStyle,)),
+            child: Text("Next", style: enabledButtonTextStyle,)),
       ),
     );
   }

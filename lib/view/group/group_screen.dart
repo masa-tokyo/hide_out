@@ -6,8 +6,9 @@ import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/dialog/confirm_dialog.dart';
-import 'package:voice_put/view/group/group_info_detail_screen.dart';
+import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
+import 'package:voice_put/view/group/group_detail_edit_screen.dart';
+import 'package:voice_put/view/common/group_detail_screen.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
@@ -25,23 +26,23 @@ class GroupScreen extends StatelessWidget {
     //for update of groupName
     Future(() => groupViewModel.getGroupInfo(group.groupId));
 
-    return Scaffold(
-      floatingActionButton: _floatingActionButton(context),
-      appBar: AppBar(
-        title: Consumer<GroupViewModel>(
-          builder: (context, model, child) {
-            return model.isProcessing ? Text("") : Text(model.group.groupName);
-          },
-        ),
-        actions: [_groupEditButton(context)],
-      ),
-      body: RefreshIndicator(
-          onRefresh: () async {
-            await groupViewModel.getGroupPosts(group);
-            //in order to update the group name after the owner edit it
-            await groupViewModel.getGroupInfo(group.groupId);
-          },
-          child: _postListView(context)),
+    return Consumer<GroupViewModel>(
+        builder: (context, model, child){
+          return Scaffold(
+            floatingActionButton: _floatingActionButton(context),
+            appBar: AppBar(
+                  title: model.isProcessing ? Text("") : Text(model.group.groupName),
+                  actions: [_groupEditButton(context, model)],
+                ),
+            body: RefreshIndicator(
+                onRefresh: () async {
+                  await groupViewModel.getGroupPosts(group);
+                  //in order to update the group name after the owner edit it
+                  await groupViewModel.getGroupInfo(group.groupId);
+                },
+                child: _postListView(context, model)),
+          );
+        },
     );
   }
 
@@ -75,7 +76,7 @@ class GroupScreen extends StatelessWidget {
 
   //---------------------------------------------------------------------------------------------- AppBar
 
-  Widget _groupEditButton(BuildContext context) {
+  Widget _groupEditButton(BuildContext context, GroupViewModel model) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     return PopupMenuButton(
         color: popupMenuButtonColor,
@@ -83,14 +84,14 @@ class GroupScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(4.0),
         ),
         icon: Icon(Icons.more_vert),
-        onSelected: (value) => _onPopupMenuSelected(context, value),
+        onSelected: (value) => _onPopupMenuSelected(context, value, model),
         itemBuilder: (context) {
           if (groupViewModel.currentUser.userId == group.ownerId) {
             return [
               PopupMenuItem(
                   value: GroupEditMenu.EDIT,
                   child: Text(
-                    "Edit Group Info",
+                    "Group Info",
                     style: groupEditMenuTextStyle,
                   )),
               PopupMenuItem(
@@ -103,6 +104,12 @@ class GroupScreen extends StatelessWidget {
           } else {
             return [
               PopupMenuItem(
+                  value: GroupEditMenu.NO_EDIT,
+                  child: Text(
+                    "Group Info",
+                    style: groupEditMenuTextStyle,
+                  )),
+              PopupMenuItem(
                   value: GroupEditMenu.LEAVE,
                   child: Text(
                     "Leave Group",
@@ -113,7 +120,7 @@ class GroupScreen extends StatelessWidget {
         });
   }
 
-  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu) {
+  _onPopupMenuSelected(BuildContext context, GroupEditMenu selectedMenu, GroupViewModel model) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     switch (selectedMenu) {
@@ -122,11 +129,16 @@ class GroupScreen extends StatelessWidget {
             context,
             _createRoute(
                 context,
-                GroupInfoDetailScreen(
-                  isEditable: true,
-                  group: group,
+                GroupDetailEditScreen(
+                  group: model.group,
                 )));
         break;
+
+      case GroupEditMenu.NO_EDIT:
+        Navigator.push(context,
+        MaterialPageRoute(builder: (_) => GroupDetailScreen(group: group, from: GroupDetailScreenOpenMode.GROUP)));
+        break;
+
       case GroupEditMenu.LEAVE:
         showConfirmDialog(
             context: context,
@@ -149,14 +161,12 @@ class GroupScreen extends StatelessWidget {
 
 //------------------------------------------------------------------------------------------------ body
 
-  Widget _postListView(BuildContext context) {
+  Widget _postListView(BuildContext context, GroupViewModel model) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Consumer<GroupViewModel>(
-        builder: (context, model, child) {
-          return model.isProcessing
+      child: model.isProcessing
               ? Center(
             child: CircularProgressIndicator(),
           )
@@ -244,7 +254,6 @@ class GroupScreen extends StatelessWidget {
                         }) : Container(),
                   ],
                 );
-              });
         },
       ),
     );

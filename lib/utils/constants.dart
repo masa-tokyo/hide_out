@@ -8,6 +8,7 @@ enum RecordingButtonStatus {
 enum GroupEditMenu {
   EDIT,
   LEAVE,
+  NO_EDIT,
 }
 
 enum LoginScreenStatus {
@@ -19,4 +20,10 @@ enum LoginScreenStatus {
 enum RecordingOpenMode {
   FROM_HOME,
   FROM_GROUP,
+}
+
+enum GroupDetailScreenOpenMode{
+  LOGIN,
+  JOIN,
+  GROUP,
 }

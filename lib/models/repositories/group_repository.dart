@@ -39,7 +39,9 @@ class GroupRepository extends ChangeNotifier{
     return await dbManager.isNewGroupAvailable(currentUser.userId);
   }
 
-   Future<void> getGroupsByUserId(User currentUser) async{
+
+
+  Future<void> getMyGroup(User currentUser) async{
     _isProcessing = true;
     notifyListeners();
 
@@ -48,11 +50,12 @@ class GroupRepository extends ChangeNotifier{
     _isProcessing = false;
     notifyListeners();
 
-   }
-
-  Future<void> checkAutoExit(List<Group> groups, User currentUser) async{
+  }
+  Future<void> getMyGroupWithAutoExitChecked(List<Group> groups, User currentUser) async{
     _isProcessing = true;
     notifyListeners();
+
+    //check auto-exit period -->
 
     //since the list might have some data of the last time, empty it
     _deletedGroups.clear();
@@ -70,13 +73,15 @@ class GroupRepository extends ChangeNotifier{
 
       if(subtraction >= group.autoExitDays){
         //delete data
-        await leaveGroup(group.groupId, currentUser);
+        await leaveGroup(group, currentUser);
 
-        //add the deleted group on deletedGroups
+        //add the deleted group for showing dialog
         _deletedGroups.add(group);
       }
 
     });
+
+    // <--check auto-exit period
 
     _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
 
@@ -109,7 +114,7 @@ class GroupRepository extends ChangeNotifier{
 
   }
 
-  Future<void> updateInfo(Group updatedGroup) async{
+  Future<void> updateGroupInfo(Group updatedGroup) async{
     await dbManager.updateGroupInfo(updatedGroup);
   }
 

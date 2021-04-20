@@ -49,12 +49,14 @@ final autoExitButtonColor = Colors.grey[200];
 const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.black87);
 const listTileTitleTextStyle = TextStyle(fontSize: 18.0,);
-const enablingButtonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+const enabledButtonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
 const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
 const timeDisplayTextStyle = TextStyle(fontSize: 48.0,);
 const instructionTextStyle = TextStyle(fontSize: 18.0);
 const helpDialogOkayTextStyle = TextStyle(fontSize: 18.0);
+const unavailableButtonTextStyle = TextStyle(color: Color(0xFF757575));//= Colors.grey[600]
+
 
 //Login
 const googleIconButtonColor = Color(0xFF4285F4);

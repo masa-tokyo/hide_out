@@ -11,9 +11,10 @@ import 'package:voice_put/models/repositories/user_repository.dart';
 class GroupViewModel extends ChangeNotifier {
   final GroupRepository groupRepository;
   final PostRepository postRepository;
+  final UserRepository userRepository;
   final AudioPlayManager audioPlayManager;
 
-  GroupViewModel({this.groupRepository, this.postRepository, this.audioPlayManager});
+  GroupViewModel({this.groupRepository, this.postRepository, this.userRepository, this.audioPlayManager});
 
   User get currentUser => UserRepository.currentUser;
 
@@ -30,6 +31,10 @@ class GroupViewModel extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  List<User> _groupMembers = [];
+  List<User> get groupMembers => _groupMembers;
+
+
   bool _isAudioFinished = false;
   bool get isAudioFinished => _isAudioFinished;
 
@@ -38,6 +43,9 @@ class GroupViewModel extends ChangeNotifier {
 
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
+
+  int autoExitDays = 4;
+
 
   //-------------------------------------------------------------------------------------------------- Post Repository
 
@@ -63,6 +71,7 @@ class GroupViewModel extends ChangeNotifier {
   Future<bool> isListened(Post post) async{
     return await postRepository.isListened(post.postId);
   }
+
 
   //-------------------------------------------------------------------------------------------------- Audio methods
 
@@ -118,23 +127,39 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateGroupNameAndDescription() async{
-    await groupRepository.updateInfo(group.copyWith(groupName: groupName, description: description));
+  void updateAutoExitPeriod(int intDays) {
+    autoExitDays = intDays;
+    notifyListeners();
   }
 
-  Future<void> updateGroupName() async{
-    await groupRepository.updateInfo(group.copyWith(groupName: groupName,));
+  Future<void> updateGroupInfo(String groupId) async{
+    await groupRepository.updateGroupInfo(group.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
 
+    //in case of showing updated Auto-Exit Period
+    await groupRepository.getGroupInfo(groupId);
   }
 
-  Future<void> updateDescription() async{
-    await groupRepository.updateInfo(group.copyWith(description: description));
-
+  onGroupInfoUpdated (GroupRepository groupRepository) {
+    _group = groupRepository.group;
+    notifyListeners();
   }
 
   Future<void> leaveGroup(Group group) async{
     await groupRepository.leaveGroup(group, currentUser);
   }
+
+  Future<void> getMemberInfo(Group group) async{
+    await userRepository.getUsersByGroupId(group);
+
+  }
+
+  onGroupMemberInfoObtained(UserRepository userRepository) {
+    _isProcessing = userRepository.isProcessing;
+    _groupMembers = userRepository.groupMembers;
+    notifyListeners();
+
+  }
+
 
 
 

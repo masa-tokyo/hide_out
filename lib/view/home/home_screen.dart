@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/dialog/help_dialog.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
 

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/view/start_group/components/about_group_part.dart';
-import 'package:voice_put/view/start_group/components/auto_exit_period_part.dart';
+import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
 import 'package:voice_put/view/start_group/components/group_name_part.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/start_group_view_model.dart';
@@ -20,7 +19,7 @@ class StartGroupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GroupNamePart(),
-            AutoExitPeriodPart(),
+            AutoExitPeriodPart(isBeginningGroup: true,),
             AboutGroupPart(),
             SizedBox(
               height: 12.0,
@@ -46,7 +45,7 @@ class StartGroupScreen extends StatelessWidget {
                       : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
                   shape: MaterialStateProperty.all<OutlinedBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(16.0),
                     ),
                   ),
                 ),
@@ -55,7 +54,7 @@ class StartGroupScreen extends StatelessWidget {
                     : null,
                 child: Text(
                   "Done",
-                  style: enablingButtonTextStyle,
+                  style: enabledButtonTextStyle,
                 ),
               ),
             ));
@@ -71,22 +70,5 @@ class StartGroupScreen extends StatelessWidget {
     Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
   }
 
-  Route<Object> _createRoute(BuildContext context) {
-    final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
 
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            GroupScreen(group: startGroupViewModel.group),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(0.0, 1.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        });
-  }
 }

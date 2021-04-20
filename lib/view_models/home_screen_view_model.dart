@@ -23,10 +23,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   Future<void> getMyGroup() async{
 
-    await groupRepository.getGroupsByUserId(currentUser);
-
-    //for small group feature
-    await groupRepository.checkAutoExit(_groups, currentUser);
+    await groupRepository.getMyGroupWithAutoExitChecked(_groups, currentUser);
 
 
   }

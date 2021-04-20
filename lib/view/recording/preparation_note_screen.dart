@@ -115,7 +115,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
             onPressed: () => _isNextButtonAvailable ? _openRecordingScreen() : null,
             child: Text(
               "Next",
-              style: enablingButtonTextStyle,
+              style: enabledButtonTextStyle,
             )),
       ),
     );
