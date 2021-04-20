@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/components/rounded_raised_button.dart';
+import 'package:voice_put/view/common/items/rounded_raised_button.dart';
 import 'package:voice_put/view/join_group/join_group_screen.dart';
 import 'package:voice_put/view/start_group/start_group_screen.dart';
 

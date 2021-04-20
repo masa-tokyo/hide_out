@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/view/common/dialog/help_dialog.dart';
+import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
-
 
 class MyGroupPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
     Future(() => homeScreenViewModel.getMyGroup());
-
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,20 +26,14 @@ class MyGroupPart extends StatelessWidget {
         SizedBox(
           height: 8.0,
         ),
-        Consumer<HomeScreenViewModel>(
-          builder: (context, model, child) {
-            if (model.isProcessing) {
-              return Center(
-                  child: CircularProgressIndicator());
+        Selector<HomeScreenViewModel, Tuple3<bool, List<Group>, List<Group>>>(
+          selector: (context, viewModel) => Tuple3(viewModel.isProcessing, viewModel.deletedGroups, viewModel.groups),
+          builder: (context, data, child) {
+            if (data.item1) {
+              return Center(child: CircularProgressIndicator());
             } else {
-              if (model.groups.isEmpty) {
-                return _newGroupIntro();
-              } else {
-
-                _showDialog(context, model);
-
-                return _myGroupListView(model);
-              }
+              _showDialog(context, data.item2);
+              return data.item3.isEmpty ? _newGroupIntro() : _myGroupListView(data.item3);
             }
           },
         ),
@@ -70,51 +63,35 @@ class MyGroupPart extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
-              "↓ Join/Start a Group",
+              "*Join/Start Group below",
               style: newGroupIntroTextStyle,
-              textAlign: TextAlign.center,),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),
     );
   }
 
-  void _showDialog(BuildContext context, HomeScreenViewModel model) async{
+  void _showDialog(BuildContext context, List<Group> deletedGroups) async {
 
-    //todo [check] why pop up several times even when isProcessing is true
-
-    if(model.deletedGroups.isNotEmpty){
-      model.deletedGroups.forEach((
-          deletedGroup) {
-        Future(() =>
-            showHelpDialog(
-                context: context,
-                contentString: 'You have existed from "${deletedGroup.groupName}". Please enter again if you want.',
-                okayString: "Okay"));
+    if (deletedGroups.isNotEmpty) {
+      deletedGroups.forEach((deletedGroup) {
+        Future(() => showHelpDialog(
+            context: context,
+            contentString:
+                'You have existed from "${deletedGroup.groupName}". Please enter again if you want.',
+            okayString: "Okay"));
       });
-
-      //todo [check] if it does not work, change it to Future.forEach
-      // await Future.forEach(model.deletedGroups, (deletedGroup) {
-      //   Future(() =>
-      //       showHelpDialog(
-      //           context: context,
-      //           contentString: 'You have existed from "${deletedGroup.groupName}". Please enter again if you want.',
-      //           okayString: "Okay"));
-      // });
-
-
     }
-
-
   }
 
-
-  Widget _myGroupListView(HomeScreenViewModel model) {
+  Widget _myGroupListView(List<Group> groups) {
     return ListView.builder(
         shrinkWrap: true,
-        itemCount: model.groups.length,
+        itemCount: groups.length,
         itemBuilder: (context, int index) {
-          final group = model.groups[index];
+          final group = groups[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
@@ -142,6 +119,4 @@ class MyGroupPart extends StatelessWidget {
           );
         });
   }
-
-
 }

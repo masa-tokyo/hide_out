@@ -51,7 +51,7 @@ class PostTitleScreen extends StatelessWidget {
             onPressed: () => _onButtonPressed(context),
             child: Text(from == RecordingOpenMode.FROM_HOME
               ? "Next" : "Done",
-              style: enablingButtonTextStyle,),
+              style: enabledButtonTextStyle,),
         ),
       ),
     );

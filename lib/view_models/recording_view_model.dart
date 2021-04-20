@@ -74,7 +74,7 @@ class RecordingViewModel extends ChangeNotifier{
   }
 
   Future<void> getMyGroup() async{
-    await groupRepository.getGroupsByUserId(currentUser);
+    await groupRepository.getMyGroup(currentUser);
   }
 
   onMyGroupObtained(GroupRepository groupRepository) {

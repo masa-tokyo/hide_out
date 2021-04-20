@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/view/common/dialog/help_dialog.dart';
+import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 
@@ -10,9 +11,9 @@ import '../../utils/style.dart';
 
 class GroupDetailScreen extends StatelessWidget {
   final Group group;
-  final bool isSignedUp;
+  final GroupDetailScreenOpenMode from;
 
-  GroupDetailScreen({@required this.group, @required this.isSignedUp});
+  GroupDetailScreen({@required this.group, @required this.from});
 
   @override
   Widget build(BuildContext context) {
@@ -23,61 +24,84 @@ class GroupDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(group.groupName),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 36.0,
-          ),
-          _memberPart(context),
-          SizedBox(
-            height: 12.0,
-          ),
-          _periodPart(context),
-          SizedBox(
-            height: 16.0,
-          ),
-          _aboutPart(),
-          SizedBox(
-            height: 24.0,
-          ),
-          _joinButton(context)
-        ],
+      body: Consumer<JoinGroupViewModel>(
+        builder: (context, model, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 36.0,
+              ),
+              _memberPart(context, model),
+              SizedBox(
+                height: 12.0,
+              ),
+              _periodPart(context),
+              SizedBox(
+                height: 16.0,
+              ),
+              _aboutPart(),
+              SizedBox(
+                height: 24.0,
+              ),
+              from == GroupDetailScreenOpenMode.LOGIN || from == GroupDetailScreenOpenMode.JOIN
+                  ? model.groupMembers.length < 5
+                      ? _joinButton(context)
+                      : _unAvailableButton(context)
+                  : Container()
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _memberPart(BuildContext context) {
+  Widget _memberPart(BuildContext context, JoinGroupViewModel model) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Consumer<JoinGroupViewModel>(builder: (context, model, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Member",
-              style: groupDetailLabelTextStyle,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: model.isProcessing
-                  ? Center(child: CircularProgressIndicator())
-                  : model.groupMembers.isEmpty
-                    ? Text("-No Member-", style: groupDetailMemberNameTextStyle ,)
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                "Member",
+                style: groupDetailLabelTextStyle,
+              ),
+              SizedBox(
+                width: 8.0,
+              ),
+              Text(
+                "(${model.groupMembers.length} / 5)",
+                style: groupDetailLabelTextStyle,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: model.isProcessing
+                ? Center(child: CircularProgressIndicator())
+                : model.groupMembers.isEmpty
+                    ? Text(
+                        "-No Member-",
+                        style: groupDetailMemberNameTextStyle,
+                      )
                     : ListView.builder(
-                      itemCount: model.groupMembers.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, int index) {
-                        final member = model.groupMembers[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
-                          child: Text(member.inAppUserName, style: groupDetailMemberNameTextStyle,), //todo connect to user profile
-                        );
-                      }),
-            ),
-          ],
-        );
-      }),
+                        itemCount: model.groupMembers.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, int index) {
+                          final member = model.groupMembers[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0),
+                            child: Text(
+                              member.inAppUserName,
+                              style: groupDetailMemberNameTextStyle,
+                            ), //todo connect to user profile
+                          );
+                        }),
+          ),
+        ],
+      ),
     );
   }
 
@@ -170,12 +194,15 @@ class GroupDetailScreen extends StatelessWidget {
             backgroundColor: MaterialStateProperty.all<Color>(buttonEnabledColor),
             shape: MaterialStateProperty.all<OutlinedBorder>(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(16.0),
               ),
             ),
           ),
           onPressed: () => _joinButtonPressed(context, group),
-          child: Text("Join"),
+          child: Text(
+            "Join",
+            style: enabledButtonTextStyle,
+          ),
         ),
       ),
     );
@@ -186,11 +213,18 @@ class GroupDetailScreen extends StatelessWidget {
     await joinGroupViewModel.chooseGroup(group);
     await joinGroupViewModel.joinGroup();
 
-    Navigator.pop(context);
-    Navigator.pop(context);
-
-    if (isSignedUp) {
-      Navigator.pushReplacement(context, _createRoute(context, HomeScreen()));
+    switch (from) {
+      case GroupDetailScreenOpenMode.LOGIN:
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pushReplacement(context, _createRoute(context, HomeScreen()));
+        break;
+      case GroupDetailScreenOpenMode.JOIN:
+        Navigator.pop(context);
+        Navigator.pop(context);
+        break;
+      case GroupDetailScreenOpenMode.GROUP:
+        break;
     }
 
     Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
@@ -210,5 +244,32 @@ class GroupDetailScreen extends StatelessWidget {
             child: child,
           );
         });
+  }
+
+  Widget _unAvailableButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        width: double.infinity,
+        child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+              ),
+              elevation: MaterialStateProperty.all(0),
+            ),
+            onPressed: () => showHelpDialog(
+                context: context,
+                contentString: "[Unavailable] Wait for a vacancy!",
+                okayString: "Okay"),
+            child: Text(
+              "This group is full.",
+              style: unavailableButtonTextStyle,
+            )),
+      ),
+    );
   }
 }

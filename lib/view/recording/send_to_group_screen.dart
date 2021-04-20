@@ -127,7 +127,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                 ),
                 child: Text(
                   "Done",
-                  style: enablingButtonTextStyle,
+                  style: enabledButtonTextStyle,
                 ),
                 onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
           },

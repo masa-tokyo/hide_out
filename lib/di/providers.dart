@@ -80,17 +80,20 @@ List<SingleChildWidget> viewModels = [
       ..onRecordingPosted(postRepository)
       ..onMyGroupObtained(groupRepository),
   ),
-  ChangeNotifierProxyProvider3<GroupRepository, PostRepository, AudioPlayManager, GroupViewModel>(
+  ChangeNotifierProxyProvider4<UserRepository, GroupRepository, PostRepository, AudioPlayManager, GroupViewModel>(
     create: (context) => GroupViewModel(
+      userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
       audioPlayManager: Provider.of<AudioPlayManager>(context, listen: false),
     ),
-    update: (context, groupRepository, postRepository, audioPlayManager, viewModel) => viewModel
+    update: (context, userRepository, groupRepository, postRepository, audioPlayManager, viewModel) => viewModel
       ..onGroupPostsObtained(postRepository)
       ..onAudioFinished(audioPlayManager)
       ..onAnotherPlayerStopped(audioPlayManager)
       ..onStatusUpdated(audioPlayManager)
-      ..onGroupInfoObtained(groupRepository),
-  ),
+      ..onGroupInfoObtained(groupRepository)
+      ..onGroupMemberInfoObtained(userRepository)
+      ..onGroupInfoUpdated(groupRepository),
+),
 ];

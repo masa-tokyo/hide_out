@@ -10,7 +10,7 @@ showHelpDialog(
     ){
   showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (_) => HelpDialog(
         contentString: contentString,
         okayString: okayString,
