@@ -39,7 +39,7 @@ class ConfirmDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       backgroundColor: confirmDialogBackgroundColor,
-      title: Text(titleString),
+      title: Center(child: Text(titleString)),
       content: Text(contentString),
       actions: [
         TextButton(

@@ -43,6 +43,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     Future(() => groupViewModel.getMemberInfo(widget.group));
+    Future(() => groupViewModel.updateAutoExitPeriod(widget.group.autoExitDays));
 
     return Scaffold(
       appBar: AppBar(
@@ -54,44 +55,44 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
       ),
       body: SingleChildScrollView(
         child: Consumer<GroupViewModel>(
-            builder: (context, model, child){
-              return RefreshIndicator(
-                onRefresh: () async {
-                  //in order to update after the owner edit the info and open it again
-                  await groupViewModel.getGroupInfo(widget.group.groupId);
-                  _groupNameController.text = groupViewModel.group.groupName;
-                  _descriptionController.text = groupViewModel.group.description;
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 24.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text("Group Name"),
-                    ),
-                    _groupNameTextInput(),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    _memberInfo(model),
-                    AutoExitPeriodPart(isBeginningGroup: false, group: model.group,),
-                    SizedBox(height: 16.0,),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text("About"),
-                    ),
-                    _descriptionTextInput(),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    _updateButton(model),
-                  ],
-                ),
-              );
-            },),
+          builder: (context, model, child) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                //in order to update after the owner edit the info and open it again
+                await groupViewModel.getGroupInfo(widget.group.groupId);
+                _groupNameController.text = groupViewModel.group.groupName;
+                _descriptionController.text = groupViewModel.group.description;
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 24.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text("Group Name"),
+                  ),
+                  _groupNameTextInput(),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  _memberInfo(model),
+                  AutoExitPeriodPart(isBeginningGroup: false, group: model.group,),
+                  SizedBox(height: 16.0,),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text("About"),
+                  ),
+                  _descriptionTextInput(),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  _updateButton(model),
+                ],
+              ),
+            );
+          },),
       ),
     );
   }
@@ -139,7 +140,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
             child: model.isProcessing
                 ? Center(child: CircularProgressIndicator())
                 : model.groupMembers.isEmpty
-                ? Text("-No Member-", style: groupDetailMemberNameTextStyle ,)
+                ? Text("-No Member-", style: groupDetailMemberNameTextStyle,)
                 : ListView.builder(
                 itemCount: model.groupMembers.length,
                 shrinkWrap: true,
@@ -147,7 +148,8 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
                   final member = model.groupMembers[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Text(member.inAppUserName, style: groupDetailMemberNameTextStyle,), //todo connect to user profile
+                    child: Text(member.inAppUserName,
+                      style: groupDetailMemberNameTextStyle,),
                   );
                 }),
           ),
@@ -180,48 +182,46 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
   Widget _updateButton(GroupViewModel model) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Container(
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: (_groupNameController.text != groupViewModel.group.groupName ||
-                _descriptionController.text != groupViewModel.group.description || groupViewModel.autoExitDays != widget.group.autoExitDays)
-                ? MaterialStateProperty.all<Color>(buttonEnabledColor)
-                : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: (_groupNameController.text != groupViewModel.group.groupName ||
+                      _descriptionController.text != groupViewModel.group.description ||
+                      model.autoExitDays != widget.group.autoExitDays
+                  ) ? MaterialStateProperty.all<Color>(buttonEnabledColor)
+                      : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  )
               ),
-            )
+              onPressed: () => _updateInfo(model),
+              child: Text(
+                  "Update",
+                  style: enabledButtonTextStyle
+              ),
+            ),
           ),
-          onPressed: () => _updateInfo(),
-          child: Text(
-            "Update",
-            style: enabledButtonTextStyle
-          ),
-        ),
-      ),
-    );
+        );
   }
 
-  _updateInfo() async {
+  _updateInfo(GroupViewModel model) async {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     if (_groupNameController.text != groupViewModel.group.groupName ||
-        _descriptionController.text != groupViewModel.group.description || groupViewModel.autoExitDays != widget.group.autoExitDays){
+        _descriptionController.text != groupViewModel.group.description ||
+        model.autoExitDays != widget.group.autoExitDays) {
       await groupViewModel.updateGroupInfo(widget.group.groupId);
       Navigator.pop(context);
 
       Fluttertoast.showToast(msg: "Updated", gravity: ToastGravity.CENTER);
-
     }
-
-
-
   }
-
 
 
 }

@@ -26,13 +26,15 @@ class MyGroupPart extends StatelessWidget {
         SizedBox(
           height: 8.0,
         ),
-        Selector<HomeScreenViewModel, Tuple3<bool, List<Group>, List<Group>>>(
-          selector: (context, viewModel) => Tuple3(viewModel.isProcessing, viewModel.deletedGroups, viewModel.groups),
+        Selector<HomeScreenViewModel, Tuple4<bool, List<Group>, List<Group>, List<String>>>(
+          selector: (context, viewModel) => Tuple4(viewModel.isProcessing, viewModel.autoExitGroups, viewModel.groups, viewModel.closedGroupNames),
           builder: (context, data, child) {
             if (data.item1) {
               return Center(child: CircularProgressIndicator());
+
             } else {
-              _showDialog(context, data.item2);
+              _showAutoExitDialog(context, data.item2);
+              _showClosedGroupNameDialog(context, data.item4);
               return data.item3.isEmpty ? _newGroupIntro() : _myGroupListView(data.item3);
             }
           },
@@ -73,18 +75,43 @@ class MyGroupPart extends StatelessWidget {
     );
   }
 
-  void _showDialog(BuildContext context, List<Group> deletedGroups) async {
+  void _showAutoExitDialog(BuildContext context, List<Group> autoExitGroups) async {
+    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
 
-    if (deletedGroups.isNotEmpty) {
-      deletedGroups.forEach((deletedGroup) {
+    if (autoExitGroups.isNotEmpty) {
+      autoExitGroups.forEach((autoExitGroup) {
         Future(() => showHelpDialog(
             context: context,
+            title: Text("Auto-Exit Period"),
             contentString:
-                'You have existed from "${deletedGroup.groupName}". Please enter again if you want.',
-            okayString: "Okay"));
+            'You have exited from "${autoExitGroup.groupName}". Please enter again if you want.',
+            okayString: "Okay",
+            onConfirmed: (){
+              homeScreenViewModel.deleteAutoExitGroup(autoExitGroup);
+            }));
       });
     }
   }
+
+  void _showClosedGroupNameDialog(BuildContext context, List<String> closedGroupNames) async {
+    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+
+    if (closedGroupNames.isNotEmpty) {
+      closedGroupNames.forEach((groupName) {
+        Future(() => showHelpDialog(
+            context: context,
+            title: Text("We are sorry!"),
+            contentString:
+            'Your group,"$groupName" was closed by the group owner.',
+            okayString: "Okay",
+            onConfirmed: (){
+              homeScreenViewModel.deleteClosedGroupName(groupName);
+
+            }));
+      });
+    }
+  }
+
 
   Widget _myGroupListView(List<Group> groups) {
     return ListView.builder(

@@ -96,7 +96,7 @@ class GroupDetailScreen extends StatelessWidget {
                             child: Text(
                               member.inAppUserName,
                               style: groupDetailMemberNameTextStyle,
-                            ), //todo connect to user profile
+                            ),
                           );
                         }),
           ),
@@ -147,6 +147,7 @@ class GroupDetailScreen extends StatelessWidget {
               contentString:
                   "Members will be kicked out of the group after certain period of time.",
               okayString: "Okay",
+              onConfirmed: ()=> null,
             ));
   }
 
@@ -264,7 +265,8 @@ class GroupDetailScreen extends StatelessWidget {
             onPressed: () => showHelpDialog(
                 context: context,
                 contentString: "[Unavailable] Wait for a vacancy!",
-                okayString: "Okay"),
+                okayString: "Okay",
+              onConfirmed: ()=> null,),
             child: Text(
               "This group is full.",
               style: unavailableButtonTextStyle,
