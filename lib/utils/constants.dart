@@ -9,6 +9,7 @@ enum GroupEditMenu {
   EDIT,
   LEAVE,
   NO_EDIT,
+  CLOSE,
 }
 
 enum LoginScreenStatus {

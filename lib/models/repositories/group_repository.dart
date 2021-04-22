@@ -21,8 +21,11 @@ class GroupRepository extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
-  List<Group> _deletedGroups = [];
-  List<Group> get deletedGroups => _deletedGroups;
+  List<Group> _autoExitGroups = [];
+  List<Group> get autoExitGroups => _autoExitGroups;
+
+  List<String> _closedGroupNames = [];
+  List<String> get closedGroupNames => _closedGroupNames;
 
 
   Future<void> registerGroup(Group group, User currentUser) async{
@@ -47,20 +50,27 @@ class GroupRepository extends ChangeNotifier{
 
     _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
 
+
+    //check whether any group was closed by the owner
+    _closedGroupNames = await dbManager.getClosedGroupNames(currentUser.userId);
+
+
     _isProcessing = false;
     notifyListeners();
 
   }
-  Future<void> getMyGroupWithAutoExitChecked(List<Group> groups, User currentUser) async{
+
+  Future<void> getMyGroupWithAutoExitChecked(User currentUser) async{
     _isProcessing = true;
     notifyListeners();
 
+    //get groups from db once
+    var groupsForNow = await dbManager.getGroupsByUserId(currentUser.userId);
+
+
     //check auto-exit period -->
 
-    //since the list might have some data of the last time, empty it
-    _deletedGroups.clear();
-
-    await Future.forEach(groups, (group) async{
+    await Future.forEach(groupsForNow, (group) async{
 
       var lastPostDateTime = await dbManager.getLastPostDateTime(group, currentUser.userId);
 
@@ -76,17 +86,32 @@ class GroupRepository extends ChangeNotifier{
         await leaveGroup(group, currentUser);
 
         //add the deleted group for showing dialog
-        _deletedGroups.add(group);
+        _autoExitGroups.add(group);
       }
 
     });
 
     // <--check auto-exit period
 
+
+    //check whether any group was closed by the owner
+    _closedGroupNames = await dbManager.getClosedGroupNames(currentUser.userId);
+
+
     _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
 
     _isProcessing = false;
     notifyListeners();
+
+  }
+
+  void deleteAutoExitGroup(Group confirmedGroup) {
+    _autoExitGroups.remove(group);
+  }
+
+  Future<void> deleteClosedGroupName(User currentUser, String groupName) async{
+    _closedGroupNames.remove(groupName);
+    await dbManager.deleteClosedGroupName(currentUser.userId, groupName);
 
   }
 
@@ -124,6 +149,7 @@ class GroupRepository extends ChangeNotifier{
 
     _group = await dbManager.getGroupInfoByGroupId(groupId);
 
+
     _isProcessing = false;
     notifyListeners();
   }
@@ -136,6 +162,22 @@ class GroupRepository extends ChangeNotifier{
     notifyListeners();
 
   }
+
+  Future<Group> returnGroupInfo(String groupId) async{
+    return await dbManager.getGroupInfoByGroupId(groupId);
+  }
+
+  Future<void> closeGroup(Group group, User currentUser) async{
+
+    await dbManager.closeGroup(group.groupId, currentUser.userId,group.groupName);
+
+    //update group information for MyGroup@HomeScreen
+    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+
+    notifyListeners();
+  }
+
+
 
 
 }

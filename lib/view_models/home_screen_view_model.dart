@@ -18,12 +18,16 @@ class HomeScreenViewModel extends ChangeNotifier {
   List<Group> _groups = [];
   List<Group> get groups => _groups;
 
-  List<Group> _deletedGroups = [];
-  List<Group> get deletedGroups => _deletedGroups;
+  List<Group> _autoExitGroups = [];
+  List<Group> get autoExitGroups => _autoExitGroups;
+
+  List<String> _closedGroupNames = [];
+  List<String> get closedGroupNames => _closedGroupNames;
+
 
   Future<void> getMyGroup() async{
 
-    await groupRepository.getMyGroupWithAutoExitChecked(_groups, currentUser);
+    await groupRepository.getMyGroupWithAutoExitChecked(currentUser);
 
 
   }
@@ -31,8 +35,29 @@ class HomeScreenViewModel extends ChangeNotifier {
   onMyGroupObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
     _groups = groupRepository.myGroups;
-    _deletedGroups = groupRepository.deletedGroups;
+    _autoExitGroups = groupRepository.autoExitGroups;
+    _closedGroupNames = groupRepository.closedGroupNames;
     notifyListeners();
+  }
+
+  void deleteAutoExitGroup(Group confirmedGroup) {
+    for (Group group in _autoExitGroups){
+      if (group == confirmedGroup){
+        _autoExitGroups.remove(group);
+        groupRepository.deleteAutoExitGroup(group);
+      }
+      return;
+    }
+
+  }
+
+  void deleteClosedGroupName(String confirmedGroupName) {
+    for (String groupName in _closedGroupNames) {
+      if (groupName == confirmedGroupName) {
+        _closedGroupNames.remove(groupName);
+        groupRepository.deleteClosedGroupName(currentUser, groupName);
+      }
+    }
   }
 
 

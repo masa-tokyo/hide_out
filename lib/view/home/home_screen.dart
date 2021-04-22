@@ -19,7 +19,9 @@ class HomeScreen extends StatelessWidget {
         floatingActionButton: _floatingActionButton(context),
         body: SingleChildScrollView(
           child: RefreshIndicator(
-            onRefresh: () => homeScreenViewModel.getMyGroup(),
+            onRefresh: () async{
+              await homeScreenViewModel.getMyGroup();
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -80,4 +82,5 @@ class HomeScreen extends StatelessWidget {
           );
         });
   }
+
 }

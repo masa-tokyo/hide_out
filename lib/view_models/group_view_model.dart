@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
@@ -14,7 +13,8 @@ class GroupViewModel extends ChangeNotifier {
   final UserRepository userRepository;
   final AudioPlayManager audioPlayManager;
 
-  GroupViewModel({this.groupRepository, this.postRepository, this.userRepository, this.audioPlayManager});
+  GroupViewModel(
+      {this.groupRepository, this.postRepository, this.userRepository, this.audioPlayManager});
 
   User get currentUser => UserRepository.currentUser;
 
@@ -27,13 +27,11 @@ class GroupViewModel extends ChangeNotifier {
   Group _group;
   Group get group => _group;
 
-
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
   List<User> _groupMembers = [];
   List<User> get groupMembers => _groupMembers;
-
 
   bool _isAudioFinished = false;
   bool get isAudioFinished => _isAudioFinished;
@@ -44,59 +42,53 @@ class GroupViewModel extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
-  int autoExitDays = 4;
-
+  int _autoExitDays = 4;
+  int get autoExitDays => _autoExitDays;
 
   //-------------------------------------------------------------------------------------------------- Post Repository
 
-  Future<void> getGroupPosts(Group group) async{
-
+  Future<void> getGroupPosts(Group group) async {
     await postRepository.getPostsByGroup(group.groupId);
-
   }
+
   onGroupPostsObtained(PostRepository postRepository) {
     _isProcessing = postRepository.isProcessing;
     _posts = postRepository.posts;
     notifyListeners();
   }
 
-  Future<void> deletePost(Post post) async{
+  Future<void> deletePost(Post post) async {
     await postRepository.deletePost(post.postId);
   }
 
-  Future<void> insertListener(String postId) async{
+  Future<void> insertListener(String postId) async {
     await postRepository.insertListener(postId, currentUser.userId);
   }
 
-  Future<bool> isListened(Post post) async{
+  Future<bool> isListened(Post post) async {
     return await postRepository.isListened(post.postId);
   }
 
-
   //-------------------------------------------------------------------------------------------------- Audio methods
 
-  Future<void> playAudio(String audioUrl) async{
-
+  Future<void> playAudio(String audioUrl) async {
     await audioPlayManager.playAudio(audioUrl);
-
   }
 
-
-  Future<void> pauseAudio() async{
+  Future<void> pauseAudio() async {
     await audioPlayManager.pauseAudio();
   }
 
-  Future<void> resumeAudio(String audioUrl) async{
+  Future<void> resumeAudio(String audioUrl) async {
     await audioPlayManager.playAudio(audioUrl);
   }
-
 
   onAudioFinished(AudioPlayManager audioPlayManager) {
     _isAudioFinished = audioPlayManager.isAudioFinished;
     notifyListeners();
   }
 
-  Future<void> stopAnotherAudio() async{
+  Future<void> stopAnotherAudio() async {
     await audioPlayManager.stopAnotherAudio();
   }
 
@@ -106,7 +98,7 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateStatus() async{
+  Future<void> updateStatus() async {
     await audioPlayManager.updateStatus();
   }
 
@@ -117,60 +109,62 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   //-------------------------------------------------------------------------------------------------- Group Repository
-  Future<void> getGroupInfo(String groupId) async{
+  Future<void> getGroupInfo(String groupId) async {
     await groupRepository.getGroupInfo(groupId);
+
   }
 
   onGroupInfoObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
     _group = groupRepository.group;
+
     notifyListeners();
   }
 
   void updateAutoExitPeriod(int intDays) {
-    autoExitDays = intDays;
+    _autoExitDays = intDays;
+
     notifyListeners();
+
   }
 
-  Future<void> updateGroupInfo(String groupId) async{
-    await groupRepository.updateGroupInfo(group.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
+  Future<void> updateGroupInfo(String groupId) async {
+    await groupRepository.updateGroupInfo(
+        group.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
 
-    //in case of showing updated Auto-Exit Period
-    await groupRepository.getGroupInfo(groupId);
+    //for opening the screen next time
+    _group = await groupRepository.returnGroupInfo(groupId);
+    _autoExitDays = _group.autoExitDays;
+
   }
 
-  onGroupInfoUpdated (GroupRepository groupRepository) {
+  onGroupInfoUpdated(GroupRepository groupRepository) {
     _group = groupRepository.group;
     notifyListeners();
   }
 
-  Future<void> leaveGroup(Group group) async{
+  Future<void> leaveGroup(Group group) async {
     await groupRepository.leaveGroup(group, currentUser);
   }
 
-  Future<void> getMemberInfo(Group group) async{
+  Future<void> getMemberInfo(Group group) async {
     await userRepository.getUsersByGroupId(group);
-
   }
 
   onGroupMemberInfoObtained(UserRepository userRepository) {
     _isProcessing = userRepository.isProcessing;
     _groupMembers = userRepository.groupMembers;
     notifyListeners();
+  }
+
+  Future<Group> returnGroupInfo(String groupId) async{
+    return await groupRepository.returnGroupInfo(groupId);
 
   }
 
+  Future<void> closeGroup(Group group) async{
+    await groupRepository.closeGroup(group, currentUser);
 
-
-
-
-
-
-
-
-
-
-
-
+  }
 
 }

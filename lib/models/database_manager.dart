@@ -12,74 +12,89 @@ class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
 
- //--------------------------------------------------------------------------------------------------Insert
-  Future<void> insertUser(User user) async{
-   await _db.collection("users").doc(user.userId).set(user.toMap());
-
+  //--------------------------------------------------------------------------------------------------Insert
+  Future<void> insertUser(User user) async {
+    await _db.collection("users").doc(user.userId).set(user.toMap());
   }
 
- Future<void> registerGroup(Group group, User currentUser) async{
+  Future<void> registerGroup(Group group, User currentUser) async {
     await _db.collection('groups').doc(group.groupId).set(group.toMap());
 
     //set userId and lastPostDateTime for small group on members collection
     await _db.collection("groups").doc(group.groupId)
-        .collection("members").doc(currentUser.userId).set({"userId": currentUser.userId, "lastPostDateTime": DateTime.now().toIso8601String()});
- }
-
-  Future<void> registerGroupIdOnUsers(String groupId, String userId) async{
-    await _db.collection("users").doc(userId).collection("groups").doc(groupId).set({"groupId": groupId});
+        .collection("members").doc(currentUser.userId).set(
+        {"userId": currentUser.userId, "lastPostDateTime": DateTime.now().toIso8601String()});
   }
 
-  Future<void> joinGroup(String groupId, String userId) async{
+  Future<void> registerGroupIdOnUsers(String groupId, String userId) async {
+    await _db.collection("users").doc(userId).collection("groups").doc(groupId).set(
+        {"groupId": groupId});
+  }
+
+  Future<void> joinGroup(String groupId, String userId) async {
     //add groupId on "groups" in "users"
     await _db.collection("users").doc(userId)
         .collection("groups").doc(groupId).set({"groupId": groupId});
 
     //add userId and lastPostDateTime on "members" in "groups"
     await _db.collection("groups").doc(groupId)
-        .collection("members").doc(userId).set({"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
-
+        .collection("members").doc(userId).set(
+        {"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
   }
 
-  Future<String> uploadAudioToStorage(File audioFile, String storageId) async{
+  Future<String> uploadAudioToStorage(File audioFile, String storageId) async {
     final storageRef = FirebaseStorage.instance.ref().child(storageId);
     final uploadTask = storageRef.putFile(audioFile);
     final downloadUrl = uploadTask.then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
     return downloadUrl;
   }
 
- Future<void> postRecording(Post post, String userId, String groupId) async{
+  Future<void> postRecording(Post post, String userId, String groupId) async {
     await _db.collection("posts").doc(post.postId).set(post.toMap());
 
     //update lastPostDateTime at members collection of groups collection
-   await _db.collection("groups").doc(groupId).collection("members").doc(userId).update({"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
- }
+    await _db.collection("groups").doc(groupId).collection("members").doc(userId).update(
+        {"userId": userId, "lastPostDateTime": DateTime.now().toIso8601String()});
+  }
 
- Future<void> insertListener(String postId, String userId) async{
-   //insert userId only once
-   await _db.collection("posts").doc(postId).collection("listeners").doc(userId).set({"userId": userId});
- }
+  Future<void> insertListener(String postId, String userId) async {
+    //insert userId only once
+    await _db.collection("posts").doc(postId).collection("listeners").doc(userId).set(
+        {"userId": userId});
+  }
+
+  Future<void> insertClosedGroupOnMember(String groupId, String groupName, List<String> userIds) async{
+
+    userIds.forEach((userId) async{
+      await _db.collection("users").doc(userId).collection("closedGroups").doc(groupId).set(
+        {
+          "groupId": groupId,
+          "groupName": groupName,
+        }
+      );
+
+    });
+
+  }
 
 
 
   //--------------------------------------------------------------------------------------------------Read
 
-  Future<bool> searchUserInDb(auth.User firebaseUser) async{
+  Future<bool> searchUserInDb(auth.User firebaseUser) async {
     final query = await _db.collection("users").where("userId", isEqualTo: firebaseUser.uid).get();
     if (query.docs.length > 0) {
       return true;
     }
     return false;
-
   }
 
-  Future<User> getUserInfoFromDbById(String userId) async{
+  Future<User> getUserInfoFromDbById(String userId) async {
     final query = await _db.collection("users").where("userId", isEqualTo: userId).get();
     return User.fromMap(query.docs[0].data());
   }
 
-  Future<List<Group>> getGroupsByUserId(String userId) async{
-
+  Future<List<Group>> getGroupsByUserId(String userId) async {
     //get groupIds on "users"
     final queryOnUsers = await _db.collection("users").get();
     if (queryOnUsers.docs.length == 0) return [];
@@ -91,31 +106,29 @@ class DatabaseManager {
     if (queryOnGroups.docs.length == 0) return [];
 
     var results = <Group>[];
-    if(groupIds.length == 0) return []; //in the case that users left all groups
+    if (groupIds.length == 0) return []; //in the case that users left all groups
     await _db.collection("groups").where("groupId", whereIn: groupIds).limit(10).get()
-    .then((value) {
+        .then((value) {
       value.docs.forEach((element) {
         results.add(Group.fromMap(element.data()));
       });
     });
 
     return results;
-
   }
 
-  Future<List<String>> getGroupIds(String userId) async{
+  Future<List<String>> getGroupIds(String userId) async {
     final query = await _db.collection("users").doc(userId).collection("groups").limit(10).get();
-    if(query.docs.length == 0) return [];
+    if (query.docs.length == 0) return [];
 
     var results = <String>[];
-     query.docs.forEach((element) {
+    query.docs.forEach((element) {
       results.add(element.data()["groupId"]);
     });
-     return results;
-
+    return results;
   }
 
-  Future<List<Group>> getGroupsExceptForMine(String userId) async{
+  Future<List<Group>> getGroupsExceptForMine(String userId) async {
     //get groupIds on "users" to exclude
     final queryOnUsers = await _db.collection("users").get();
     if (queryOnUsers.docs.length == 0) return [];
@@ -130,131 +143,267 @@ class DatabaseManager {
     var results = <Group>[];
 
     //if currentUser does not belong to any group, get all the groups
-    if(groupIds.length == 0) {
+    if (groupIds.length == 0) {
       await _db.collection("groups").get()
-                .then((value) {
-                  value.docs.forEach((element) {
-                    results.add(Group.fromMap(element.data()));
-                  });
-                });
-    } else{
+          .then((value) {
+        value.docs.forEach((element) {
+          results.add(Group.fromMap(element.data()));
+        });
+      });
+    } else {
       await _db.collection("groups").where("groupId", whereNotIn: groupIds).get()
           .then((value) {
         value.docs.forEach((element) {
           results.add(Group.fromMap(element.data()));
         });
       });
-
     }
 
     return results;
-
   }
 
- Future<Group> getGroupInfoByGroupId(String groupId) async{
+  Future<Group> getGroupInfoByGroupId(String groupId) async {
     final query = await _db.collection("groups").where("groupId", isEqualTo: groupId).get();
-    return Group.fromMap(query.docs[0].data());
- }
 
- Future<List<Post>> getPostsByGroup(String groupId) async{
+    if(query.docs.isEmpty) {
+      //in case when members choose a group which is already deleted by the owner
+      final Group group = Group(
+          groupId: groupId,
+          groupName: "No Group",
+          description: null,
+          ownerId: null,
+          autoExitDays: null);
+
+      return group;
+    }
+
+    return Group.fromMap(query.docs[0].data());
+  }
+
+  Future<List<Post>> getPostsByGroup(String groupId) async {
     final query = await _db.collection("posts").get();
     if (query.docs.length == 0) return [];
 
     var results = <Post>[];
 
-    await _db.collection("posts").where("groupId", isEqualTo: groupId).orderBy("postDateTime", descending: true).get()
-    .then((value) {
+    await _db.collection("posts").where("groupId", isEqualTo: groupId).orderBy(
+        "postDateTime", descending: true).get()
+        .then((value) {
       value.docs.forEach((element) {
         results.add(Post.fromMap(element.data()));
       });
     });
 
     return results;
+  }
 
- }
+  Future<List<Post>> getPostsByUserIdAndGroupId(String userId, groupId) async{
+    final query = await _db.collection("posts").get();
+    if(query.docs.isEmpty) return [];
 
-  Future<bool> isNewGroupAvailable(String userId) async{
+    var posts = <Post>[];
+
+    await _db.collection("posts").where("userId", isEqualTo: userId).where("groupId", isEqualTo: groupId).get()
+        .then((value) {
+      value.docs.forEach((doc) {
+        posts.add(Post.fromMap(doc.data()));
+      });
+    });
+
+    return posts;
+  }
+
+
+
+
+  Future<bool> isNewGroupAvailable(String userId) async {
     final query = await _db.collection("users").doc(userId).collection("groups").get();
-    if(query.docs.length <= 10) return true;
+    if (query.docs.length <= 10) return true;
     return false;
   }
 
-  Future<bool> isListened(String postId) async{
+  Future<bool> isListened(String postId) async {
     final query = await _db.collection("posts").doc(postId).collection("listeners").get();
-    if(query.docs.length == 0) return false;
+    if (query.docs.length == 0) return false;
     return true;
-
   }
 
 
-  Future<List<User>> getUsersByGroupId(String groupId) async{
+  Future<List<User>> getUsersByGroupId(String groupId) async {
+
     //get userIds at members of groups
-   final query = await _db.collection("groups").doc(groupId).collection("members").get();
-   if(query.docs.isEmpty) return <User>[];
+    var userIds = await getUserIdsByGroupId(groupId);
+
+
+    //get List of User at users
+    var groupMembers = <User>[];
+
+    await Future.forEach(userIds, (userId) async {
+      final user = await getUserInfoFromDbById(userId);
+      groupMembers.add(user);
+    });
+
+    return groupMembers;
+  }
+
+  Future<List<String>> getUserIdsByGroupId(String groupId) async{
+    final query = await _db.collection("groups").doc(groupId).collection("members").get();
+    if (query.docs.isEmpty) return <String>[];
+
 
     var userIds = <String>[];
+
     query.docs.forEach((element) {
       userIds.add(element.data()["userId"]);
     });
 
 
-    //get List of User at users
-   var groupMembers = <User>[];
-
-   await Future.forEach(userIds, (userId) async{
-     final user = await getUserInfoFromDbById(userId);
-     groupMembers.add(user);
-   });
-
-   return groupMembers;
-
+    return userIds;
   }
 
-  Future<String> getLastPostDateTime(Group group, String userId) async{
-
+  Future<String> getLastPostDateTime(Group group, String userId) async {
     //get member doc at groups collection by groupId and userId
-    var member = await _db.collection("groups").doc(group.groupId).collection("members").doc(userId).get();
+    var member = await _db.collection("groups").doc(group.groupId).collection("members")
+        .doc(userId)
+        .get();
 
     //get value from Map
     return member["lastPostDateTime"];
+  }
 
+  Future<List<String>> getClosedGroupNames(String userId) async{
+    final query = await _db.collection("users").doc(userId).collection("closedGroups").get();
+    if(query.docs.isEmpty) return [];
+
+    var groupNames = <String>[];
+
+    query.docs.forEach((element) {
+      groupNames.add(element.data()["groupName"]);
+    });
+
+    return groupNames;
 
   }
+
 
 
   //--------------------------------------------------------------------------------------------------Update
 
-  Future<void> updateGroupInfo(Group updatedGroup) async{
+  Future<void> updateGroupInfo(Group updatedGroup) async {
     await _db.collection("groups").doc(updatedGroup.groupId).update(updatedGroup.toMap());
   }
 
 
- Future<void> updateUserInfo(User user) async{
+  Future<void> updateUserInfo(User user) async {
     await _db.collection("users").doc(user.userId).update(user.toMap());
- }
+  }
 
   //--------------------------------------------------------------------------------------------------Delete
 
- Future<void> leaveGroup(String groupId, String userId) async{
-    //delete members at groups
-   await _db.collection("groups").doc(groupId).collection("members").doc(userId).delete();
+  Future<void> leaveGroup(String groupId, String userId) async {
+    //delete their own data at members of groups
+    await _db.collection("groups").doc(groupId).collection("members").doc(userId).delete();
 
-   //delete groupId at users
-   await _db.collection("users").doc(userId).collection("groups").doc(groupId).delete();
+    //delete groupId at users
+    await _db.collection("users").doc(userId).collection("groups").doc(groupId).delete();
+  }
 
- }
+  Future<void> deletePost(String postId) async {
+    //delete "listeners" first
+    await _db.collection("posts").doc(postId).collection("listeners").get().then((value) {
+      for (DocumentSnapshot doc in value.docs) {
+        doc.reference.delete();
+      }
+    });
 
- Future<void> deletePost(String postId) async{
-
-   //delete "listeners" first
-   await _db.collection("posts").doc(postId).collection("listeners").get().then((value) {
-     for (DocumentSnapshot doc in value.docs){
-      doc.reference.delete();
-     }
-   });
-
-   //delete post
+    //delete post
     await _db.collection("posts").doc(postId).delete();
+  }
+
+  Future<void> closeGroup(String groupId, String userId, String groupName) async {
+
+    //delete @posts collection
+
+    //get all the userIds at members collection of groups collection
+    var userIds = await getUserIdsByGroupId(groupId);
+
+
+    //get posts of every user
+    var posts = <Post>[];
+
+    await Future.forEach(userIds, (userId) async{
+
+      var postsByEachUser = <Post>[];
+
+      //only posts in group doc are necessary
+      postsByEachUser = await getPostsByUserIdAndGroupId(userId, groupId);
+
+      postsByEachUser.forEach((element) {
+        posts.add(element);
+      });
+
+    });
+
+    posts.forEach((post) async{
+      await deletePost(post.postId);
+    });
+
+
+    //delete @groups collection
+    await deleteGroup(groupId);
+
+    //delete @users collection
+    userIds.forEach((userId) async{
+      await _db.collection("users").doc(userId).collection("groups").doc(groupId).delete();
+
+    });
+
+
+    //for notifying members who were kicked out because the owner closed the group
+    var memberUserIds = <String>[];
+
+    userIds.forEach((element) {
+      memberUserIds.add(element);
+    });
+
+    //to avoid error "Concurrent modification during iteration", make another list
+    var toRemove = [];
+
+    for (String memberUserId in memberUserIds){
+      //exclude userId of the group owner
+      if(memberUserId == userId){
+        toRemove.add(memberUserId);
+      }
+    }
+    memberUserIds.removeWhere((element) => toRemove.contains(element));
+
+
+    if (memberUserIds.isNotEmpty) {
+      await insertClosedGroupOnMember(groupId, groupName, memberUserIds);
+    }
+
+  }
+
+  Future<void> deleteGroup(String groupId) async{
+    //delete members collection
+    await _db.collection("groups").doc(groupId).collection("members").get().then((value) {
+      value.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+
+    //delete group doc itself
+    await _db.collection("groups").doc(groupId).delete();
+
+  }
+
+ Future<void> deleteClosedGroupName(String userId, String groupName) async{
+    await _db.collection("users").doc(userId).collection("closedGroups").where("groupName", isEqualTo: groupName).get()
+        .then((value) {
+          value.docs.forEach((doc) {
+            doc.reference.delete();
+          });
+        });
  }
 
 

@@ -13,6 +13,7 @@ class HelpIcon extends StatelessWidget {
         onPressed: () => showHelpDialog(
           context: context,
           contentString: message,
+          onConfirmed: () => null,
           okayString: "Okay",
         ));
   }
