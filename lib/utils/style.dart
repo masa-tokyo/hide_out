@@ -28,6 +28,9 @@ const buttonChosenColor = Colors.cyan;
 const notChosenButtonBorderSideColor = Colors.black54;
 
 
+//Login
+const googleIconButtonColor = Color(0xFF4285F4);
+
 
 //Group
 final popupMenuButtonColor = Colors.white;
@@ -59,16 +62,21 @@ const unavailableButtonTextStyle = TextStyle(color: Color(0xFF757575));//= Color
 
 
 //Login
-const googleIconButtonColor = Color(0xFF4285F4);
+const slideDoneButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
+const slideTitleTextStyle = TextStyle(color: Colors.black);
+const slideDescriptionStyle = TextStyle(fontSize: 16.0, color: Colors.black);
+
+
 
 //Home
 const homeScreenLabelTextStyle = TextStyle(fontSize: 18.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const newGroupIntroTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.grey);
+const tutorialTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white);
 
-//StartGroupScreen
+//StartGroup
 const startGroupLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 
-//JoinGroupScreen
+//JoinGroup
 const groupDetailLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 const groupNameCardTextStyle = TextStyle(color: Colors.black54);

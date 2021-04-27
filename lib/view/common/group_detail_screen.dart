@@ -44,7 +44,7 @@ class GroupDetailScreen extends StatelessWidget {
               SizedBox(
                 height: 24.0,
               ),
-              from == GroupDetailScreenOpenMode.LOGIN || from == GroupDetailScreenOpenMode.JOIN
+              from == GroupDetailScreenOpenMode.SIGN_UP || from == GroupDetailScreenOpenMode.JOIN
                   ? model.groupMembers.length < 5
                       ? _joinButton(context)
                       : _unAvailableButton(context)
@@ -215,10 +215,10 @@ class GroupDetailScreen extends StatelessWidget {
     await joinGroupViewModel.joinGroup();
 
     switch (from) {
-      case GroupDetailScreenOpenMode.LOGIN:
+      case GroupDetailScreenOpenMode.SIGN_UP:
         Navigator.pop(context);
         Navigator.pop(context);
-        Navigator.pushReplacement(context, _createRoute(context, HomeScreen()));
+        Navigator.pushReplacement(context, _createRoute(context, HomeScreen(isSignedUp: true,)));
         break;
       case GroupDetailScreenOpenMode.JOIN:
         Navigator.pop(context);
