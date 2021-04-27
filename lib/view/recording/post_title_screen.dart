@@ -57,7 +57,7 @@ class PostTitleScreen extends StatelessWidget {
     );
   }
 
-  _onButtonPressed(BuildContext context) {
+  _onButtonPressed(BuildContext context) async{
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
 
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -73,7 +73,7 @@ class PostTitleScreen extends StatelessWidget {
     } else {
       //post
       recordingViewModel.addGroupId(group.groupId);
-      recordingViewModel.postRecording(path, audioDuration);
+      await recordingViewModel.postRecording(path, audioDuration);
 
       //back to GroupScreen
       Navigator.pop(context);

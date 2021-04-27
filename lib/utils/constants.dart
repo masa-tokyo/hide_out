@@ -24,7 +24,7 @@ enum RecordingOpenMode {
 }
 
 enum GroupDetailScreenOpenMode{
-  LOGIN,
+  SIGN_UP,
   JOIN,
   GROUP,
 }

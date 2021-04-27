@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => HomeScreen(),
+        builder: (_) => HomeScreen(isSignedUp: false,),
       ),
     );
   }

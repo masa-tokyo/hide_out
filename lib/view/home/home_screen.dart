@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tutorial/tutorial.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
@@ -8,7 +9,12 @@ import 'package:voice_put/view_models/home_screen_view_model.dart';
 import 'components/my_group_part.dart';
 import 'components/new_group_part.dart';
 
+
 class HomeScreen extends StatelessWidget {
+  final bool isSignedUp;
+  HomeScreen({@required this.isSignedUp});
+
+
   @override
   Widget build(BuildContext context) {
     final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
@@ -16,7 +22,7 @@ class HomeScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: _floatingActionButton(context),
+        floatingActionButton: FloatingActionButtonForHome(isSignedUp: isSignedUp),
         body: SingleChildScrollView(
           child: RefreshIndicator(
             onRefresh: () async{
@@ -51,13 +57,67 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+}
 
-  Widget _floatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-        child: Icon(Icons.keyboard_voice), onPressed: () => _openAudioJournalScreen(context));
+//------------------------------------------------------------------------------------------------------FloatingActionButton
+
+// using tutorial requires StatefulWidget
+class FloatingActionButtonForHome extends StatefulWidget {
+  final bool isSignedUp;
+
+  FloatingActionButtonForHome({@required this.isSignedUp});
+
+  @override
+  _FloatingActionButtonForHomeState createState() => _FloatingActionButtonForHomeState();
+}
+
+class _FloatingActionButtonForHomeState extends State<FloatingActionButtonForHome> {
+  final buttonKey = GlobalKey();
+
+  @override
+  void initState() {
+    if(widget.isSignedUp){
+      _showTutorial();
+    }
+    super.initState();
   }
 
-  _openAudioJournalScreen(BuildContext context) {
+  void _showTutorial() {
+    List <TutorialItens> _tutorialItems = [];
+
+    _tutorialItems.add(
+        TutorialItens(
+          globalKey: buttonKey,
+          touchScreen: true,
+          bottom: 130,
+          right: 20,
+          shapeFocus: ShapeFocus.oval,
+          children: [
+            Column(
+              children: [
+                Text("Make your 1st record now!", style: tutorialTextStyle,),
+              ],
+            ),
+          ],
+          widgetNext: Container(),
+        )
+    );
+
+    Future.delayed(Duration(milliseconds: 1000)).then((value) {
+      Tutorial.showTutorial(context, _tutorialItems);
+    });
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+        key: buttonKey,
+        child: Icon(Icons.keyboard_voice), onPressed: () => _openPreparationNoteScreen(context)
+    );
+  }
+
+  _openPreparationNoteScreen(BuildContext context) {
     Navigator.of(context).push(_createRoute(
       context,
       PreparationNoteScreen(
@@ -84,3 +144,4 @@ class HomeScreen extends StatelessWidget {
   }
 
 }
+

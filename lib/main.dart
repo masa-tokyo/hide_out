@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/di/providers.dart';
 import 'package:voice_put/view/home/home_screen.dart';
-import 'package:voice_put/view/login/login_screen.dart';
+import 'package:voice_put/view/login/before_login_screen.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
 import 'package:voice_put/utils/style.dart';
 
@@ -71,9 +71,10 @@ class MyApp extends StatelessWidget {
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData && snapshot.data){
-              return HomeScreen();
+              return HomeScreen(isSignedUp: false);
+
             } else if (snapshot.hasData && !snapshot.data){
-              return LoginScreen();
+              return BeforeLoginScreen();
             } else {
               return Scaffold(
                 body: Center(child
