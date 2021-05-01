@@ -44,7 +44,10 @@ class LoginScreen extends StatelessWidget {
 
     switch(loginViewModel.loginScreenStatus) {
       case LoginScreenStatus.SIGNED_IN:
+
         _openHomeScreen(context);
+
+
         break;
 
       case LoginScreenStatus.SIGNED_UP:
@@ -68,6 +71,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   _openUserNameInputScreen(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UserNameInputScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> UserNameInputScreen(from: ProfileEditScreensOpenMode.SIGN_UP,)));
   }
 }

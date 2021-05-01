@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
+import 'package:voice_put/view/profile/profile_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 class GroupDetailEditScreen extends StatefulWidget {
@@ -70,25 +72,31 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
                     height: 24.0,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text("Group Name"),
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Text("Group Name", style: groupDetailLabelTextStyle,),
                   ),
                   _groupNameTextInput(),
                   SizedBox(
                     height: 16.0,
                   ),
                   _memberInfo(model),
+                  SizedBox(
+                    height: 16.0,
+                  ),
                   AutoExitPeriodPart(isBeginningGroup: false, group: model.group,),
                   SizedBox(height: 16.0,),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text("About"),
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Text("About", style: groupDetailLabelTextStyle,),
                   ),
                   _descriptionTextInput(),
                   SizedBox(
                     height: 16.0,
                   ),
                   _updateButton(model),
+                  SizedBox(
+                    height: 16.0,
+                  ),
                 ],
               ),
             );
@@ -100,7 +108,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
 
   Widget _groupNameTextInput() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: TextField(
         controller: _groupNameController,
         maxLines: null,
@@ -118,7 +126,6 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
     setState(() {});
   }
 
-
   Widget _memberInfo(GroupViewModel model) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -131,25 +138,43 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
                 "Member",
                 style: groupDetailLabelTextStyle,
               ),
-              SizedBox(width: 8.0,),
-              Text("(${model.groupMembers.length} / 5)", style: groupDetailLabelTextStyle,),
+              SizedBox(
+                width: 8.0,
+              ),
+              Text(
+                "(${model.groupMembers.length} / 5)",
+                style: groupDetailLabelTextStyle,
+              ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: model.isProcessing
-                ? Center(child: CircularProgressIndicator())
-                : model.groupMembers.isEmpty
-                ? Text("-No Member-", style: groupDetailMemberNameTextStyle,)
-                : ListView.builder(
+          SizedBox(height: 8.0,),
+          model.isProcessing
+              ? Center(child: CircularProgressIndicator())
+              : model.groupMembers.isEmpty
+              ? Text(
+            "-No Member-",
+            style: groupDetailMemberNameTextStyle,
+          )
+              : Container(
+            decoration: BoxDecoration(
+              color: textFieldFillColor,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: ListView.builder(
                 itemCount: model.groupMembers.length,
                 shrinkWrap: true,
                 itemBuilder: (context, int index) {
                   final member = model.groupMembers[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Text(member.inAppUserName,
-                      style: groupDetailMemberNameTextStyle,),
+                  return ListTile(
+                    onTap: () => _openProfileScreen(context, member, model),
+                    title: Text(
+                      member.inAppUserName,
+                      style: groupDetailMemberNameTextStyle,
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 20.0,
+                    ),
                   );
                 }),
           ),
@@ -158,9 +183,18 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
     );
   }
 
+  _openProfileScreen(BuildContext context, User member, GroupViewModel model) {
+
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen(
+      isCurrentUser: model.currentUser == member ? true : false,
+      user: member,
+    )));
+  }
+
+
   Widget _descriptionTextInput() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: TextField(
         controller: _descriptionController,
         maxLines: null,

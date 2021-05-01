@@ -11,7 +11,7 @@ import 'package:voice_put/view_models/recording_view_model.dart';
 class PostTitleScreen extends StatelessWidget {
   final String path;
   final String audioDuration;
-  final RecordingOpenMode from;
+  final RecordingButtonOpenMode from;
   final Group group;
 
   PostTitleScreen({@required this.audioDuration, @required this.path, @required this.from, @required this.group});
@@ -49,7 +49,7 @@ class PostTitleScreen extends StatelessWidget {
               ),),
             ),
             onPressed: () => _onButtonPressed(context),
-            child: Text(from == RecordingOpenMode.FROM_HOME
+            child: Text(from == RecordingButtonOpenMode.POST_FROM_HOME
               ? "Next" : "Done",
               style: enabledButtonTextStyle,),
         ),
@@ -65,7 +65,7 @@ class PostTitleScreen extends StatelessWidget {
       FocusManager.instance.primaryFocus.unfocus();
     }
 
-    if (from == RecordingOpenMode.FROM_HOME){
+    if (from == RecordingButtonOpenMode.POST_FROM_HOME){
       Navigator.push(
           context,
           MaterialPageRoute(

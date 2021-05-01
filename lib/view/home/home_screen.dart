@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:tutorial/tutorial.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
+import 'package:voice_put/view/login/login_screen.dart';
+import 'package:voice_put/view/profile/profile_screen.dart';
 import 'package:voice_put/view/recording/preparation_note_screen.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
 
@@ -12,6 +15,7 @@ import 'components/new_group_part.dart';
 
 class HomeScreen extends StatelessWidget {
   final bool isSignedUp;
+
   HomeScreen({@required this.isSignedUp});
 
 
@@ -23,9 +27,14 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         floatingActionButton: FloatingActionButtonForHome(isSignedUp: isSignedUp),
+        drawer: _drawer(context),
+        appBar: AppBar(
+          leading: _settingsButton(context),
+          title: Text("VoicePut"),
+        ),
         body: SingleChildScrollView(
           child: RefreshIndicator(
-            onRefresh: () async{
+            onRefresh: () async {
               await homeScreenViewModel.getMyGroup();
             },
             child: Column(
@@ -57,6 +66,98 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _settingsButton(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        return IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () => Scaffold.of(context).openDrawer());
+      },
+    );
+  }
+
+  Widget _drawer(BuildContext context) {
+    return Container(
+      color: Colors.red,
+      child: Drawer(
+        child: ListView(
+          children: [
+            _drawerHeader(),
+            _listTile(
+                leading: Icon(Icons.account_circle),
+                title: Text("Profile"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => ProfileScreen(isCurrentUser: true,)));
+                }
+            ),
+            _listTile(
+              leading: Icon(Icons.logout),
+              title: Text("Log out"),
+              onTap: () => _signOut(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _signOut(BuildContext context) async {
+    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+
+    showConfirmDialog(context: context,
+      titleString: "Are you sure to log out?",
+      contentString: "",
+      onConfirmed: (isConfirmed) async{
+      if(isConfirmed){
+        Navigator.pop(context);
+        await homeScreenViewModel.signOut();
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+      }
+      },
+      yesText: Text("Log out", style: showConfirmDialogYesTextStyle,),
+      noText: Text("Cancel", style: showConfirmDialogNoTextStyle,),);
+
+
+  }
+
+  Widget _drawerHeader() {
+    return Container(
+      height: 120.0,
+      child: DrawerHeader(
+          decoration: BoxDecoration(
+              color: drawerHeaderColor
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Settings", style: drawerHeaderTextStyle,),
+            ],
+          )),
+    );
+  }
+
+  Widget _listTile({
+    @required Widget title,
+    @required Widget leading,
+    @required Function onTap,
+
+  }) {
+    return Column(
+      children: [
+        ListTile(
+          title: title,
+          leading: leading,
+          onTap: onTap,
+        ),
+        Divider(),
+      ],
+    );
+  }
+
+
 }
 
 //------------------------------------------------------------------------------------------------------FloatingActionButton
@@ -76,7 +177,7 @@ class _FloatingActionButtonForHomeState extends State<FloatingActionButtonForHom
 
   @override
   void initState() {
-    if(widget.isSignedUp){
+    if (widget.isSignedUp) {
       _showTutorial();
     }
     super.initState();
@@ -106,7 +207,6 @@ class _FloatingActionButtonForHomeState extends State<FloatingActionButtonForHom
     Future.delayed(Duration(milliseconds: 1000)).then((value) {
       Tutorial.showTutorial(context, _tutorialItems);
     });
-
   }
 
   @override
@@ -121,7 +221,7 @@ class _FloatingActionButtonForHomeState extends State<FloatingActionButtonForHom
     Navigator.of(context).push(_createRoute(
       context,
       PreparationNoteScreen(
-        from: RecordingOpenMode.FROM_HOME,
+        from: RecordingButtonOpenMode.POST_FROM_HOME,
         group: null,
       ),
     ));

@@ -61,7 +61,10 @@ class JoinGroupScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: ((_) => GroupDetailScreen(group: group, from: GroupDetailScreenOpenMode.JOIN,)),
+        builder: ((_) => GroupDetailScreen(group: group,
+          from: isSignedUp
+          ? GroupDetailScreenOpenMode.SIGN_UP
+          : GroupDetailScreenOpenMode.JOIN,)),
       ),
     );
   }

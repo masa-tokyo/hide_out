@@ -9,6 +9,7 @@ import 'package:voice_put/view_models/group_view_model.dart';
 import 'package:voice_put/view_models/home_screen_view_model.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
+import 'package:voice_put/view_models/profile_view_model.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 import 'package:voice_put/view_models/start_group_view_model.dart';
 
@@ -47,12 +48,19 @@ List<SingleChildWidget> viewModels = [
       create: (context) => LoginViewModel(
         userRepository: Provider.of<UserRepository>(context, listen: false),
       )),
+  ChangeNotifierProxyProvider<UserRepository, ProfileViewModel>(
+    create: (context) => ProfileViewModel(
+      userRepository: Provider.of<UserRepository>(context, listen: false),
+    ),
+    update: (context, userRepository, viewModel) => viewModel
+    ..onUserInfoUpdated(userRepository)),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository, StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, viewModel) => viewModel,
+    update: (context, userRepository, groupRepository, viewModel) => viewModel
+    ..onGroupRegistered(groupRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository, HomeScreenViewModel>(
     create: (context) => HomeScreenViewModel(
@@ -71,12 +79,14 @@ List<SingleChildWidget> viewModels = [
       ..onGroupsExceptForMineObtained(groupRepository)
       ..onGroupMemberInfoObtained(userRepository),
   ),
-  ChangeNotifierProxyProvider2<GroupRepository, PostRepository, RecordingViewModel>(
+  ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository, RecordingViewModel>(
     create: (context) => RecordingViewModel(
+      userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
+
     ),
-    update: (context, groupRepository, postRepository, viewModel) => viewModel
+    update: (context, userRepository, groupRepository, postRepository, viewModel) => viewModel
       ..onRecordingPosted(postRepository)
       ..onMyGroupObtained(groupRepository),
   ),

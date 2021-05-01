@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 import 'package:voice_put/view/start_group/components/about_group_part.dart';
 import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
 import 'package:voice_put/view/start_group/components/group_name_part.dart';
@@ -19,14 +20,65 @@ class StartGroupScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GroupNamePart(),
-            AutoExitPeriodPart(isBeginningGroup: true,),
-            AboutGroupPart(),
-            SizedBox(
-              height: 12.0,
+            SizedBox(height: 16.0,),
+            AutoExitPeriodPart(
+              isBeginningGroup: true,
             ),
+            SizedBox(height: 16.0,),
+            AboutGroupPart(),
+            SizedBox(height: 32.0,),
             _doneButton(context),
           ],
         ),
+
+
+        //todo delete Consumer
+        // child: Consumer<StartGroupViewModel>(
+        //   builder: (context, model, child) {
+        //     return model.isProcessing
+        //         ? Center(
+        //             child: CircularProgressIndicator(),
+        //           )
+        //         : Column(
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               GroupNamePart(),
+        //               AutoExitPeriodPart(
+        //                 isBeginningGroup: true,
+        //               ),
+        //               AboutGroupPart(),
+        //               SizedBox(
+        //                 height: 12.0,
+        //               ),
+        //               _doneButton(context),
+        //             ],
+        //           );
+        //   },
+        // ),
+
+        //todo delete Selector
+        // child:
+        // Selector<StartGroupViewModel, Tuple3<bool, String, String>>(
+        //   selector: (context, viewModel) =>
+        //       Tuple3(viewModel.isProcessing, viewModel.groupName, viewModel.description),
+        //   builder: (context, data, child) {
+        //     return data.item1
+        //         ? Center(child: CircularProgressIndicator(),)
+        //         : Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         GroupNamePart(),
+        //         AutoExitPeriodPart(isBeginningGroup: true,),
+        //         AboutGroupPart(),
+        //         SizedBox(
+        //           height: 12.0,
+        //         ),
+        //         _doneButton(context),
+        //       ],
+        //     );
+        //   },
+        // )
+        // ,
       ),
     );
   }
@@ -69,6 +121,4 @@ class StartGroupScreen extends StatelessWidget {
     Navigator.pop(context);
     Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
   }
-
-
 }

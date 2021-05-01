@@ -35,21 +35,21 @@ class BeforeLoginScreen extends StatelessWidget {
           backgroundColor: Colors.cyan[300],
           title: "Accelerate Learning",
           description: "Welcome to VoicePut! You can output what you learn with audio recordings.",
-          styleDescription: slideDescriptionStyle
+          styleDescription: slideDescriptionTextStyle
       ))
       ..add(Slide(
           pathImage: "assets/images/slides/group.png",
           backgroundColor: Colors.yellowAccent[300],
           title: "Closed Community",
           description:"You can share audio within groups you belong to, which consist of up to 5 members.",
-          styleDescription: slideDescriptionStyle
+          styleDescription: slideDescriptionTextStyle
       ))
       ..add(Slide(
           pathImage: "assets/images/slides/deadline.png",
           backgroundColor: Colors.orange[300],
           title: "Auto-Exit System",
           description: "Each member needs to share audio every certain amount of time, which makes their bonds stronger.",
-          styleDescription: slideDescriptionStyle
+          styleDescription: slideDescriptionTextStyle
 
       ));
 

@@ -5,7 +5,7 @@ import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/recording_screen.dart';
 
 class PreparationNoteScreen extends StatefulWidget {
-  final RecordingOpenMode from;
+  final RecordingButtonOpenMode from;
   final Group group;
 
   PreparationNoteScreen({@required this.from, @required this.group});

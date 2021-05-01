@@ -29,10 +29,19 @@ class GroupRepository extends ChangeNotifier{
 
 
   Future<void> registerGroup(Group group, User currentUser) async{
+    _isProcessing = true;
+    notifyListeners();
+
+    //users collection
+    await dbManager.registerGroupIdOnUsers(group.groupId, currentUser.userId);
+
+    //groups collection
     await dbManager.registerGroup(group, currentUser);
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
     _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+
+    _isProcessing = false;
     notifyListeners();
 
   }

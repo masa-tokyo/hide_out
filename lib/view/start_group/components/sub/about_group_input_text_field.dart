@@ -10,6 +10,7 @@ class AboutGroupInputTextField extends StatefulWidget {
 class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
   TextEditingController _descriptionController = TextEditingController();
 
+
   @override
   void initState() {
     _descriptionController.addListener(_onDescriptionUpdated);
@@ -25,7 +26,7 @@ class _AboutGroupInputTextFieldState extends State<AboutGroupInputTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextField(
         controller: _descriptionController,
         maxLines: 5,

@@ -43,32 +43,51 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
         ),
       ),
       body: Center(
-        child: Consumer<RecordingViewModel>(
-          builder: (context, model, child) {
-            return model.groups.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: NewGroupPart(),
-                      )
-                    : Column(
-                        children: [
-                          SizedBox(
-                            height: 16.0,
-                          ),
-                          Selector<RecordingViewModel, Tuple3<List<Group>, bool, List<String>>>(
-                              selector: (context, viewModel) =>
-                                  Tuple3(viewModel.groups, viewModel.isProcessing, viewModel.closedGroupNames),
-                              builder: (context, data, child) {
-                                if (data.item2) {
-                                  return CircularProgressIndicator();
-                                } else {
-                                  _showClosedGroupNameDialog(context, data.item3);
-                                  return _myGroupListView(context, data.item1);
-                                }
-                              }),
-                          _doneButton(),
-                        ],
-                      );
+        child: Selector<RecordingViewModel, Tuple3<List<Group>, bool, List<String>>>(
+          selector: (context, viewModel) => Tuple3(viewModel.groups, viewModel.isProcessing, viewModel.closedGroupNames),
+          builder: (context, data, child) {
+            if (data.item2) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              if (data.item1.isEmpty){
+                return Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: NewGroupPart(),
+                );
+              } else {
+                _showClosedGroupNameDialog(context, data.item3);
+                return Column(
+                  children: [
+                    SizedBox(height: 16.0,),
+                    _myGroupListView(context, data.item1),
+                    _doneButton(),
+                  ],
+                );
+              }
+
+            }
+
+            // return data.item1.isEmpty
+            //         ? Padding(
+            //             padding: const EdgeInsets.only(top: 12.0),
+            //             child: NewGroupPart(),
+            //           )
+            //         : Column(
+            //             children: [
+            //               SizedBox(
+            //                 height: 16.0,
+            //               ),
+            //
+            //
+            //                     if (data.item2) {
+            //                       return CircularProgressIndicator();
+            //                     } else {
+            //                       _showClosedGroupNameDialog(context, data.item3);
+            //                       return _myGroupListView(context, data.item1);
+            //                     }
+            //               _doneButton(),
+            //             ],
+            //           );
           },
         ),
       ),

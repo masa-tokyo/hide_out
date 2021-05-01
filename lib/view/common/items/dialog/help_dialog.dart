@@ -44,10 +44,8 @@ class HelpDialog extends StatelessWidget {
             children: [
               Container(
                 width: 1000,
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide())
-                ),
               ),
+              Divider(),
               TextButton(
                   onPressed:(){
                     Navigator.pop(context);

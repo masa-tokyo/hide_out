@@ -12,8 +12,9 @@ import 'package:voice_put/utils/constants.dart';
 class RecordingViewModel extends ChangeNotifier{
   final GroupRepository groupRepository;
   final PostRepository postRepository;
+  final UserRepository userRepository;
 
-  RecordingViewModel({this.groupRepository, this.postRepository});
+  RecordingViewModel({this.groupRepository, this.postRepository, this.userRepository});
 
 
   String title = "";
@@ -121,6 +122,12 @@ class RecordingViewModel extends ChangeNotifier{
         groupRepository.deleteClosedGroupName(currentUser, groupName);
       }
     }
+  }
+
+  Future <void> uploadSelfIntro(String path) async{
+
+    await userRepository.uploadSelfIntro(path);
+
   }
 
 

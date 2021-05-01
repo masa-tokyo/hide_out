@@ -1,14 +1,16 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 class AudioPlayButton extends StatefulWidget {
   final String audioUrl;
-  final bool isPostUser;
+  final AudioPlayType audioPlayType;
   final String postId;
 
-  AudioPlayButton({@required this.audioUrl, @required this.isPostUser, this.postId});
+  AudioPlayButton({@required this.audioUrl, @required this.audioPlayType, this.postId});
 
   @override
   _AudioPlayButtonState createState() => _AudioPlayButtonState();
@@ -66,14 +68,25 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   }
 
   _onNotPlayingButtonPressed(){
-    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
-    if (!widget.isPostUser) {
-      groupViewModel.insertListener(widget.postId);
+
+    if(widget.audioUrl != ""){
+      final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+      if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
+        groupViewModel.insertListener(widget.postId);
+      }
+
+      setState(() {
+        _isPlaying = !_isPlaying;
+      });
+
+    } else {
+      showHelpDialog(
+          context: context,
+          contentString: "No Recording yet!",
+          okayString: "Okay",
+          onConfirmed: null);
     }
 
-    setState(() {
-      _isPlaying = !_isPlaying;
-    });
   }
 
   //-------------------------------------------------------------------------------------------------DURING_PLAYING

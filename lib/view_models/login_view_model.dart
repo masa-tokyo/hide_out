@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/utils/constants.dart';
 
@@ -6,6 +7,8 @@ class LoginViewModel extends ChangeNotifier {
   final UserRepository userRepository;
 
   LoginViewModel({this.userRepository});
+
+  User get currentUser  => UserRepository.currentUser;
 
 
   bool _isProcessing = false;
@@ -29,9 +32,6 @@ class LoginViewModel extends ChangeNotifier {
 
   }
 
-  Future<void> updateUserName(String userName) async{
-    await userRepository.updateUserName(userName);
-  }
 
 
 
