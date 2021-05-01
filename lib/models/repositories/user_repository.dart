@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:uuid/uuid.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
@@ -65,9 +68,7 @@ class UserRepository extends ChangeNotifier{
     } catch (error) {
       print("sign in error caught: $error");
       return LoginScreenStatus.FAILED;
-
     }
-
   }
 
   User _convertToUser(auth.User firebaseUser) {
@@ -76,21 +77,21 @@ class UserRepository extends ChangeNotifier{
       displayName: firebaseUser.displayName,
       inAppUserName: firebaseUser.displayName,
       photoUrl: firebaseUser.photoURL,
+      email: firebaseUser.email,
+      audioStoragePath: "",
+      audioUrl: "",
     );
   }
 
-  Future<void> registerGroupIdOnUsers(String groupId) async{
-    await dbManager.registerGroupIdOnUsers(groupId, currentUser.userId);
-  }
 
-  Future<void> updateUserName(String userName) async{
-     currentUser = User(
-        userId: currentUser.userId,
-        displayName: currentUser.displayName,
-        inAppUserName: userName,
-        photoUrl: currentUser.photoUrl);
+
+  Future<void> updateUserInfo(User updatedCurrentUser) async{
+
+    currentUser = updatedCurrentUser;
     await dbManager.updateUserInfo(currentUser);
 
+    //for drawing ProfileScreen again
+    notifyListeners();
 
   }
 
@@ -103,4 +104,28 @@ class UserRepository extends ChangeNotifier{
     notifyListeners();
 
   }
+
+  Future<void> uploadSelfIntro(String path) async{
+
+    final audioFile = File(path);
+    final storageId = Uuid().v1();
+    final audioUrl = await dbManager.uploadAudioToStorage(audioFile, storageId);
+
+    currentUser = currentUser.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
+    await dbManager.updateUserInfo(currentUser);
+
+    //for passing data to ProfileScreen
+    notifyListeners();
+
+
+
+  }
+
+  Future<void> signOut() async{
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+    currentUser = null;
+  }
+
+
 }

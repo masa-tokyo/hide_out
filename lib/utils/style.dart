@@ -27,6 +27,10 @@ final buttonNotChosenColor = Colors.white;
 const buttonChosenColor = Colors.cyan;
 const notChosenButtonBorderSideColor = Colors.black54;
 
+//Home
+const drawerHeaderColor = Colors.cyan;
+
+
 
 //Login
 const googleIconButtonColor = Color(0xFF4285F4);
@@ -64,14 +68,22 @@ const unavailableButtonTextStyle = TextStyle(color: Color(0xFF757575));//= Color
 //Login
 const slideDoneButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const slideTitleTextStyle = TextStyle(color: Colors.black);
-const slideDescriptionStyle = TextStyle(fontSize: 16.0, color: Colors.black);
+const slideDescriptionTextStyle = TextStyle(fontSize: 16.0, color: Colors.black);
+const selfIntroTitleTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,);
+const selfIntroDescriptionTextStyle = TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Color(0xFF616161));
 
+//Profile
+const profileLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
+const profileDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 
 
 //Home
 const homeScreenLabelTextStyle = TextStyle(fontSize: 18.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const newGroupIntroTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.grey);
 const tutorialTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white);
+const drawerHeaderTextStyle = TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white);
+
+
 
 //StartGroup
 const startGroupLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
@@ -80,7 +92,7 @@ const startGroupLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF7575
 const groupDetailLabelTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF757575)); //= Colors.grey[600]
 const groupDetailDescriptionTextStyle = TextStyle(fontSize: 18.0,);
 const groupNameCardTextStyle = TextStyle(color: Colors.black54);
-const groupDetailMemberNameTextStyle = TextStyle(fontSize: 18.0, color: Color(0xFF424242)); //= Colors.grey[800]
+const groupDetailMemberNameTextStyle = TextStyle(fontSize: 16.0, color: Color(0xFF424242)); //= Colors.grey[800]
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(fontSize: 18.0,);

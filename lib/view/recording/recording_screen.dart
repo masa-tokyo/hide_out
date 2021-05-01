@@ -12,7 +12,7 @@ import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingScreen extends StatelessWidget {
   final String noteText;
-  final RecordingOpenMode from;
+  final RecordingButtonOpenMode from;
   final Group group;
 
   RecordingScreen({@required this.noteText, @required this.from, @required this.group});

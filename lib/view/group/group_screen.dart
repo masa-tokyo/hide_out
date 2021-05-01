@@ -77,7 +77,7 @@ class GroupScreen extends StatelessWidget {
         _createRoute(
             context,
             PreparationNoteScreen(
-              from: RecordingOpenMode.FROM_GROUP,
+              from: RecordingButtonOpenMode.POST_FROM_GROUP,
               group: group,
             )));
   }
@@ -244,7 +244,7 @@ class GroupScreen extends StatelessWidget {
                                         child: ListTile(
                                           trailing: AudioPlayButton(
                                             audioUrl: post.audioUrl,
-                                            isPostUser: true,
+                                            audioPlayType: AudioPlayType.POST_MINE,
                                           ),
                                           title: RichText(
                                               text: TextSpan(
@@ -278,7 +278,7 @@ class GroupScreen extends StatelessWidget {
                                     child: ListTile(
                                       trailing: AudioPlayButton(
                                         audioUrl: post.audioUrl,
-                                        isPostUser: false,
+                                        audioPlayType: AudioPlayType.POST_OTHERS,
                                         postId: post.postId,
                                       ),
                                       subtitle: Text(post.userName),

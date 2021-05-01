@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/join_group/join_group_screen.dart';
+import 'package:voice_put/view/login/self_intro_recording_screen.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
+import 'package:voice_put/view_models/profile_view_model.dart';
 
 class UserNameInputScreen extends StatefulWidget {
+  final ProfileEditScreensOpenMode from;
+  final String name;
+
+  UserNameInputScreen({@required this.from, this.name});
+
   @override
   _UserNameInputScreenState createState() => _UserNameInputScreenState();
 }
@@ -14,7 +22,12 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
 
   @override
   void initState() {
+    if (widget.from == ProfileEditScreensOpenMode.PROFILE) {
+      _controller.text = widget.name;
+    }
+
     _controller.addListener(_onTextUpdated);
+
     super.initState();
   }
 
@@ -35,7 +48,7 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
           SizedBox(height: 32.0,),
           _textField(),
           SizedBox(height: 48.0),
-          _nextButton(),
+          _button(),
         ],
       ),
     );
@@ -46,6 +59,7 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
         controller: _controller,
+        //todo not enable to withdraw keyboard
         autofocus: true,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
@@ -57,38 +71,43 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
     );
   }
 
-  _onTextUpdated(){
-    setState(() {
-    });
+  _onTextUpdated() {
+    setState(() {});
   }
 
-  Widget _nextButton() {
+  Widget _button() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
         child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-              _controller.text.isEmpty
-                  ? buttonNotEnabledColor
-                  : buttonEnabledColor
-            )
-          ),
-            onPressed: () => _controller.text.isEmpty ? null : _onNextButtonPressed(),
-            child: Text("Next", style: enabledButtonTextStyle,)),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    _controller.text.isEmpty
+                        ? buttonNotEnabledColor
+                        : buttonEnabledColor
+                )
+            ),
+            onPressed: () => _controller.text.isEmpty ? null : _onButtonPressed(),
+            child: widget.from == ProfileEditScreensOpenMode.SIGN_UP
+                ? Text("Next", style: enabledButtonTextStyle)
+                : Text("Done", style: enabledButtonTextStyle,)),
       ),
     );
   }
 
-  _onNextButtonPressed() {
-    final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+  _onButtonPressed() {
+    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
 
     //update username
-    loginViewModel.updateUserName(_controller.text);
+    profileViewModel.updateUserName(_controller.text);
 
-    //go to JoinGroupScreen
-    Navigator.push(context, MaterialPageRoute(builder: (_) => JoinGroupScreen(isSignedUp: true,)));
+    if(widget.from == ProfileEditScreensOpenMode.SIGN_UP){
+      //go to JoinGroupScreen
+      Navigator.push(context, MaterialPageRoute(builder: (_) => SelfIntroRecordingScreen(from: ProfileEditScreensOpenMode.SIGN_UP,)));
+    } else{
+      Navigator.pop(context);
+    }
 
   }
 }

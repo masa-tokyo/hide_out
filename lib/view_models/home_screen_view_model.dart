@@ -60,6 +60,10 @@ class HomeScreenViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> signOut() async{
+    await userRepository.signOut();
+  }
+
 
 
 }

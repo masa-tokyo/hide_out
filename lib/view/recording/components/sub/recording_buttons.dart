@@ -12,14 +12,15 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/join_group/join_group_screen.dart';
 import 'package:voice_put/view/recording/post_title_screen.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
-  final RecordingOpenMode from;
+  final RecordingButtonOpenMode from;
   final Group group;
 
-  RecordingButtons({@required this.from, @required this.group});
+  RecordingButtons({@required this.from, @required this.group,});
 
   @override
   _RecordingButtonsState createState() => _RecordingButtonsState();
@@ -236,7 +237,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _againButton(context),
-        _sendButton(),
+        _finishButton(),
       ],
     );
   }
@@ -287,7 +288,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   }
 
-  Widget _sendButton() {
+  Widget _finishButton() {
     return Column(
       children: [
         Container(
@@ -298,17 +299,17 @@ class _RecordingButtonsState extends State<RecordingButtons> {
               elevation: MaterialStateProperty.all(3.0),
               shape: MaterialStateProperty.all(CircleBorder()),
             ),
-            onPressed: () => _onSendButtonPressed(),
-            child: Icon(Icons.send, size: 30.0,),
+            onPressed: () => _onFinishButtonPressed(),
+            child: Icon(Icons.done_rounded, size: 50.0,),
           ),
         ),
         SizedBox(height: 8.0,),
-        Text("Send", style: underButtonLabelTextStyle,),
+        Text("Done", style: underButtonLabelTextStyle,),
       ],
     );
   }
 
- _onSendButtonPressed() async{
+ _onFinishButtonPressed() async {
 
     var displayTime;
 
@@ -321,7 +322,37 @@ class _RecordingButtonsState extends State<RecordingButtons> {
           milliSecond: false);
     });
 
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PostTitleScreen(path: _path, audioDuration: displayTime, from: widget.from, group: widget.group,),),);
+     if (widget.from == RecordingButtonOpenMode.POST_FROM_HOME || widget.from == RecordingButtonOpenMode.POST_FROM_GROUP){
+       Navigator.push(context, MaterialPageRoute(builder: (_) =>
+           PostTitleScreen(path: _path, audioDuration: displayTime, from: widget.from, group: widget.group,),),);
+
+     } else if(widget.from == RecordingButtonOpenMode.SELF_INTRO_FROM_SIGN_UP) {
+
+       Navigator.push(context, MaterialPageRoute(builder: (_) => JoinGroupScreen(isSignedUp: true)));
+
+       final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+       await recordingViewModel.uploadSelfIntro(_path);
+
+       //reset stopwatch
+       _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+
+       //change RecordingButtonStatus from AFTER to BEFORE
+       setState(() {
+         _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
+       });
+
+       await recordingViewModel.updateRecordingButtonStatus(_recordingButtonStatus);
+
+     } else {
+       //widget.from == RecordingButtonOpenMode.SELF_INTRO_FROM_PROFILE
+
+       final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+       await recordingViewModel.uploadSelfIntro(_path);
+
+       Navigator.pop(context);
+
+     }
+
 
   }
 

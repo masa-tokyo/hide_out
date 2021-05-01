@@ -7,8 +7,8 @@ class Post {
   final String groupId;
   final String userName;
   final String title;
-  final String audioUrl;
-  final String audioStoragePath;
+  final String audioUrl; //the actual place where the audio file is stored
+  final String audioStoragePath; //storageId to access to file data at Firebase Storage
   final String audioDuration;
   final DateTime postDateTime;
 

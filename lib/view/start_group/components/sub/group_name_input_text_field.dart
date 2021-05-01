@@ -26,7 +26,7 @@ class _GroupNameInputTextFieldState extends State<GroupNameInputTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextField(
         controller: _groupNameController,
         maxLines: null,

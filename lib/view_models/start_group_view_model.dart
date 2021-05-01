@@ -13,6 +13,10 @@ class StartGroupViewModel extends ChangeNotifier {
 
   User get currentUser => UserRepository.currentUser;
 
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
+
   String groupName = "";
   String description = "";
   int autoExitDays = 4;
@@ -43,9 +47,16 @@ class StartGroupViewModel extends ChangeNotifier {
       autoExitDays: autoExitDays,
     );
 
-    await userRepository.registerGroupIdOnUsers(group.groupId);
     await groupRepository.registerGroup(group, currentUser);
 
+
+  }
+
+  onGroupRegistered(GroupRepository groupRepository) {
+
+    //todo delete this method if not necessary
+    _isProcessing = groupRepository.isProcessing;
+    notifyListeners();
 
   }
 

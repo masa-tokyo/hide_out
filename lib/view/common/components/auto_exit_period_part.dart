@@ -26,6 +26,7 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
 
   int _intDays = 0;
 
+
   @override
   void initState() {
     super.initState();
@@ -44,27 +45,27 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
   @override
   Widget build(BuildContext context) {
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _text(),
-              HelpIcon(message: "Members will be kicked out of the group after certain period of time."),
-            ],
-          ),
-          _button(),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _text(),
+            HelpIcon(message: "Members will be kicked out of the group after certain period of time."),
+          ],
+        ),
+        _button(),
+      ],
     );
   }
 
   Widget _text() {
-    return Text(
-      "Auto-Exit Period",
-      style: startGroupLabelTextStyle,
+    return Padding(
+      padding: const EdgeInsets.only(left: 18.0),
+      child: Text(
+        "Auto-Exit Period",
+        style: startGroupLabelTextStyle,
+      ),
     );
   }
 
@@ -72,25 +73,28 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: autoExitButtonColor),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          items: _itemList,
-          value: _intDays,
-          onChanged: (selectedValue) {
-            setState(() {
-              _intDays = selectedValue;
-            });
-            if(widget.isBeginningGroup){
-              startGroupViewModel.updateAutoExitPeriod(_intDays);
-            } else {
-              groupViewModel.updateAutoExitPeriod(_intDays);
-            }
-            },
-          dropdownColor: autoExitButtonColor,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: autoExitButtonColor),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
+            items: _itemList,
+            value: _intDays,
+            onChanged: (selectedValue) {
+              setState(() {
+                _intDays = selectedValue;
+              });
+              if(widget.isBeginningGroup){
+                startGroupViewModel.updateAutoExitPeriod(_intDays);
+              } else {
+                groupViewModel.updateAutoExitPeriod(_intDays);
+              }
+              },
+            dropdownColor: autoExitButtonColor,
+          ),
         ),
       ),
     );
