@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 import 'package:voice_put/view/start_group/components/about_group_part.dart';
 import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
 import 'package:voice_put/view/start_group/components/group_name_part.dart';

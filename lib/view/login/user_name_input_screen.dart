@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/join_group/join_group_screen.dart';
 import 'package:voice_put/view/login/self_intro_recording_screen.dart';
-import 'package:voice_put/view_models/login_view_model.dart';
 import 'package:voice_put/view_models/profile_view_model.dart';
 
 class UserNameInputScreen extends StatefulWidget {

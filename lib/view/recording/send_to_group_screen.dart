@@ -22,7 +22,6 @@ class SendToGroupScreen extends StatefulWidget {
 }
 
 class _SendToGroupScreenState extends State<SendToGroupScreen> {
-  List<bool> _chooseGroupButtonBooleans = [];
   bool _isButtonAvailable = true;
 
 
@@ -67,27 +66,6 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
 
             }
 
-            // return data.item1.isEmpty
-            //         ? Padding(
-            //             padding: const EdgeInsets.only(top: 12.0),
-            //             child: NewGroupPart(),
-            //           )
-            //         : Column(
-            //             children: [
-            //               SizedBox(
-            //                 height: 16.0,
-            //               ),
-            //
-            //
-            //                     if (data.item2) {
-            //                       return CircularProgressIndicator();
-            //                     } else {
-            //                       _showClosedGroupNameDialog(context, data.item3);
-            //                       return _myGroupListView(context, data.item1);
-            //                     }
-            //               _doneButton(),
-            //             ],
-            //           );
           },
         ),
       ),
@@ -124,12 +102,6 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
           itemCount: groups.length,
           itemBuilder: (context, int index) {
             final group = groups[index];
-            //todo when playing the audio independently on GroupScreen, check these comments, then erase them
-            // for (var i = 0; i < model.groups.length; i++){
-            //   _chooseGroupButtonBooleans.length = groups.length;
-            //   _chooseGroupButtonBooleans[i] = false;
-            // }
-            // var isChooseGroupButtonPressed = _chooseGroupButtonBooleans[index];
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -220,11 +192,6 @@ class ChooseGroupButton extends StatefulWidget {
 class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   bool _isChooseGroupButtonPressed = false;
 
-  @override
-  void initState() {
-    // _isChooseGroupButtonPressed = widget.isChooseGroupButtonPressed;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

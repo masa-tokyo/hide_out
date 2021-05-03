@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:voice_put/di/providers.dart';
 import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/login/before_login_screen.dart';
-import 'package:voice_put/view/login/self_intro_recording_screen.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
 import 'package:voice_put/utils/style.dart';
 
