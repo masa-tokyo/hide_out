@@ -53,6 +53,7 @@ class PostRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
+
     _posts = await dbManager.getPostsByGroup(groupId);
 
     _isProcessing = false;
@@ -71,6 +72,10 @@ class PostRepository extends ChangeNotifier{
 
   Future<bool> isListened(String postId) async{
     return await dbManager.isListened(postId);
+  }
+
+  void deletePostsAtRepository() {
+    _posts.clear();
   }
 
 }

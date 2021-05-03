@@ -6,6 +6,7 @@ import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/recording/components/sub/post_title_input_text_field.dart';
 import 'package:voice_put/view/recording/send_to_group_screen.dart';
+import 'package:voice_put/view_models/group_view_model.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class PostTitleScreen extends StatelessWidget {
@@ -74,6 +75,10 @@ class PostTitleScreen extends StatelessWidget {
       //post
       recordingViewModel.addGroupId(group.groupId);
       await recordingViewModel.postRecording(path, audioDuration);
+
+      //in order not to pass data when opening another GroupScreen
+      final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+      groupViewModel.deletePostsAtRepository();
 
       //back to GroupScreen
       Navigator.pop(context);

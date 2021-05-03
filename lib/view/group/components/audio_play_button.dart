@@ -6,11 +6,12 @@ import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 class AudioPlayButton extends StatefulWidget {
+  //final int index;
   final String audioUrl;
   final AudioPlayType audioPlayType;
   final String postId;
 
-  AudioPlayButton({@required this.audioUrl, @required this.audioPlayType, this.postId});
+  AudioPlayButton({@required this.audioUrl, @required this.audioPlayType, this.postId, /*@required this.index*/});
 
   @override
   _AudioPlayButtonState createState() => _AudioPlayButtonState();
@@ -19,29 +20,25 @@ class AudioPlayButton extends StatefulWidget {
 class _AudioPlayButtonState extends State<AudioPlayButton> {
   bool _isPlaying = false;
 
-
   @override
   Widget build(BuildContext context) {
-    return _audioWidget();
-  }
 
-  Widget _audioWidget() {
-        return AudioWidget.network(
-          url: widget.audioUrl,
-          play: _isPlaying,
-          loopMode: LoopMode.single,
-          child: !_isPlaying
-              ? _notPlayingButton()
-              : _duringPlayingButton(),
-          onFinished: () => _onAudioFinished(),
-        );
+    return AudioWidget.network(
+      url: widget.audioUrl,
+      play: _isPlaying,
+      loopMode: LoopMode.single,
+      child: !_isPlaying
+          ? _notPlayingButton()
+          : _duringPlayingButton(),
+      onFinished: () => _onAudioFinished(),
+    );
   }
-
 
 
 
   _onAudioFinished(){
-    setState(() {
+
+setState(() {
       _isPlaying = !_isPlaying;
     });
   }
@@ -75,9 +72,13 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
         groupViewModel.insertListener(widget.postId);
       }
 
-      setState(() {
+
+
+setState(() {
         _isPlaying = !_isPlaying;
       });
+
+
 
     } else {
       showHelpDialog(
@@ -113,7 +114,8 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   }
 
   _onDuringPlayingButtonPressed(){
-    setState(() {
+
+setState(() {
       _isPlaying = !_isPlaying;
     });
   }

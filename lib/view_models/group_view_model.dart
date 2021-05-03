@@ -45,10 +45,43 @@ class GroupViewModel extends ChangeNotifier {
   int _autoExitDays = 4;
   int get autoExitDays => _autoExitDays;
 
+  List<bool> _isPlayings = [];
+  List<bool> get isPlayings => _isPlayings;
+
+
+  //-------------------------------------------------------------------------------------------------- For updating status of AudioPlayButton
+
+  //todo erase these methods if unnecessary
+  void setIsPlayings(int length) {
+
+    for (var i = 0; i < length; i ++){
+
+      _isPlayings.length = length;
+      _isPlayings[i] = false;
+
+    }
+
+    //cannot draw again during build method
+    //notifyListeners();
+
+  }
+
+  void updateIsPlaying(int index, bool isPlaying) {
+    _isPlayings[index] = !isPlaying;
+    notifyListeners();
+  }
+
+  Future<List<bool>> getIsPlayings() async{
+    return _isPlayings;
+  }
+
+
   //-------------------------------------------------------------------------------------------------- Post Repository
 
   Future<void> getGroupPosts(Group group) async {
     await postRepository.getPostsByGroup(group.groupId);
+
+
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
@@ -108,6 +141,9 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
+
   //-------------------------------------------------------------------------------------------------- Group Repository
   Future<void> getGroupInfo(String groupId) async {
     await groupRepository.getGroupInfo(groupId);
@@ -166,5 +202,12 @@ class GroupViewModel extends ChangeNotifier {
     await groupRepository.closeGroup(group, currentUser);
 
   }
+
+  void deletePostsAtRepository() {
+    _posts.clear();
+    postRepository.deletePostsAtRepository();
+  }
+
+
 
 }

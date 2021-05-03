@@ -133,7 +133,9 @@ class ProfileScreen extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: AudioPlayButton(
-                    audioUrl: user.audioUrl, audioPlayType: AudioPlayType.SELF_INTRO)),
+                    //index: null,
+                    audioUrl: user.audioUrl,
+                    audioPlayType: AudioPlayType.SELF_INTRO)),
           ),
         ),
       ],
