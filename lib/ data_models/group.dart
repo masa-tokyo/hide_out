@@ -6,6 +6,8 @@ class Group {
   final String description;
   final String ownerId;
   final int autoExitDays;
+  final int createdAt;
+  final int lastActivityAt;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -15,6 +17,8 @@ class Group {
     @required this.description,
     @required this.ownerId,
     @required this.autoExitDays,
+    @required this.createdAt,
+    @required this.lastActivityAt,
   });
 
   Group copyWith({
@@ -23,12 +27,17 @@ class Group {
     String description,
     String ownerId,
     int autoExitDays,
+    int createdAt,
+    int lastActivityAt,
   }) {
     if ((groupId == null || identical(groupId, this.groupId)) &&
         (groupName == null || identical(groupName, this.groupName)) &&
         (description == null || identical(description, this.description)) &&
         (ownerId == null || identical(ownerId, this.ownerId)) &&
-        (autoExitDays == null || identical(autoExitDays, this.autoExitDays))) {
+        (autoExitDays == null || identical(autoExitDays, this.autoExitDays)) &&
+        (createdAt == null || identical(createdAt, this.createdAt)) &&
+        (lastActivityAt == null ||
+            identical(lastActivityAt, this.lastActivityAt))) {
       return this;
     }
 
@@ -38,12 +47,14 @@ class Group {
       description: description ?? this.description,
       ownerId: ownerId ?? this.ownerId,
       autoExitDays: autoExitDays ?? this.autoExitDays,
+      createdAt: createdAt ?? this.createdAt,
+      lastActivityAt: lastActivityAt ?? this.lastActivityAt,
     );
   }
 
   @override
   String toString() {
-    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, autoExitDays: $autoExitDays}';
+    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, autoExitDays: $autoExitDays, createdAt: $createdAt, lastActivityAt: $lastActivityAt}';
   }
 
   @override
@@ -55,7 +66,9 @@ class Group {
           groupName == other.groupName &&
           description == other.description &&
           ownerId == other.ownerId &&
-          autoExitDays == other.autoExitDays);
+          autoExitDays == other.autoExitDays &&
+          createdAt == other.createdAt &&
+          lastActivityAt == other.lastActivityAt);
 
   @override
   int get hashCode =>
@@ -63,7 +76,9 @@ class Group {
       groupName.hashCode ^
       description.hashCode ^
       ownerId.hashCode ^
-      autoExitDays.hashCode;
+      autoExitDays.hashCode ^
+      createdAt.hashCode ^
+      lastActivityAt.hashCode;
 
   factory Group.fromMap(Map<String, dynamic> map) {
     return new Group(
@@ -72,6 +87,10 @@ class Group {
       description: map['description'] as String,
       ownerId: map['ownerId'] as String,
       autoExitDays: map['autoExitDays'] as int,
+      createdAt: map['createdAt'] ==null
+          ? null: map['createdAt'] as int,
+      lastActivityAt: map['lastActivityAt'] ==null
+          ? null : map['lastActivityAt'] as int,
     );
   }
 
@@ -83,6 +102,8 @@ class Group {
       'description': this.description,
       'ownerId': this.ownerId,
       'autoExitDays': this.autoExitDays,
+      'createdAt': this.createdAt,
+      'lastActivityAt': this.lastActivityAt,
     } as Map<String, dynamic>;
   }
 

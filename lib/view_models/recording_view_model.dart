@@ -35,10 +35,6 @@ class RecordingViewModel extends ChangeNotifier{
   List<String> _groupIds = [];
   List<String> get groupIds => _groupIds;
 
-  List<String> _closedGroupNames = [];
-  List<String> get closedGroupNames => _closedGroupNames;
-
-
 
   User get currentUser => UserRepository.currentUser;
 
@@ -87,11 +83,6 @@ class RecordingViewModel extends ChangeNotifier{
     _isProcessing = groupRepository.isProcessing;
     _groups = groupRepository.myGroups;
 
-    // when any property  used in Selector@SendToGroupScreen is updated by NotifyLister(),
-    // delete this and show it @HomeScreen instead
-    // *Currently(04.22.2021), _isProcessing and _groups
-    _closedGroupNames = groupRepository.closedGroupNames;
-
     notifyListeners();
   }
 
@@ -115,14 +106,6 @@ class RecordingViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  void deleteClosedGroupName(String confirmedGroupName) {
-    for (String groupName in _closedGroupNames) {
-      if (groupName == confirmedGroupName) {
-        _closedGroupNames.remove(groupName);
-        groupRepository.deleteClosedGroupName(currentUser, groupName);
-      }
-    }
-  }
 
   Future <void> uploadSelfIntro(String path) async{
 

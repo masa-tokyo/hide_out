@@ -11,6 +11,7 @@ class Post {
   final String audioStoragePath; //storageId to access to file data at Firebase Storage
   final String audioDuration;
   final DateTime postDateTime;
+  final bool isListened;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -24,6 +25,7 @@ class Post {
     @required this.audioStoragePath,
     @required this.audioDuration,
     @required this.postDateTime,
+    @required this.isListened,
   });
 
   Post copyWith({
@@ -36,6 +38,7 @@ class Post {
     String audioStoragePath,
     String audioDuration,
     DateTime postDateTime,
+    bool isListened,
   }) {
     if ((postId == null || identical(postId, this.postId)) &&
         (userId == null || identical(userId, this.userId)) &&
@@ -45,7 +48,8 @@ class Post {
         (audioUrl == null || identical(audioUrl, this.audioUrl)) &&
         (audioStoragePath == null || identical(audioStoragePath, this.audioStoragePath)) &&
         (audioDuration == null || identical(audioDuration, this.audioDuration)) &&
-        (postDateTime == null || identical(postDateTime, this.postDateTime))) {
+        (postDateTime == null || identical(postDateTime, this.postDateTime)) &&
+        (isListened == null || identical(isListened, this.isListened))) {
       return this;
     }
 
@@ -59,12 +63,13 @@ class Post {
       audioStoragePath: audioStoragePath ?? this.audioStoragePath,
       audioDuration: audioDuration ?? this.audioDuration,
       postDateTime: postDateTime ?? this.postDateTime,
+      isListened: isListened ?? this.isListened,
     );
   }
 
   @override
   String toString() {
-    return 'Post{postId: $postId, userId: $userId, groupId: $groupId, userName: $userName, title: $title, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, audioDuration: $audioDuration, postDateTime: $postDateTime}';
+    return 'Post{postId: $postId, userId: $userId, groupId: $groupId, userName: $userName, title: $title, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, audioDuration: $audioDuration, postDateTime: $postDateTime, isListened: $isListened}';
   }
 
   @override
@@ -80,7 +85,8 @@ class Post {
           audioUrl == other.audioUrl &&
           audioStoragePath == other.audioStoragePath &&
           audioDuration == other.audioDuration &&
-          postDateTime == other.postDateTime);
+          postDateTime == other.postDateTime &&
+          isListened == other.isListened);
 
   @override
   int get hashCode =>
@@ -92,7 +98,8 @@ class Post {
       audioUrl.hashCode ^
       audioStoragePath.hashCode ^
       audioDuration.hashCode ^
-      postDateTime.hashCode;
+      postDateTime.hashCode ^
+      isListened.hashCode;
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return new Post(
@@ -106,6 +113,8 @@ class Post {
       audioDuration: map['audioDuration'] as String,
       postDateTime: map['postDateTime'] == null
     ? null : DateTime.parse(map['postDateTime'] as String),
+      isListened: map['isListened'] as bool == null
+      ? false : map['isListened'] as bool,
     );
   }
 
@@ -121,6 +130,7 @@ class Post {
       'audioStoragePath': this.audioStoragePath,
       'audioDuration': this.audioDuration,
       'postDateTime': this.postDateTime.toIso8601String(),
+      'isListened': this.isListened,
     } as Map<String, dynamic>;
   }
 

@@ -1,4 +1,3 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/post.dart';
@@ -6,43 +5,44 @@ import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
-class AudioPlayButton extends StatefulWidget {
-  //final int index;
+class PostAudioPlayButton extends StatefulWidget {
+  final int index;
   final String audioUrl;
   final AudioPlayType audioPlayType;
   final Post post;
 
-  AudioPlayButton({@required this.audioUrl, @required this.audioPlayType, this.post, /*@required this.index*/});
+  PostAudioPlayButton({
+    @required this.audioUrl,
+    @required this.audioPlayType,
+    this.post,
+    @required this.index
+  });
 
   @override
-  _AudioPlayButtonState createState() => _AudioPlayButtonState();
+  _PostAudioPlayButtonState createState() => _PostAudioPlayButtonState();
 }
 
-class _AudioPlayButtonState extends State<AudioPlayButton> {
-  bool _isPlaying = false;
+class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
+
 
   @override
   Widget build(BuildContext context) {
+    final groupViewModel =
+    Provider.of<GroupViewModel>(context, listen: false);
+    return FutureBuilder(
+        future: groupViewModel.returnIsPlaying(widget.index),
+        builder: (context, AsyncSnapshot<bool> snapshot){
+          if(snapshot.hasData) {
+            final _isPlaying = snapshot.data;
 
-    return AudioWidget.network(
-      url: widget.audioUrl,
-      play: _isPlaying,
-      loopMode: LoopMode.single,
-      child: !_isPlaying
-          ? _notPlayingButton()
-          : _duringPlayingButton(),
-      onFinished: () => _onAudioFinished(),
-    );
+            return !_isPlaying
+                ? _notPlayingButton()
+                : _duringPlayingButton();
+          } else {return Container();}
+        });
+
   }
 
-
-
-  _onAudioFinished(){
-
-setState(() {
-      _isPlaying = !_isPlaying;
-    });
-  }
 
   //------------------------------------------------------------------------------------------------- NOT_PLAYING
 
@@ -51,7 +51,8 @@ setState(() {
       onTap: () => _onNotPlayingButtonPressed(),
       child: Card(
         elevation: 3.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
         child: SizedBox(
           width: 36.0,
           height: 36.0,
@@ -65,61 +66,55 @@ setState(() {
     );
   }
 
-  _onNotPlayingButtonPressed(){
-
-    if(widget.audioUrl != ""){
-      final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+  _onNotPlayingButtonPressed() {
+    if (widget.audioUrl != "") {
+      final groupViewModel =
+          Provider.of<GroupViewModel>(context, listen: false);
       if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
         groupViewModel.insertListener(widget.post);
         groupViewModel.deleteNotification(postId: widget.post.postId);
       }
 
 
-
-setState(() {
-        _isPlaying = !_isPlaying;
-      });
-
-
+      groupViewModel.playAudio(widget.index);
 
     } else {
       showHelpDialog(
           context: context,
-          contentString: "No Recording yet!",
+          title: Text("Error"),
+          contentString: "Failed to play the audio",
           okayString: "Okay",
           onConfirmed: null);
     }
-
   }
 
   //-------------------------------------------------------------------------------------------------DURING_PLAYING
 
   Widget _duringPlayingButton() {
-
     return InkWell(
       onTap: () => _onDuringPlayingButtonPressed(),
       child: Card(
         elevation: 3.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24.0)
-        ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
         child: SizedBox(
           width: 36.0,
           height: 36.0,
-          child:
-          Icon(Icons.pause,
+          child: Icon(
+            Icons.pause,
             size: 36.0,
-            color: Colors.black54,),
+            color: Colors.black54,
+          ),
         ),
       ),
     );
   }
 
-  _onDuringPlayingButtonPressed(){
+  _onDuringPlayingButtonPressed() {
 
-setState(() {
-      _isPlaying = !_isPlaying;
-    });
+    final groupViewModel =
+    Provider.of<GroupViewModel>(context, listen: false);
+
+    groupViewModel.pauseAudio();
   }
-
 }

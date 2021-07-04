@@ -9,7 +9,7 @@ enum GroupEditMenu {
   EDIT,
   LEAVE,
   NO_EDIT,
-  CLOSE,
+  DELETE,
 }
 
 enum LoginScreenStatus {
@@ -39,4 +39,18 @@ enum AudioPlayType {
   POST_MINE,
   POST_OTHERS,
   SELF_INTRO,
+}
+
+enum NotificationType {
+  NEW_POST,
+  AUTO_EXIT,
+  DELETED_GROUP,
+}
+
+enum NotificationDeleteType {
+  NOTIFICATION_ID,
+  OPEN_POST,
+  DELETE_POST,
+  LEAVE_GROUP,
+  DELETE_GROUP,
 }

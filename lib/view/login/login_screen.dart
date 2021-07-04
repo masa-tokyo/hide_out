@@ -11,6 +11,8 @@ import 'package:voice_put/utils/style.dart';
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final deviceData = MediaQuery.of(context);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -22,6 +24,9 @@ class LoginScreen extends StatelessWidget {
               : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset("assets/images/logo.png",
+                    width: 0.8 * deviceData.size.width,),
+                  SizedBox(height: 200.0,),
                   ButtonWithImage(
                       onPressed: () => _signInOrSignUp(context),
                       color: googleIconButtonColor,

@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
-
+    final deviceData = MediaQuery.of(context);
 
     return SafeArea(
       child: Scaffold(
@@ -30,12 +30,14 @@ class HomeScreen extends StatelessWidget {
         drawer: _drawer(context),
         appBar: AppBar(
           leading: _settingsButton(context),
-          title: Text("VoicePut"),
+          title: Image.asset("assets/images/logo.png",
+          width: 0.4 * deviceData.size.width,),
         ),
         body: SingleChildScrollView(
           child: RefreshIndicator(
             onRefresh: () async {
               await homeScreenViewModel.getMyGroup();
+              await homeScreenViewModel.getNotifications();
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
