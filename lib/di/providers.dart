@@ -67,8 +67,9 @@ List<SingleChildWidget> viewModels = [
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, viewModel) =>
-        viewModel..onMyGroupObtained(groupRepository),
+    update: (context, userRepository, groupRepository, viewModel) => viewModel
+      ..onMyGroupObtained(groupRepository)
+      ..onNotificationsFetched(userRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository, JoinGroupViewModel>(
     create: (context) => JoinGroupViewModel(
@@ -104,6 +105,7 @@ List<SingleChildWidget> viewModels = [
       ..onStatusUpdated(audioPlayManager)
       ..onGroupInfoObtained(groupRepository)
       ..onGroupMemberInfoObtained(userRepository)
-      ..onGroupInfoUpdated(groupRepository),
+      ..onGroupInfoUpdated(groupRepository)
+      ..onNotificationsFetched(userRepository),
 ),
 ];

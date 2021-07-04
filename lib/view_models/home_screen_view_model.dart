@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/user.dart';
+import 'package:voice_put/%20data_models/notification.dart' as d;
 import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
+import 'package:voice_put/utils/constants.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
   final GroupRepository groupRepository;
@@ -13,57 +15,73 @@ class HomeScreenViewModel extends ChangeNotifier {
   User get currentUser => UserRepository.currentUser;
 
   bool _isProcessing = false;
+
   bool get isProcessing => _isProcessing;
 
   List<Group> _groups = [];
+
   List<Group> get groups => _groups;
 
-  List<Group> _autoExitGroups = [];
-  List<Group> get autoExitGroups => _autoExitGroups;
+  List<d.Notification> _notifications = [];
 
-  List<String> _closedGroupNames = [];
-  List<String> get closedGroupNames => _closedGroupNames;
+  List<d.Notification> get notifications => _notifications;
 
+  bool _isUpdating = false;
 
-  Future<void> getMyGroup() async{
+  bool get isUpdating => _isUpdating;
 
-    await groupRepository.getMyGroupWithAutoExitChecked(currentUser);
+  List<int> _calls = [];
 
+  List<int> get calls => _calls;
 
+  bool _isFirstCall = false;
+
+  bool get isFirstCall => _isFirstCall;
+
+  Future<void> getMyGroup() async {
+    await groupRepository.getMyGroup(currentUser);
   }
 
   onMyGroupObtained(GroupRepository groupRepository) {
     _isProcessing = groupRepository.isProcessing;
     _groups = groupRepository.myGroups;
-    _autoExitGroups = groupRepository.autoExitGroups;
-    _closedGroupNames = groupRepository.closedGroupNames;
     notifyListeners();
   }
 
-  void deleteAutoExitGroup(Group confirmedGroup) {
-    for (Group group in _autoExitGroups){
-      if (group == confirmedGroup){
-        _autoExitGroups.remove(group);
-        groupRepository.deleteAutoExitGroup(group);
-      }
-      return;
-    }
 
-  }
-
-  void deleteClosedGroupName(String confirmedGroupName) {
-    for (String groupName in _closedGroupNames) {
-      if (groupName == confirmedGroupName) {
-        _closedGroupNames.remove(groupName);
-        groupRepository.deleteClosedGroupName(currentUser, groupName);
-      }
-    }
-  }
-
-  Future<void> signOut() async{
+  Future<void> signOut() async {
     await userRepository.signOut();
   }
 
+  Future<void> getNotifications() async {
+    calls.add(0);
+    if (calls.length == 1) {
+      _isFirstCall = true;
+    }
 
+    await userRepository.getNotifications();
+  }
 
+  onNotificationsFetched(UserRepository userRepository) {
+    _notifications = userRepository.notifications;
+    _isProcessing = userRepository.isProcessing;
+    _isUpdating = userRepository.isUpdating;
+
+    notifyListeners();
+  }
+
+  void stopCall() {
+    _isFirstCall = false;
+
+    //reset calls after all the getNotifications() were called
+    Future.delayed(Duration(seconds: 1)).then((value) {
+      _calls.clear();
+    });
+  }
+
+  Future<void> deleteNotification(String notificationId) async {
+    await userRepository.deleteNotification(
+        notificationId: notificationId,
+        notificationDeleteType: NotificationDeleteType.NOTIFICATION_ID);
+  }
 }

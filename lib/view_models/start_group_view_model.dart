@@ -45,6 +45,8 @@ class StartGroupViewModel extends ChangeNotifier {
       description: description,
       ownerId: currentUser.userId,
       autoExitDays: autoExitDays,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      lastActivityAt: DateTime.now().millisecondsSinceEpoch,
     );
 
     await groupRepository.registerGroup(group, currentUser);

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
+import 'package:voice_put/%20data_models/notification.dart' as d;
+import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/utils/style.dart';
@@ -10,8 +11,10 @@ import 'package:voice_put/view_models/home_screen_view_model.dart';
 class MyGroupPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+    final homeScreenViewModel =
+        Provider.of<HomeScreenViewModel>(context, listen: false);
     Future(() => homeScreenViewModel.getMyGroup());
+    Future(() => homeScreenViewModel.getNotifications());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,16 +29,20 @@ class MyGroupPart extends StatelessWidget {
         SizedBox(
           height: 8.0,
         ),
-        Selector<HomeScreenViewModel, Tuple4<bool, List<Group>, List<Group>, List<String>>>(
-          selector: (context, viewModel) => Tuple4(viewModel.isProcessing, viewModel.autoExitGroups, viewModel.groups, viewModel.closedGroupNames),
-          builder: (context, data, child) {
-            if (data.item1) {
+        Consumer<HomeScreenViewModel>(
+          builder: (context, model, child) {
+            if (model.isProcessing) {
               return Center(child: CircularProgressIndicator());
-
             } else {
-              _showAutoExitDialog(context, data.item2);
-              _showClosedGroupNameDialog(context, data.item4);
-              return data.item3.isEmpty ? _newGroupIntro() : _myGroupListView(data.item3);
+              if (model.isFirstCall) {
+                homeScreenViewModel.stopCall();
+                _showAutoExitDialog(context, model.notifications);
+                _showDeletedGroupDialog(context, model.notifications);
+              }
+
+              return model.groups.isEmpty
+                  ? _newGroupIntro()
+                  : _myGroupListView(model.groups, model.notifications);
             }
           },
         ),
@@ -75,45 +82,54 @@ class MyGroupPart extends StatelessWidget {
     );
   }
 
-  void _showAutoExitDialog(BuildContext context, List<Group> autoExitGroups) async {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+  void _showAutoExitDialog(
+      BuildContext context, List<d.Notification> notifications) async {
+    final homeScreenViewModel =
+        Provider.of<HomeScreenViewModel>(context, listen: false);
 
-    if (autoExitGroups.isNotEmpty) {
-      autoExitGroups.forEach((autoExitGroup) {
+    var autoExitNotifications = notifications.where(
+        (element) => element.notificationType == NotificationType.AUTO_EXIT);
+
+    if (autoExitNotifications.isNotEmpty) {
+      autoExitNotifications.forEach((element) {
         Future(() => showHelpDialog(
             context: context,
             title: Text("Auto-Exit Period"),
             contentString:
-            'You have exited from "${autoExitGroup.groupName}". Please enter again if you want.',
+                'You have exited from "${element.content}". Please enter again if you want.',
             okayString: "Okay",
-            onConfirmed: (){
-              homeScreenViewModel.deleteAutoExitGroup(autoExitGroup);
+            onConfirmed: () {
+              homeScreenViewModel.deleteNotification(element.notificationId);
             }));
       });
     }
   }
 
-  void _showClosedGroupNameDialog(BuildContext context, List<String> closedGroupNames) async {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+  void _showDeletedGroupDialog(
+      BuildContext context, List<d.Notification> notifications) async {
+    final homeScreenViewModel =
+        Provider.of<HomeScreenViewModel>(context, listen: false);
 
-    if (closedGroupNames.isNotEmpty) {
-      closedGroupNames.forEach((groupName) {
+    var deletedGroupNotifications = notifications.where((element) =>
+        element.notificationType == NotificationType.DELETED_GROUP);
+
+    if (deletedGroupNotifications.isNotEmpty) {
+      deletedGroupNotifications.forEach((element) {
         Future(() => showHelpDialog(
             context: context,
             title: Text("We are sorry!"),
             contentString:
-            'Your group,"$groupName" was closed by the group owner.',
+                'Your group,"${element.content}" was deleted by the group owner.',
             okayString: "Okay",
-            onConfirmed: (){
-              homeScreenViewModel.deleteClosedGroupName(groupName);
-
+            onConfirmed: () {
+              homeScreenViewModel.deleteNotification(element.notificationId);
             }));
       });
     }
   }
 
-
-  Widget _myGroupListView(List<Group> groups) {
+  Widget _myGroupListView(
+      List<Group> groups, List<d.Notification> notifications) {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: groups.length,
@@ -121,28 +137,46 @@ class MyGroupPart extends StatelessWidget {
           final group = groups[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Card(
-              color: listTileColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              elevation: 2.0,
-              child: InkWell(
-                splashColor: Colors.blueGrey,
-                onTap: () => _openGroupScreen(context, group),
-                child: ListTile(
-                  title: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Text(
-                      group.groupName,
-                      style: listTileTitleTextStyle,
+            child: Stack(alignment: Alignment.topRight, children: [
+              Card(
+                color: listTileColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                elevation: 2.0,
+                child: InkWell(
+                  splashColor: Colors.blueGrey,
+                  onTap: () => _openGroupScreen(context, group),
+                  child: ListTile(
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                      child: Text(
+                        group.groupName,
+                        style: listTileTitleTextStyle,
+                      ),
                     ),
+                    trailing: Icon(Icons.arrow_forward_ios_rounded),
+                    dense: true,
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded),
-                  dense: true,
                 ),
               ),
-            ),
+              notifications.any((element) =>
+                      element.notificationType == NotificationType.NEW_POST &&
+                      element.groupId == group.groupId)
+                  ? Container(
+                      width: 28.0,
+                      height: 28.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: notificationBadgeColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                            "${notifications.where((element) => element.notificationType == NotificationType.NEW_POST).length}"),
+                      ),
+                    )
+                  : Container(),
+            ]),
           );
         });
   }

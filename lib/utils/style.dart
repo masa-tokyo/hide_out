@@ -26,6 +26,7 @@ final hintDialogBackgroundColor = Colors.grey[200];
 final buttonNotChosenColor = Colors.white;
 const buttonChosenColor = Colors.cyan;
 const notChosenButtonBorderSideColor = Colors.black54;
+const notificationBadgeColor = Colors.redAccent;
 
 //Home
 const drawerHeaderColor = Colors.cyan;

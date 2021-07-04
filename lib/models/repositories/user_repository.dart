@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uuid/uuid.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/user.dart';
+import 'package:voice_put/%20data_models/notification.dart' as d;
 import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/utils/constants.dart';
 
@@ -21,6 +22,12 @@ class UserRepository extends ChangeNotifier{
 
   List<User> _groupMembers = [];
   List<User> get groupMembers => _groupMembers;
+
+  List<d.Notification> _notifications = [];
+  List<d.Notification> get notifications => _notifications;
+
+  bool _isUpdating = false;
+  bool get isUpdating => _isUpdating;
 
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
@@ -80,6 +87,7 @@ class UserRepository extends ChangeNotifier{
       email: firebaseUser.email,
       audioStoragePath: "",
       audioUrl: "",
+      createdAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
 
@@ -97,6 +105,7 @@ class UserRepository extends ChangeNotifier{
 
   Future<void> getUsersByGroupId(Group group) async{
     _isProcessing = true;
+    notifyListeners();
 
     _groupMembers = await dbManager.getUsersByGroupId(group.groupId);
 
@@ -125,6 +134,58 @@ class UserRepository extends ChangeNotifier{
     await _googleSignIn.signOut();
     await _auth.signOut();
     currentUser = null;
+  }
+
+  Future<void> getNotifications() async{
+    _isProcessing = true;
+    notifyListeners();
+
+    _notifications = await dbManager.getNotifications(currentUser.userId);
+
+    _isProcessing = false;
+    notifyListeners();
+
+  }
+
+  Future<void> deleteNotification(
+      {@required NotificationDeleteType notificationDeleteType,
+        String postId,
+      String groupId,
+      String notificationId}) async{
+    _isUpdating = true; //to update HomeScreen
+    notifyListeners();
+
+    switch (notificationDeleteType) {
+      case NotificationDeleteType.NOTIFICATION_ID:
+        await dbManager.deleteNotification(notificationId: notificationId);
+        _notifications.where((element) => element.notificationId == notificationId);
+        break;
+
+      case NotificationDeleteType.OPEN_POST:
+        await dbManager.deleteNotificationByPostIdAndUserId(
+            postId: postId, userId: currentUser.userId);
+        _notifications.removeWhere((element) => element.postId == postId);
+        break;
+
+      case NotificationDeleteType.LEAVE_GROUP:
+        await dbManager.deleteNotificationByGroupIdAndUserId(
+            groupId: groupId, userId: currentUser.userId);
+        _notifications.removeWhere((element) => element.groupId == groupId);
+        break;
+
+      case NotificationDeleteType.DELETE_POST:
+        await dbManager.deleteNotificationByPostId(postId: postId);
+        break;
+
+      case NotificationDeleteType.DELETE_GROUP:
+        await dbManager.deleteNotificationByGroupId(groupId: groupId);
+        _notifications.removeWhere((element) => element.groupId == groupId);
+        break;
+    }
+
+    _isUpdating = false;
+    notifyListeners();
+
   }
 
 

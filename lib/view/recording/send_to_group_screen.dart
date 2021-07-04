@@ -7,7 +7,6 @@ import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/home/components/new_group_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
@@ -42,8 +41,8 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
         ),
       ),
       body: Center(
-        child: Selector<RecordingViewModel, Tuple3<List<Group>, bool, List<String>>>(
-          selector: (context, viewModel) => Tuple3(viewModel.groups, viewModel.isProcessing, viewModel.closedGroupNames),
+        child: Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
+          selector: (context, viewModel) => Tuple2(viewModel.groups, viewModel.isProcessing),
           builder: (context, data, child) {
             if (data.item2) {
               return Center(child: CircularProgressIndicator());
@@ -54,7 +53,6 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                   child: NewGroupPart(),
                 );
               } else {
-                _showClosedGroupNameDialog(context, data.item3);
                 return Column(
                   children: [
                     SizedBox(height: 16.0,),
@@ -72,24 +70,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     );
   }
 
-  void _showClosedGroupNameDialog(BuildContext context, List<String> closedGroupNames) async {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
 
-    if (closedGroupNames.isNotEmpty) {
-      closedGroupNames.forEach((groupName) {
-        Future(() => showHelpDialog(
-            context: context,
-            title: Text("We are sorry!"),
-            contentString:
-            'We are sorry. Your group,"$groupName" was closed by the group owner.',
-            okayString: "Okay",
-            onConfirmed: (){
-              recordingViewModel.deleteClosedGroupName(groupName);
-
-            }));
-      });
-    }
-  }
 
 
   Widget _myGroupListView(BuildContext context, List<Group> groups) {
