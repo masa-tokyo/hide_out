@@ -381,7 +381,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   Future<void> openTheRecorder() async {
     //upgraded the minimum SDK version of Android(23) & minimum OS version of iOS(10.0)
 
-    //todo check on the real device
         var status = await Permission.microphone.request();
         if (status != PermissionStatus.granted) {
           showConfirmDialog
