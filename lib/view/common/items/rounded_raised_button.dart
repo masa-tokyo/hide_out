@@ -4,9 +4,9 @@ import 'package:voice_put/utils/style.dart';
 class RoundedRaisedButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final Color color;
+  final Color? color;
 
-  RoundedRaisedButton({@required this.label, @required this.onPressed, @required this.color});
+  RoundedRaisedButton({required this.label, required this.onPressed, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class RoundedRaisedButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24.0),
                 ),
               ),
-              backgroundColor: MaterialStateProperty.all<Color>(color)
+              backgroundColor: MaterialStateProperty.all<Color?>(color)
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),

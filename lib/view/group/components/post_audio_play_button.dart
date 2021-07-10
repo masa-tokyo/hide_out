@@ -7,15 +7,15 @@ import 'package:voice_put/view_models/group_view_model.dart';
 
 class PostAudioPlayButton extends StatefulWidget {
   final int index;
-  final String audioUrl;
+  final String? audioUrl;
   final AudioPlayType audioPlayType;
-  final Post post;
+  final Post? post;
 
   PostAudioPlayButton({
-    @required this.audioUrl,
-    @required this.audioPlayType,
+    required this.audioUrl,
+    required this.audioPlayType,
     this.post,
-    @required this.index
+    required this.index
   });
 
   @override
@@ -23,6 +23,7 @@ class PostAudioPlayButton extends StatefulWidget {
 }
 
 class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
+
 
 
   @override
@@ -33,7 +34,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
         future: groupViewModel.returnIsPlaying(widget.index),
         builder: (context, AsyncSnapshot<bool> snapshot){
           if(snapshot.hasData) {
-            final _isPlaying = snapshot.data;
+            final _isPlaying = snapshot.data!;
 
             return !_isPlaying
                 ? _notPlayingButton()
@@ -44,7 +45,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
   }
 
 
-  //------------------------------------------------------------------------------------------------- NOT_PLAYING
+  //---------------------------------------------------------------------------- NOT_PLAYING
 
   Widget _notPlayingButton() {
     return InkWell(
@@ -71,8 +72,8 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
       final groupViewModel =
           Provider.of<GroupViewModel>(context, listen: false);
       if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
-        groupViewModel.insertListener(widget.post);
-        groupViewModel.deleteNotification(postId: widget.post.postId);
+        groupViewModel.insertListener(widget.post!);
+        groupViewModel.deleteNotification(postId: widget.post!.postId);
       }
 
 
@@ -88,7 +89,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------DURING_PLAYING
+  //----------------------------------------------------------------------------DURING_PLAYING
 
   Widget _duringPlayingButton() {
     return InkWell(

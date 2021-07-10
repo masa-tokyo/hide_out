@@ -12,12 +12,17 @@ class PostTitleScreen extends StatelessWidget {
   final String path;
   final String audioDuration;
   final RecordingButtonOpenMode from;
-  final Group group;
+  final Group? group;
 
-  PostTitleScreen({@required this.audioDuration, @required this.path, @required this.from, @required this.group});
+  PostTitleScreen(
+      {required this.audioDuration,
+      required this.path,
+      required this.from,
+      required this.group});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Title"),
@@ -36,55 +41,111 @@ class PostTitleScreen extends StatelessWidget {
   }
 
   Widget _nextOrDoneButton(BuildContext context) {
+    var _isFirstPress = true;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Container(
         width: double.infinity,
         child: ElevatedButton(
-            style: ButtonStyle(
-              elevation: MaterialStateProperty.all(3.0),
-              backgroundColor: MaterialStateProperty.all(nextScreenButtonColor),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(3.0),
+            backgroundColor: MaterialStateProperty.all(nextScreenButtonColor),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
-              ),),
+              ),
             ),
-            onPressed: () => _onButtonPressed(context),
-            child: Text(from == RecordingButtonOpenMode.POST_FROM_HOME
-              ? "Next" : "Done",
-              style: enabledButtonTextStyle,),
+          ),
+          child: Text(
+            from == RecordingButtonOpenMode.POST_FROM_HOME ? "Next" : "Done",
+            style: enabledButtonTextStyle,
+          ),
+          onPressed: () async{
+
+            final recordingViewModel =
+            Provider.of<RecordingViewModel>(context, listen: false);
+
+            //todo: do this after the post was done(from_group)
+            //todo: or going to the next screen(from_home_screen)
+            // FocusScopeNode currentFocus = FocusScope.of(context);
+            // if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+            //   FocusManager.instance.primaryFocus.unfocus();
+            // }
+
+            if (from == RecordingButtonOpenMode.POST_FROM_HOME) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) =>
+                          SendToGroupScreen(audioDuration: audioDuration, path: path)));
+            } else {
+              //from == RecordingButtonOpenMode.POST_FROM_GROUP
+              if(_isFirstPress){
+                _isFirstPress = false;
+
+                //post
+                recordingViewModel.addGroupId(group!.groupId);
+                await recordingViewModel.postRecording(path, audioDuration);
+
+                //back to GroupScreen
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
+
+                recordingViewModel
+                    .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+
+                Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
+              }
+            }
+          },
+
         ),
       ),
     );
   }
 
-  _onButtonPressed(BuildContext context) async{
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+  _onButtonPressed(BuildContext context, bool _isFirstPress) async {
+    print("_isFirstPress: $_isFirstPress");
 
+    final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
+
+    //todo: do this after the post was done(from_group)
+    //todo: or going to the next screen(from_home_screen)
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus.unfocus();
+      FocusManager.instance.primaryFocus!.unfocus();
     }
 
-    if (from == RecordingButtonOpenMode.POST_FROM_HOME){
+    if (from == RecordingButtonOpenMode.POST_FROM_HOME) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (_) => SendToGroupScreen(audioDuration: audioDuration, path: path)));
+              builder: (_) =>
+                  SendToGroupScreen(audioDuration: audioDuration, path: path)));
     } else {
-      //post
-      recordingViewModel.addGroupId(group.groupId);
-      await recordingViewModel.postRecording(path, audioDuration);
 
-      //back to GroupScreen
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
+      if(_isFirstPress){
+        //todo keep this state
+        _isFirstPress = false;
 
-      recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+        //post
+        recordingViewModel.addGroupId(group!.groupId);
+        await recordingViewModel.postRecording(path, audioDuration);
 
-      Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
+        //back to GroupScreen
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+
+        recordingViewModel
+            .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+
+        Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
+      }
 
     }
-
   }
 }

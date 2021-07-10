@@ -1,44 +1,43 @@
 
-import 'package:flutter/material.dart';
 
 class Post {
-  final String postId;
-  final String userId;
-  final String groupId;
-  final String userName;
-  final String title;
-  final String audioUrl; //the actual place where the audio file is stored
-  final String audioStoragePath; //storageId to access to file data at Firebase Storage
-  final String audioDuration;
-  final DateTime postDateTime;
-  final bool isListened;
+  final String? postId;
+  final String? userId;
+  final String? groupId;
+  final String? userName;
+  final String? title;
+  final String? audioUrl; //the actual place where the audio file is stored
+  final String? audioStoragePath; //storageId to access to file data at Firebase Storage
+  final String? audioDuration;
+  final DateTime? postDateTime;
+  final bool? isListened;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const Post({
-    @required this.postId,
-    @required this.userId,
-    @required this.groupId,
-    @required this.userName,
-    @required this.title,
-    @required this.audioUrl,
-    @required this.audioStoragePath,
-    @required this.audioDuration,
-    @required this.postDateTime,
-    @required this.isListened,
+    required this.postId,
+    required this.userId,
+    required this.groupId,
+    required this.userName,
+    required this.title,
+    required this.audioUrl,
+    required this.audioStoragePath,
+    required this.audioDuration,
+    required this.postDateTime,
+    required this.isListened,
   });
 
   Post copyWith({
-    String postId,
-    String userId,
-    String groupId,
-    String userName,
-    String title,
-    String audioUrl,
-    String audioStoragePath,
-    String audioDuration,
-    DateTime postDateTime,
-    bool isListened,
+    String? postId,
+    String? userId,
+    String? groupId,
+    String? userName,
+    String? title,
+    String? audioUrl,
+    String? audioStoragePath,
+    String? audioDuration,
+    DateTime? postDateTime,
+    bool? isListened,
   }) {
     if ((postId == null || identical(postId, this.postId)) &&
         (userId == null || identical(userId, this.userId)) &&
@@ -103,18 +102,18 @@ class Post {
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return new Post(
-      postId: map['postId'] as String,
-      userId: map['userId'] as String,
-      groupId: map['groupId'] as String,
-      userName: map['userName'] as String,
-      title: map['title'] as String,
-      audioUrl: map['audioUrl'] as String,
-      audioStoragePath: map['audioStoragePath'] as String,
-      audioDuration: map['audioDuration'] as String,
+      postId: map['postId'] as String?,
+      userId: map['userId'] as String?,
+      groupId: map['groupId'] as String?,
+      userName: map['userName'] as String?,
+      title: map['title'] as String?,
+      audioUrl: map['audioUrl'] as String?,
+      audioStoragePath: map['audioStoragePath'] as String?,
+      audioDuration: map['audioDuration'] as String?,
       postDateTime: map['postDateTime'] == null
     ? null : DateTime.parse(map['postDateTime'] as String),
-      isListened: map['isListened'] as bool == null
-      ? false : map['isListened'] as bool,
+      isListened: map['isListened'] == null
+      ? false : map['isListened'] as bool?,
     );
   }
 
@@ -129,7 +128,7 @@ class Post {
       'audioUrl': this.audioUrl,
       'audioStoragePath': this.audioStoragePath,
       'audioDuration': this.audioDuration,
-      'postDateTime': this.postDateTime.toIso8601String(),
+      'postDateTime': this.postDateTime!.toIso8601String(),
       'isListened': this.isListened,
     } as Map<String, dynamic>;
   }

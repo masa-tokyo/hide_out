@@ -5,9 +5,9 @@ import 'package:voice_put/view/recording/components/sub/recording_buttons.dart';
 
 class RecordingButtonPart extends StatelessWidget {
   final RecordingButtonOpenMode from;
-  final Group group;
+  final Group? group;
 
-  RecordingButtonPart({@required this.from, @required this.group});
+  RecordingButtonPart({required this.from, required this.group});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'dart:io';
 class JoinGroupScreen extends StatelessWidget {
   final bool isSignedUp;
 
-  JoinGroupScreen({@required this.isSignedUp});
+  JoinGroupScreen({required this.isSignedUp});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +44,8 @@ class JoinGroupScreen extends StatelessWidget {
                     splashColor: Colors.blueGrey,
                     onTap: () => _openGroupDetailScreen(context, group),
                     child: ListTile(
-                      title: Text(group.groupName),
-                      subtitle: Text(group.description, maxLines: 1, overflow: TextOverflow
+                      title: Text(group.groupName!),
+                      subtitle: Text(group.description!, maxLines: 1, overflow: TextOverflow
                           .ellipsis,),
                       trailing: Icon(Icons.arrow_forward_ios_rounded),
                     ),

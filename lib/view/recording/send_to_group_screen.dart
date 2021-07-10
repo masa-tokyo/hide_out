@@ -10,11 +10,12 @@ import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/home/components/new_group_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
+//todo change into StatelessWidget
 class SendToGroupScreen extends StatefulWidget {
   final String path;
   final String audioDuration;
 
-  SendToGroupScreen({@required this.audioDuration, @required this.path});
+  SendToGroupScreen({required this.audioDuration, required this.path});
 
   @override
   _SendToGroupScreenState createState() => _SendToGroupScreenState();
@@ -90,7 +91,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                 color: listTileColor,
                 elevation: 2.0,
                 child: ListTile(
-                  title: Text(group.groupName),
+                  title: Text(group.groupName!),
                   trailing: ChooseGroupButton(
                     /*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/
                     groupId: group.groupId,
@@ -147,7 +148,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
 
       recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
 
-      Fluttertoast.showToast(msg: "Done", gravity: ToastGravity.CENTER);
+      Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
 
 
     } else {
@@ -158,11 +159,11 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
   }
 }
 
-//--------------------------------------------------------------------------------------------------- ChooseGroupButton class
+//------------------------------------------------------------------------------ ChooseGroupButton class
 
 class ChooseGroupButton extends StatefulWidget {
-  final bool isChooseGroupButtonPressed;
-  final String groupId;
+  final bool? isChooseGroupButtonPressed;
+  final String? groupId;
 
   ChooseGroupButton({this.groupId, this.isChooseGroupButtonPressed});
 

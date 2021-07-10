@@ -4,7 +4,7 @@ import 'package:voice_put/view/recording/components/sub/post_note_text_field.dar
 class PostDescriptionPart extends StatelessWidget {
   final String noteText;
 
-  PostDescriptionPart({@required this.noteText});
+  PostDescriptionPart({required this.noteText});
 
   @override
   Widget build(BuildContext context) {

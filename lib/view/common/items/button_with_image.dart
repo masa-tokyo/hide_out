@@ -6,9 +6,9 @@ class ButtonWithImage extends StatelessWidget {
   final VoidCallback onPressed;
   final String imagePath;
   final String label;
-  final Color color;
+  final Color? color;
 
-  ButtonWithImage({@required this.onPressed, @required this.imagePath, @required this.label, this.color});
+  ButtonWithImage({required this.onPressed, required this.imagePath, required this.label, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ButtonWithImage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.0)
               ),
             ),
-            backgroundColor: MaterialStateProperty.all<Color>(color)
+            backgroundColor: MaterialStateProperty.all<Color?>(color)
           ),
           onPressed: onPressed,
           child: Row(

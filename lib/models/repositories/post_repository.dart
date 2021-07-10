@@ -8,7 +8,7 @@ import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class PostRepository extends ChangeNotifier {
-  final DatabaseManager dbManager;
+  final DatabaseManager? dbManager;
 
   PostRepository({this.dbManager});
 
@@ -22,7 +22,7 @@ class PostRepository extends ChangeNotifier {
 
   Future<void> postRecording(
     User currentUser,
-    String groupId,
+    String? groupId,
     String title,
     File audioFile,
     String audioDuration,
@@ -32,7 +32,7 @@ class PostRepository extends ChangeNotifier {
 
     //get audioUrl from Firebase Storage
     final storageId = Uuid().v1();
-    final audioUrl = await dbManager.uploadAudioToStorage(audioFile, storageId);
+    final audioUrl = await dbManager!.uploadAudioToStorage(audioFile, storageId);
 
     //post on Cloud Firestore
     final post = Post(
@@ -47,16 +47,16 @@ class PostRepository extends ChangeNotifier {
         postDateTime: DateTime.now(),
         isListened: false);
 
-    await dbManager.postRecording(post, currentUser.userId, groupId);
+    await dbManager!.postRecording(post, currentUser.userId, groupId);
 
     //update lastActivityAt @groups collection
-    await dbManager.updateLastActivityAt(groupId);
+    await dbManager!.updateLastActivityAt(groupId);
 
     //insert notification
-    final members = await dbManager.getUsersByGroupId(groupId);
+    final members = await dbManager!.getUsersByGroupId(groupId);
     members.removeWhere((element) => element.userId == currentUser.userId);
-    await Future.forEach(members, (member) async{
-      await dbManager.insertNotification(
+    await Future.forEach(members, (dynamic member) async{
+      await dbManager!.insertNotification(
           notificationType: NotificationType.NEW_POST,
           userId: member.userId,
           postId: post.postId,
@@ -69,28 +69,29 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPostsByGroup(String groupId) async {
+  Future<void> getPostsByGroup(String? groupId) async {
     _isProcessing = true;
     notifyListeners();
 
     //not to show the posts of the previous group
     _posts.clear();
 
-    _posts = await dbManager.getPostsByGroup(groupId);
+
+    _posts = await dbManager!.getPostsByGroup(groupId);
 
 
     _isProcessing = false;
     notifyListeners();
   }
 
-  Future<void> deletePost(String postId) async {
-    await dbManager.deletePost(postId);
+  Future<void> deletePost(String? postId) async {
+    await dbManager!.deletePost(postId);
   }
 
   Future<void> insertListener(Post post, User user) async {
     var updatedPost = post.copyWith(isListened: true);
 
-    await dbManager.insertListener(updatedPost, user);
+    await dbManager!.insertListener(updatedPost, user);
   }
 
 

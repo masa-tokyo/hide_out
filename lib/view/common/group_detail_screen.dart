@@ -15,7 +15,7 @@ class GroupDetailScreen extends StatelessWidget {
   final Group group;
   final GroupDetailScreenOpenMode from;
 
-  GroupDetailScreen({@required this.group, @required this.from});
+  GroupDetailScreen({required this.group, required this.from});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class GroupDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(group.groupName),
+        title: Text(group.groupName!),
       ),
       body: SingleChildScrollView(
         child: Consumer<JoinGroupViewModel>(
@@ -110,7 +110,7 @@ class GroupDetailScreen extends StatelessWidget {
                           onTap: () =>
                               _openProfileScreen(context, member, model),
                           title: Text(
-                            member.inAppUserName,
+                            member.inAppUserName!,
                             style: groupDetailMemberNameTextStyle,
                           ),
                           trailing: Icon(
@@ -210,7 +210,7 @@ class GroupDetailScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  group.description,
+                  group.description!,
                   style: groupDetailDescriptionTextStyle,
                 ),
               )),
@@ -300,7 +300,7 @@ class GroupDetailScreen extends StatelessWidget {
         child: ElevatedButton(
             style: ButtonStyle(
               backgroundColor:
-                  MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+                  MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
               shape: MaterialStateProperty.all<OutlinedBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),

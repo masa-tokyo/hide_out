@@ -6,9 +6,9 @@ import 'package:voice_put/view/recording/recording_screen.dart';
 
 class PreparationNoteScreen extends StatefulWidget {
   final RecordingButtonOpenMode from;
-  final Group group;
+  final Group? group;
 
-  PreparationNoteScreen({@required this.from, @required this.group});
+  PreparationNoteScreen({required this.from, required this.group});
 
   @override
   _PreparationNoteScreenState createState() => _PreparationNoteScreenState();
@@ -144,7 +144,7 @@ class _PreparationNoteScreenState extends State<PreparationNoteScreen> {
   _unFocusKeyboard() {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus.unfocus();
+      FocusManager.instance.primaryFocus!.unfocus();
       setState(() {
         _isTyping = false;
       });

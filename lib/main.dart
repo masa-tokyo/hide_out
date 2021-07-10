@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () => _unFocusKeyboard(context),
       child: MaterialApp(
-        title: "VoicePut",
+        title: "HideOut",
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primaryColor: primaryColor,
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
             ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(elevatedButtonBackgroundColor),
+              backgroundColor: MaterialStateProperty.all<Color?>(elevatedButtonBackgroundColor),
               foregroundColor: MaterialStateProperty.all<Color>(elevatedButtonForegroundColor),
             )
           ),
@@ -67,14 +67,15 @@ class MyApp extends StatelessWidget {
             )
           )
         ),
-        home: FutureBuilder(
+        home:
+        FutureBuilder(
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
-            if (snapshot.hasData && snapshot.data){
+            if (snapshot.hasData && snapshot.data!){
 
               return HomeScreen(isSignedUp: false);
 
-            } else if (snapshot.hasData && !snapshot.data){
+            } else if (snapshot.hasData && !snapshot.data!){
               return BeforeLoginScreen();
             } else {
               return Scaffold(
@@ -91,7 +92,7 @@ class MyApp extends StatelessWidget {
   _unFocusKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus.unfocus();
+      FocusManager.instance.primaryFocus!.unfocus();
     }
   }
 }

@@ -13,9 +13,9 @@ import 'package:voice_put/view_models/recording_view_model.dart';
 class RecordingScreen extends StatelessWidget {
   final String noteText;
   final RecordingButtonOpenMode from;
-  final Group group;
+  final Group? group;
 
-  RecordingScreen({@required this.noteText, @required this.from, @required this.group});
+  RecordingScreen({required this.noteText, required this.from, required this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class RecordingScreen extends StatelessWidget {
 
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus.unfocus();
+      FocusManager.instance.primaryFocus!.unfocus();
       recordingViewModel.updateForNotTyping();
     }
   }

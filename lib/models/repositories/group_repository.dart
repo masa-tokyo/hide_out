@@ -4,7 +4,7 @@ import 'package:voice_put/%20data_models/user.dart';
 import 'package:voice_put/models/database_manager.dart';
 
 class GroupRepository extends ChangeNotifier{
-  final DatabaseManager dbManager;
+  final DatabaseManager? dbManager;
 
   GroupRepository({this.dbManager});
 
@@ -14,8 +14,8 @@ class GroupRepository extends ChangeNotifier{
   List<Group> _otherGroups = <Group>[];
   List<Group> get otherGroups => _otherGroups;
 
-  Group _group;
-  Group get group => _group;
+  Group? _group;
+  Group? get group => _group;
 
 
   bool _isProcessing = false;
@@ -26,13 +26,13 @@ class GroupRepository extends ChangeNotifier{
     notifyListeners();
 
     //users collection
-    await dbManager.registerGroupIdOnUsers(group.groupId, currentUser.userId);
+    await dbManager!.registerGroupIdOnUsers(group.groupId, currentUser.userId);
 
     //groups collection
-    await dbManager.registerGroup(group, currentUser);
+    await dbManager!.registerGroup(group, currentUser);
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
-    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
 
     _isProcessing = false;
     notifyListeners();
@@ -41,7 +41,7 @@ class GroupRepository extends ChangeNotifier{
 
   //todo delete it after introducing alternative way of reading groups more than 10
   Future<bool> isNewGroupAvailable(User currentUser) async{
-    return await dbManager.isNewGroupAvailable(currentUser.userId);
+    return await dbManager!.isNewGroupAvailable(currentUser.userId);
   }
 
 
@@ -50,7 +50,7 @@ class GroupRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
 
 
 
@@ -65,7 +65,7 @@ class GroupRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _otherGroups = await dbManager.getGroupsExceptForMine(currentUser.userId);
+    _otherGroups = await dbManager!.getGroupsExceptForMine(currentUser.userId);
 
     _isProcessing = false;
     notifyListeners();
@@ -75,24 +75,24 @@ class GroupRepository extends ChangeNotifier{
   Future<void> joinGroup(List<Group> chosenGroups, User currentUser) async{
 
     chosenGroups.forEach((element) async {
-      await dbManager.joinGroup(element.groupId, currentUser.userId);
+      await dbManager!.joinGroup(element.groupId, currentUser.userId);
     });
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
-    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
     notifyListeners();
 
   }
 
   Future<void> updateGroupInfo(Group updatedGroup) async{
-    await dbManager.updateGroupInfo(updatedGroup);
+    await dbManager!.updateGroupInfo(updatedGroup);
   }
 
-  Future<void> getGroupInfo(String groupId) async{
+  Future<void> getGroupInfo(String? groupId) async{
     _isProcessing = true;
     notifyListeners();
 
-    _group = await dbManager.getGroupInfoByGroupId(groupId);
+    _group = await dbManager!.getGroupInfoByGroupId(groupId);
 
 
     _isProcessing = false;
@@ -100,24 +100,24 @@ class GroupRepository extends ChangeNotifier{
   }
 
   Future<void> leaveGroup(Group group, User currentUser) async{
-    await dbManager.leaveGroup(group.groupId, currentUser.userId);
+    await dbManager!.leaveGroup(group.groupId, currentUser.userId);
 
     //update group information for MyGroup@HomeScreen
-    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
     notifyListeners();
 
   }
 
-  Future<Group> returnGroupInfo(String groupId) async{
-    return await dbManager.getGroupInfoByGroupId(groupId);
+  Future<Group> returnGroupInfo(String? groupId) async{
+    return await dbManager!.getGroupInfoByGroupId(groupId);
   }
 
   Future<void> deleteGroup(Group group, User currentUser) async{
 
-    await dbManager.deleteGroup(group, currentUser.userId);
+    await dbManager!/*!*/.deleteGroup(group, currentUser.userId);
 
     //update group information for MyGroup@HomeScreen
-    _myGroups = await dbManager.getGroupsByUserId(currentUser.userId);
+    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
 
     notifyListeners();
   }

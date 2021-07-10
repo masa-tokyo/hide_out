@@ -29,55 +29,6 @@ class StartGroupScreen extends StatelessWidget {
             _doneButton(context),
           ],
         ),
-
-
-        //todo delete Consumer
-        // child: Consumer<StartGroupViewModel>(
-        //   builder: (context, model, child) {
-        //     return model.isProcessing
-        //         ? Center(
-        //             child: CircularProgressIndicator(),
-        //           )
-        //         : Column(
-        //             crossAxisAlignment: CrossAxisAlignment.start,
-        //             children: [
-        //               GroupNamePart(),
-        //               AutoExitPeriodPart(
-        //                 isBeginningGroup: true,
-        //               ),
-        //               AboutGroupPart(),
-        //               SizedBox(
-        //                 height: 12.0,
-        //               ),
-        //               _doneButton(context),
-        //             ],
-        //           );
-        //   },
-        // ),
-
-        //todo delete Selector
-        // child:
-        // Selector<StartGroupViewModel, Tuple3<bool, String, String>>(
-        //   selector: (context, viewModel) =>
-        //       Tuple3(viewModel.isProcessing, viewModel.groupName, viewModel.description),
-        //   builder: (context, data, child) {
-        //     return data.item1
-        //         ? Center(child: CircularProgressIndicator(),)
-        //         : Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         GroupNamePart(),
-        //         AutoExitPeriodPart(isBeginningGroup: true,),
-        //         AboutGroupPart(),
-        //         SizedBox(
-        //           height: 12.0,
-        //         ),
-        //         _doneButton(context),
-        //       ],
-        //     );
-        //   },
-        // )
-        // ,
       ),
     );
   }
@@ -91,16 +42,21 @@ class StartGroupScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: model.groupName != "" && model.description != ""
+                  backgroundColor: model.groupName != ""
+                      && model.description != ""
+                      && model.isFirstTap
                       ? MaterialStateProperty.all<Color>(buttonEnabledColor)
-                      : MaterialStateProperty.all<Color>(buttonNotEnabledColor),
+                      : MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
                   shape: MaterialStateProperty.all<OutlinedBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                   ),
                 ),
-                onPressed: (model.groupName != "" && model.description != "")
+                onPressed: (model.groupName != ""
+                    && model.description != ""
+                    && model.isFirstTap
+                )
                     ? () => _registerGroup(context)
                     : null,
                 child: Text(
@@ -115,9 +71,16 @@ class StartGroupScreen extends StatelessWidget {
 
   _registerGroup(BuildContext context) async {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
+    startGroupViewModel.updateIsFirstTap();
+
     await startGroupViewModel.registerGroup();
 
     Navigator.pop(context);
+
+    startGroupViewModel.updateGroupName("");
+    startGroupViewModel.updateDescription("");
+    startGroupViewModel.updateIsFirstTap();
+
     Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
   }
 }

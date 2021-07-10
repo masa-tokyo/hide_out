@@ -7,7 +7,7 @@ import 'package:voice_put/utils/style.dart';
 class JournalTimerPart extends StatefulWidget {
   final Widget screen;
 
-  JournalTimerPart({@required this.screen});
+  JournalTimerPart({required this.screen});
 
   @override
   _JournalTimerPartState createState() => _JournalTimerPartState();
@@ -15,7 +15,7 @@ class JournalTimerPart extends StatefulWidget {
 
 class _JournalTimerPartState extends State<JournalTimerPart> {
   bool _isSpeaking = false;
-  Timer _timer;
+  late Timer _timer;
   int _intTime = 60;
 
 

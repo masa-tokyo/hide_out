@@ -7,7 +7,7 @@ import 'package:voice_put/view/recording/components/sub/recording_buttons.dart';
 class SelfIntroRecordingScreen extends StatelessWidget {
   final ProfileEditScreensOpenMode from;
 
-  SelfIntroRecordingScreen({@required this.from,});
+  SelfIntroRecordingScreen({required this.from,});
 
   @override
   Widget build(BuildContext context) {

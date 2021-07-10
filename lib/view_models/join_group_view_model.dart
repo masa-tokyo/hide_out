@@ -5,12 +5,12 @@ import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 
 class JoinGroupViewModel extends ChangeNotifier {
-  final UserRepository userRepository;
-  final GroupRepository groupRepository;
+  final UserRepository? userRepository;
+  final GroupRepository? groupRepository;
 
   JoinGroupViewModel({this.userRepository, this.groupRepository});
 
-  User get currentUser => UserRepository.currentUser;
+  User? get currentUser => UserRepository.currentUser;
 
   List<Group> _groups = <Group>[];
   List<Group> get groups => _groups;
@@ -27,13 +27,13 @@ class JoinGroupViewModel extends ChangeNotifier {
 
 
   Future<void> getGroupsExceptForMine() async{
-    await groupRepository.getGroupsExceptForMine(currentUser);
+    await groupRepository!.getGroupsExceptForMine(currentUser!);
 
 
   }
 
   Future<void> joinGroup() async{
-   await groupRepository.joinGroup(chosenGroups, currentUser);
+   await groupRepository!.joinGroup(chosenGroups, currentUser!);
 
    _chosenGroups = [];
 
@@ -55,7 +55,7 @@ class JoinGroupViewModel extends ChangeNotifier {
   }
 
   Future<void> getMemberInfo(Group group) async{
-    await userRepository.getUsersByGroupId(group);
+    await userRepository!.getUsersByGroupId(group);
   }
 
   onGroupMemberInfoObtained(UserRepository userRepository) {

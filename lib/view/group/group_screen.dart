@@ -19,16 +19,16 @@ import 'components/post_audio_play_button.dart';
 class GroupScreen extends StatelessWidget {
   final Group group;
 
-  GroupScreen({@required this.group});
+  GroupScreen({required this.group});
 
   @override
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     Future(() => groupViewModel.resetPlays());
-    Future(() => groupViewModel.getGroupPosts(group));
+   Future(() => groupViewModel.getGroupPosts(group));
 
     Future(() => groupViewModel
-        .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
+       .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
     Future(() => groupViewModel.getNotifications());
 
     return Scaffold(
@@ -38,7 +38,7 @@ class GroupScreen extends StatelessWidget {
             future: groupViewModel.returnGroupInfo(group.groupId),
             builder: (context, AsyncSnapshot<Group> snapshot) {
               return snapshot.hasData
-                  ? Text(snapshot.data.groupName)
+                  ? Text(snapshot.data!.groupName!)
                   : Text(""); //for updating after editing
             }),
         actions: [_groupEditButton(context)],
@@ -107,9 +107,9 @@ class GroupScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(4.0),
             ),
             icon: Icon(Icons.more_vert),
-            onSelected: (value) => _onPopupMenuSelected(context, value, model),
+            onSelected: (dynamic value) => _onPopupMenuSelected(context, value, model),
             itemBuilder: (context) {
-              if (groupViewModel.currentUser.userId == group.ownerId) {
+              if (groupViewModel.currentUser!.userId == group.ownerId) {
                 return [
                   PopupMenuItem(
                       value: GroupEditMenu.EDIT,
@@ -222,7 +222,7 @@ class GroupScreen extends StatelessWidget {
     }
   }
 
-//------------------------------------------------------------------------------------------------ body
+//------------------------------------------------------------------------------body
 
   Widget _postListView(BuildContext context) {
 
@@ -244,7 +244,7 @@ class GroupScreen extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            post.userId == model.currentUser.userId
+                            post.userId == model.currentUser!.userId
                                 ? Padding(
                                     padding: const EdgeInsets.only(left: 24.0),
                                     child: Card(
@@ -321,7 +321,7 @@ class GroupScreen extends StatelessWidget {
                                                   post: post,
                                                 ),
                                               ),
-                                              subtitle: Text(post.userName),
+                                              subtitle: Text(post.userName!),
                                               title: RichText(
                                                   text: TextSpan(
                                                       style:
@@ -360,8 +360,8 @@ class GroupScreen extends StatelessWidget {
                                               : Container(),
                                         ]),
                                   ),
-                            post.userId == model.currentUser.userId
-                                ? post.isListened
+                            post.userId == model.currentUser!.userId
+                                ? post.isListened!
                                     ? Text(
                                         "Listened",
                                         style: listenedDescriptionTextStyle,

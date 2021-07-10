@@ -10,29 +10,29 @@ import 'package:voice_put/view_models/profile_view_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   final bool isCurrentUser;
-  final User user;
+  final User? user;
 
-  ProfileScreen({@required this.isCurrentUser, this.user});
+  ProfileScreen({required this.isCurrentUser, this.user});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isCurrentUser ? "Profile" : user.inAppUserName),
+        title: Text(isCurrentUser ? "Profile" : user!.inAppUserName!),
       ),
-      body: Selector<ProfileViewModel, User>(
+      body: Selector<ProfileViewModel, User?>(
         selector: (context, viewModel) => viewModel.currentUser,
         builder: (context, currentUser, child) {
           return Column(children: [
             SizedBox(
               height: 24.0,
             ),
-            isCurrentUser ? _namePart(context, currentUser) : Container(),
+            isCurrentUser ? _namePart(context, currentUser!) : Container(),
             SizedBox(
               height: 24.0,
             ),
             _selfIntroPart(context,
-                isCurrentUser ? currentUser : user),
+                isCurrentUser ? currentUser! : user!),
           ]);
         },
       ),
@@ -81,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  user.inAppUserName,
+                  user.inAppUserName!,
                   style: profileDescriptionTextStyle,
                 ),
               )),
@@ -133,7 +133,6 @@ class ProfileScreen extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: AudioPlayButton(
-                    //index: null,
                     audioUrl: user.audioUrl,
                     audioPlayType: AudioPlayType.SELF_INTRO)),
           ),

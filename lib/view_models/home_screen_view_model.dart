@@ -7,12 +7,12 @@ import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
-  final GroupRepository groupRepository;
-  final UserRepository userRepository;
+  final GroupRepository? groupRepository;
+  final UserRepository? userRepository;
 
   HomeScreenViewModel({this.groupRepository, this.userRepository});
 
-  User get currentUser => UserRepository.currentUser;
+  User? get currentUser => UserRepository.currentUser;
 
   bool _isProcessing = false;
 
@@ -39,7 +39,7 @@ class HomeScreenViewModel extends ChangeNotifier {
   bool get isFirstCall => _isFirstCall;
 
   Future<void> getMyGroup() async {
-    await groupRepository.getMyGroup(currentUser);
+    await groupRepository!.getMyGroup(currentUser!);
   }
 
   onMyGroupObtained(GroupRepository groupRepository) {
@@ -50,7 +50,7 @@ class HomeScreenViewModel extends ChangeNotifier {
 
 
   Future<void> signOut() async {
-    await userRepository.signOut();
+    await userRepository!.signOut();
   }
 
   Future<void> getNotifications() async {
@@ -59,7 +59,7 @@ class HomeScreenViewModel extends ChangeNotifier {
       _isFirstCall = true;
     }
 
-    await userRepository.getNotifications();
+    await userRepository!.getNotifications();
   }
 
   onNotificationsFetched(UserRepository userRepository) {
@@ -79,8 +79,8 @@ class HomeScreenViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> deleteNotification(String notificationId) async {
-    await userRepository.deleteNotification(
+  Future<void> deleteNotification(String? notificationId) async {
+    await userRepository!.deleteNotification(
         notificationId: notificationId,
         notificationDeleteType: NotificationDeleteType.NOTIFICATION_ID);
   }
