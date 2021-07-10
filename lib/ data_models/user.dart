@@ -1,37 +1,36 @@
-import 'package:flutter/material.dart';
 
 class User {
-  final String userId;
-  final String displayName; //initial user name registered on firebase
-  final String inAppUserName; //changeable user name on the app
-  final String photoUrl;
-  final String audioUrl; //for self-introduction
-  final String audioStoragePath; //for self-introduction
-  final String email;
-  final int createdAt;
+  final String? userId;
+  final String? displayName; //initial user name registered on firebase
+  final String? inAppUserName; //changeable user name on the app
+  final String? photoUrl;
+  final String? audioUrl; //for self-introduction
+  final String? audioStoragePath; //for self-introduction
+  final String? email;
+  final int? createdAt;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const User({
-    @required this.userId,
-    @required this.displayName,
-    @required this.inAppUserName,
-    @required this.photoUrl,
-    @required this.audioUrl,
-    @required this.audioStoragePath,
-    @required this.email,
-    @required this.createdAt,
+    required this.userId,
+    required this.displayName,
+    required this.inAppUserName,
+    required this.photoUrl,
+    required this.audioUrl,
+    required this.audioStoragePath,
+    required this.email,
+    required this.createdAt,
   });
 
   User copyWith({
-    String userId,
-    String displayName,
-    String inAppUserName,
-    String photoUrl,
-    String audioUrl,
-    String audioStoragePath,
-    String email,
-    int createdAt,
+    String? userId,
+    String? displayName,
+    String? inAppUserName,
+    String? photoUrl,
+    String? audioUrl,
+    String? audioStoragePath,
+    String? email,
+    int? createdAt,
   }) {
     if ((userId == null || identical(userId, this.userId)) &&
         (displayName == null || identical(displayName, this.displayName)) &&
@@ -90,15 +89,15 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return new User(
-      userId: map['userId'] as String,
-      displayName: map['displayName'] as String,
-      inAppUserName: map['inAppUserName'] as String,
-      photoUrl: map['photoUrl'] as String,
-      audioUrl: map['audioUrl'] as String,
-      audioStoragePath: map['audioStoragePath'] as String,
-      email: map['email'] as String,
+      userId: map['userId'] as String?,
+      displayName: map['displayName'] as String?,
+      inAppUserName: map['inAppUserName'] as String?,
+      photoUrl: map['photoUrl'] as String?,
+      audioUrl: map['audioUrl'] as String?,
+      audioStoragePath: map['audioStoragePath'] as String?,
+      email: map['email'] as String?,
       createdAt: map['createdAt'] == null
-          ? null : map['createdAt'] as int,
+          ? null : map['createdAt'] as int?,
     );
   }
 

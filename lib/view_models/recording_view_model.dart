@@ -10,15 +10,15 @@ import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class RecordingViewModel extends ChangeNotifier{
-  final GroupRepository groupRepository;
-  final PostRepository postRepository;
-  final UserRepository userRepository;
+  final GroupRepository? groupRepository;
+  final PostRepository? postRepository;
+  final UserRepository? userRepository;
 
   RecordingViewModel({this.groupRepository, this.postRepository, this.userRepository});
 
 
   String title = "";
-  File audioFile;
+  late File audioFile;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
@@ -32,11 +32,11 @@ class RecordingViewModel extends ChangeNotifier{
   RecordingButtonStatus _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
   RecordingButtonStatus get recordingButtonStatus => _recordingButtonStatus;
 
-  List<String> _groupIds = [];
-  List<String> get groupIds => _groupIds;
+  List<String?> _groupIds = [];
+  List<String?> get groupIds => _groupIds;
 
 
-  User get currentUser => UserRepository.currentUser;
+  User? get currentUser => UserRepository.currentUser;
 
 
   Future<void> postRecording(String path, String audioDuration) async{
@@ -44,10 +44,10 @@ class RecordingViewModel extends ChangeNotifier{
 
     audioFile = File(path);
 
-    await Future.forEach(_groupIds, (groupId) async{
+    await Future.forEach(_groupIds, (dynamic groupId) async{
 
-      await postRepository.postRecording(
-        currentUser,
+      await postRepository!.postRecording(
+        currentUser!,
         groupId,
         title,
         audioFile,
@@ -76,7 +76,7 @@ class RecordingViewModel extends ChangeNotifier{
   }
 
   Future<void> getMyGroup() async{
-    await groupRepository.getMyGroup(currentUser);
+    await groupRepository!.getMyGroup(currentUser!);
   }
 
   onMyGroupObtained(GroupRepository groupRepository) {
@@ -86,12 +86,12 @@ class RecordingViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  void removeGroupId(String groupId) {
+  void removeGroupId(String? groupId) {
     _groupIds.remove(groupId);
     notifyListeners();
   }
 
-  void addGroupId(String groupId) {
+  void addGroupId(String? groupId) {
     _groupIds.add(groupId);
     notifyListeners();
   }
@@ -109,7 +109,7 @@ class RecordingViewModel extends ChangeNotifier{
 
   Future <void> uploadSelfIntro(String path) async{
 
-    await userRepository.uploadSelfIntro(path);
+    await userRepository!.uploadSelfIntro(path);
 
   }
 

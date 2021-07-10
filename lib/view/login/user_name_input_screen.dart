@@ -7,9 +7,9 @@ import 'package:voice_put/view_models/profile_view_model.dart';
 
 class UserNameInputScreen extends StatefulWidget {
   final ProfileEditScreensOpenMode from;
-  final String name;
+  final String? name;
 
-  UserNameInputScreen({@required this.from, this.name});
+  UserNameInputScreen({required this.from, this.name});
 
   @override
   _UserNameInputScreenState createState() => _UserNameInputScreenState();
@@ -21,7 +21,7 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
   @override
   void initState() {
     if (widget.from == ProfileEditScreensOpenMode.PROFILE) {
-      _controller.text = widget.name;
+      _controller.text = widget.name!;
     }
 
     _controller.addListener(_onTextUpdated);

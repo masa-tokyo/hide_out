@@ -3,7 +3,7 @@ import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 
 class HelpIcon extends StatelessWidget {
   final String message;
-  HelpIcon({@required this.message});
+  HelpIcon({required this.message});
 
   @override
   Widget build(BuildContext context) {

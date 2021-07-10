@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/notification.dart' as d;
@@ -34,7 +33,7 @@ class DatabaseManager {
     });
   }
 
-  Future<void> registerGroupIdOnUsers(String groupId, String userId) async {
+  Future<void> registerGroupIdOnUsers(String? groupId, String? userId) async {
     await _db
         .collection("users")
         .doc(userId)
@@ -43,7 +42,7 @@ class DatabaseManager {
         .set({"groupId": groupId});
   }
 
-  Future<void> joinGroup(String groupId, String userId) async {
+  Future<void> joinGroup(String? groupId, String? userId) async {
     //add groupId on "groups" in "users"
     await _db
         .collection("users")
@@ -72,7 +71,7 @@ class DatabaseManager {
     return downloadUrl;
   }
 
-  Future<void> postRecording(Post post, String userId, String groupId) async {
+  Future<void> postRecording(Post post, String? userId, String? groupId) async {
     await _db.collection("posts").doc(post.postId).set(post.toMap());
 
     //update lastPostDateTime at members collection of groups collection
@@ -119,11 +118,11 @@ class DatabaseManager {
   }
 
   Future<void> insertNotification({
-    @required notificationType,
-    @required userId,
-    @required postId,
-    @required groupId,
-    @required content,
+    required notificationType,
+    required userId,
+    required postId,
+    required groupId,
+    required content,
   }) async {
     final notificationId = Uuid().v1();
     final notification = d.Notification(
@@ -153,13 +152,13 @@ class DatabaseManager {
     return false;
   }
 
-  Future<User> getUserInfoFromDbById(String userId) async {
+  Future<User> getUserInfoFromDbById(String? userId) async {
     final query =
         await _db.collection("users").where("userId", isEqualTo: userId).get();
     return User.fromMap(query.docs[0].data());
   }
 
-  Future<List<Group>> getGroupsByUserId(String userId) async {
+  Future<List<Group>> getGroupsByUserId(String? userId) async {
     //get groupIds on "users"
     final queryOnUsers = await _db.collection("users").get();
     if (queryOnUsers.docs.length == 0) return [];
@@ -187,7 +186,7 @@ class DatabaseManager {
     return results;
   }
 
-  Future<List<String>> getGroupIds(String userId) async {
+  Future<List<String?>> getGroupIds(String? userId) async {
     final query = await _db
         .collection("users")
         .doc(userId)
@@ -196,14 +195,14 @@ class DatabaseManager {
         .get();
     if (query.docs.length == 0) return [];
 
-    var results = <String>[];
+    var results = <String?>[];
     query.docs.forEach((element) {
       results.add(element.data()["groupId"]);
     });
     return results;
   }
 
-  Future<List<Group>> getGroupsExceptForMine(String userId) async {
+  Future<List<Group>> getGroupsExceptForMine(String? userId) async {
     //get groupIds on "users" to exclude
     var groupIds = await getGroupIds(userId);
 
@@ -229,7 +228,7 @@ class DatabaseManager {
     return results;
   }
 
-  Future<Group> getGroupInfoByGroupId(String groupId) async {
+  Future<Group> getGroupInfoByGroupId(String? groupId) async {
     final query = await _db
         .collection("groups")
         .where("groupId", isEqualTo: groupId)
@@ -252,7 +251,7 @@ class DatabaseManager {
     return Group.fromMap(query.docs[0].data());
   }
 
-  Future<List<Post>> getPostsByGroup(String groupId) async {
+  Future<List<Post>> getPostsByGroup(String? groupId) async {
     final query = await _db.collection("posts").get();
     if (query.docs.length == 0) return [];
 
@@ -272,7 +271,7 @@ class DatabaseManager {
     return results;
   }
 
-  Future<List<Post>> getPostsByUserIdAndGroupId(String userId, groupId) async {
+  Future<List<Post>> getPostsByUserIdAndGroupId(String? userId, groupId) async {
     final query = await _db.collection("posts").get();
     if (query.docs.isEmpty) return [];
 
@@ -292,21 +291,21 @@ class DatabaseManager {
     return posts;
   }
 
-  Future<bool> isNewGroupAvailable(String userId) async {
+  Future<bool> isNewGroupAvailable(String? userId) async {
     final query =
         await _db.collection("users").doc(userId).collection("groups").get();
     if (query.docs.length <= 10) return true;
     return false;
   }
 
-  Future<List<User>> getUsersByGroupId(String groupId) async {
+  Future<List<User>> getUsersByGroupId(String? groupId) async {
     //get userIds at members of groups
     var userIds = await getUserIdsByGroupId(groupId);
 
     //get List of User at users
     var groupMembers = <User>[];
 
-    await Future.forEach(userIds, (userId) async {
+    await Future.forEach(userIds, (dynamic userId) async {
       final user = await getUserInfoFromDbById(userId);
       groupMembers.add(user);
     });
@@ -314,12 +313,12 @@ class DatabaseManager {
     return groupMembers;
   }
 
-  Future<List<String>> getUserIdsByGroupId(String groupId) async {
+  Future<List<String?>> getUserIdsByGroupId(String? groupId) async {
     final query =
         await _db.collection("groups").doc(groupId).collection("members").get();
     if (query.docs.isEmpty) return <String>[];
 
-    var userIds = <String>[];
+    var userIds = <String?>[];
 
     query.docs.forEach((element) {
       userIds.add(element.data()["userId"]);
@@ -328,7 +327,7 @@ class DatabaseManager {
     return userIds;
   }
 
-  Future<List<String>> getClosedGroupNames(String userId) async {
+  Future<List<String?>> getClosedGroupNames(String userId) async {
     final query = await _db
         .collection("users")
         .doc(userId)
@@ -336,7 +335,7 @@ class DatabaseManager {
         .get();
     if (query.docs.isEmpty) return [];
 
-    var groupNames = <String>[];
+    var groupNames = <String?>[];
 
     query.docs.forEach((element) {
       groupNames.add(element.data()["groupName"]);
@@ -345,7 +344,7 @@ class DatabaseManager {
     return groupNames;
   }
 
-  Future<List<d.Notification>> getNotifications(String userId) async {
+  Future<List<d.Notification>> getNotifications(String? userId) async {
     final query = await _db.collection("notifications").get();
     if (query.docs.length == 0) return [];
 
@@ -372,7 +371,7 @@ class DatabaseManager {
     await _db.collection("users").doc(user.userId).update(user.toMap());
   }
 
-  Future<void> updateLastActivityAt(String groupId) async{
+  Future<void> updateLastActivityAt(String? groupId) async{
     await _db.collection("groups").doc(groupId).update(
       {"lastActivityAt": DateTime.now().millisecondsSinceEpoch,
       }
@@ -382,7 +381,7 @@ class DatabaseManager {
 
   //--------------------------------------------------------------------------------------------------Delete
 
-  Future<void> leaveGroup(String groupId, String userId) async {
+  Future<void> leaveGroup(String? groupId, String? userId) async {
     //delete their own data at members of groups
     await _db
         .collection("groups")
@@ -400,7 +399,7 @@ class DatabaseManager {
         .delete();
   }
 
-  Future<void> deletePost(String postId) async {
+  Future<void> deletePost(String? postId) async {
     //delete "listeners" first
     await _db
         .collection("posts")
@@ -418,7 +417,7 @@ class DatabaseManager {
   }
 
   Future<void> deleteGroup(
-      Group group, String userId) async {
+      Group group, String? userId) async {
 
 
 
@@ -432,7 +431,7 @@ class DatabaseManager {
     //get posts of every user
     var posts = <Post>[];
 
-    await Future.forEach(userIds, (userId) async {
+    await Future.forEach(userIds, (dynamic userId) async {
       var postsByEachUser = <Post>[];
 
       //only posts in group doc are necessary
@@ -479,7 +478,7 @@ class DatabaseManager {
     var memberIds = userIds;
     memberIds.removeWhere((element) => element == userId);
 
-    await Future.forEach(memberIds, (element) {
+    await Future.forEach(memberIds, (dynamic element) {
       insertNotification(
           notificationType: NotificationType.DELETED_GROUP,
           userId: element,
@@ -491,12 +490,12 @@ class DatabaseManager {
 
   }
 
-  Future<void> deleteNotification({@required String notificationId}) async {
+  Future<void> deleteNotification({required String? notificationId}) async {
     await _db.collection("notifications").doc(notificationId).delete();
   }
 
   deleteNotificationByPostIdAndUserId(
-      {@required String postId, @required String userId}) async {
+      {required String? postId, required String? userId}) async {
     await _db
         .collection("notifications")
         .where("postId", isEqualTo: postId)
@@ -510,7 +509,7 @@ class DatabaseManager {
   }
 
   deleteNotificationByGroupIdAndUserId(
-      {@required String groupId, @required String userId}) async {
+      {required String? groupId, required String? userId}) async {
     await _db
         .collection("notifications")
         .where("groupId", isEqualTo: groupId)
@@ -524,7 +523,7 @@ class DatabaseManager {
   }
 
   deleteNotificationByPostId({
-    @required String postId,
+    required String? postId,
   }) async {
     await _db
         .collection("notifications")
@@ -538,7 +537,7 @@ class DatabaseManager {
   }
 
   deleteNotificationByGroupId({
-    @required String groupId,
+    required String? groupId,
   }) async {
     await _db
         .collection("notifications")

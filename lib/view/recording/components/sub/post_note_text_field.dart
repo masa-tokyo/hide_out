@@ -4,7 +4,7 @@ import 'package:voice_put/view_models/recording_view_model.dart';
 
 class PostNoteTextField extends StatefulWidget {
   final String noteText;
-  PostNoteTextField({@required this.noteText});
+  PostNoteTextField({required this.noteText});
 
   @override
   _PostNoteTextFieldState createState() => _PostNoteTextFieldState();

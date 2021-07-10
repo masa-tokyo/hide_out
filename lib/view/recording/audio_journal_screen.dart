@@ -6,13 +6,13 @@ import 'components/journal_timer_part.dart';
 
 class AudioJournalScreen extends StatelessWidget {
   final String questionString1;
-  final String questionString2;
-  final String questionString3;
+  final String? questionString2;
+  final String? questionString3;
   final Widget screen;
   final Widget icon;
   final String titleString;
 
-  AudioJournalScreen({@required this.questionString1, @required this.screen, @required this.icon, this.questionString2, this.questionString3, @required this.titleString});
+  AudioJournalScreen({required this.questionString1, required this.screen, required this.icon, this.questionString2, this.questionString3, required this.titleString});
 
   @override
   Widget build(BuildContext context) {

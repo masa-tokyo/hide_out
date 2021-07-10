@@ -3,12 +3,12 @@ import 'package:voice_put/utils/style.dart';
 
 showConfirmDialog(
 {
-  @required BuildContext context,
-  @required String titleString,
-  @required String contentString,
-  @required ValueChanged<bool> onConfirmed,
-  @required Text yesText,
-  @required Text noText,
+  required BuildContext context,
+  required String titleString,
+  required String contentString,
+  required ValueChanged<bool> onConfirmed,
+  required Text yesText,
+  required Text noText,
 }
     ){
   showDialog(
@@ -24,11 +24,11 @@ showConfirmDialog(
 }
 
 class ConfirmDialog extends StatelessWidget {
-  final String titleString;
-  final String contentString;
-  final ValueChanged<bool> onConfirmed;
-  final Text yesText;
-  final Text noText;
+  final String? titleString;
+  final String? contentString;
+  final ValueChanged<bool>? onConfirmed;
+  final Text? yesText;
+  final Text? noText;
 
   ConfirmDialog({this.onConfirmed, this.contentString, this.noText, this.titleString, this.yesText});
 
@@ -39,21 +39,21 @@ class ConfirmDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       backgroundColor: confirmDialogBackgroundColor,
-      title: Center(child: Text(titleString)),
-      content: Text(contentString),
+      title: Center(child: Text(titleString!)),
+      content: Text(contentString!),
       actions: [
         TextButton(
             onPressed:(){
               Navigator.pop(context);
-              onConfirmed(false);
+              onConfirmed!(false);
             },
-            child: noText),
+            child: noText!),
         TextButton(
             onPressed:(){
               Navigator.pop(context);
-              onConfirmed(true);
+              onConfirmed!(true);
             },
-            child: yesText),
+            child: yesText!),
       ],
     );
   }

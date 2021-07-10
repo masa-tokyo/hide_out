@@ -4,11 +4,11 @@ import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final UserRepository userRepository;
+  final UserRepository? userRepository;
 
   LoginViewModel({this.userRepository});
 
-  User get currentUser  => UserRepository.currentUser;
+  User? get currentUser  => UserRepository.currentUser;
 
 
   bool _isProcessing = false;
@@ -18,14 +18,14 @@ class LoginViewModel extends ChangeNotifier {
   LoginScreenStatus get loginScreenStatus => _loginScreenStatus;
 
   Future<bool> isSignIn() async{
-    return await userRepository.isSignIn();
+    return await userRepository!.isSignIn();
   }
 
   Future<void> signInOrSignUp() async{
     _isProcessing = true;
     notifyListeners();
 
-    _loginScreenStatus = await userRepository.signInOrSignUp();
+    _loginScreenStatus = await userRepository!.signInOrSignUp();
 
     _isProcessing = false;
     notifyListeners();

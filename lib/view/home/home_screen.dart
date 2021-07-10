@@ -16,12 +16,15 @@ import 'components/new_group_part.dart';
 class HomeScreen extends StatelessWidget {
   final bool isSignedUp;
 
-  HomeScreen({@required this.isSignedUp});
+  HomeScreen({required this.isSignedUp});
 
 
   @override
   Widget build(BuildContext context) {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+
+
+   final homeScreenViewModel = context.read<HomeScreenViewModel>();
+
     final deviceData = MediaQuery.of(context);
 
     return SafeArea(
@@ -106,7 +109,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _signOut(BuildContext context) async {
-    final homeScreenViewModel = Provider.of<HomeScreenViewModel>(context, listen: false);
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
 
     showConfirmDialog(context: context,
       titleString: "Are you sure to log out?",
@@ -142,9 +145,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _listTile({
-    @required Widget title,
-    @required Widget leading,
-    @required Function onTap,
+    required Widget title,
+    required Widget leading,
+    required Function onTap,
 
   }) {
     return Column(
@@ -152,7 +155,7 @@ class HomeScreen extends StatelessWidget {
         ListTile(
           title: title,
           leading: leading,
-          onTap: onTap,
+          onTap: onTap as void Function()?,
         ),
         Divider(),
       ],
@@ -162,13 +165,13 @@ class HomeScreen extends StatelessWidget {
 
 }
 
-//------------------------------------------------------------------------------------------------------FloatingActionButton
+//------------------------------------------------------------------------------FloatingActionButton
 
 // using tutorial requires StatefulWidget
 class FloatingActionButtonForHome extends StatefulWidget {
   final bool isSignedUp;
 
-  FloatingActionButtonForHome({@required this.isSignedUp});
+  FloatingActionButtonForHome({required this.isSignedUp});
 
   @override
   _FloatingActionButtonForHomeState createState() => _FloatingActionButtonForHomeState();

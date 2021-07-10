@@ -1,34 +1,33 @@
-import 'package:flutter/material.dart';
 
 class Group {
-  final String groupId;
-  final String groupName;
-  final String description;
-  final String ownerId;
-  final int autoExitDays;
-  final int createdAt;
-  final int lastActivityAt;
+  final String? groupId;
+  final String? groupName;
+  final String? description;
+  final String? ownerId;
+  final int? autoExitDays;
+  final int? createdAt;
+  final int? lastActivityAt;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const Group({
-    @required this.groupId,
-    @required this.groupName,
-    @required this.description,
-    @required this.ownerId,
-    @required this.autoExitDays,
-    @required this.createdAt,
-    @required this.lastActivityAt,
+    required this.groupId,
+    required this.groupName,
+    required this.description,
+    required this.ownerId,
+    required this.autoExitDays,
+    required this.createdAt,
+    required this.lastActivityAt,
   });
 
   Group copyWith({
-    String groupId,
-    String groupName,
-    String description,
-    String ownerId,
-    int autoExitDays,
-    int createdAt,
-    int lastActivityAt,
+    String? groupId,
+    String? groupName,
+    String? description,
+    String? ownerId,
+    int? autoExitDays,
+    int? createdAt,
+    int? lastActivityAt,
   }) {
     if ((groupId == null || identical(groupId, this.groupId)) &&
         (groupName == null || identical(groupName, this.groupName)) &&
@@ -82,15 +81,15 @@ class Group {
 
   factory Group.fromMap(Map<String, dynamic> map) {
     return new Group(
-      groupId: map['groupId'] as String,
-      groupName: map['groupName'] as String,
-      description: map['description'] as String,
-      ownerId: map['ownerId'] as String,
-      autoExitDays: map['autoExitDays'] as int,
+      groupId: map['groupId'] as String?,
+      groupName: map['groupName'] as String?,
+      description: map['description'] as String?,
+      ownerId: map['ownerId'] as String?,
+      autoExitDays: map['autoExitDays'] as int?,
       createdAt: map['createdAt'] ==null
-          ? null: map['createdAt'] as int,
+          ? null: map['createdAt'] as int?,
       lastActivityAt: map['lastActivityAt'] ==null
-          ? null : map['lastActivityAt'] as int,
+          ? null : map['lastActivityAt'] as int?,
     );
   }
 

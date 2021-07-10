@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -11,11 +12,11 @@ import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class UserRepository extends ChangeNotifier{
-  final DatabaseManager dbManager;
+  final DatabaseManager? dbManager;
 
   UserRepository({this.dbManager});
 
-  static User currentUser;
+  static User? currentUser;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
@@ -36,7 +37,7 @@ class UserRepository extends ChangeNotifier{
   Future<bool> isSignIn() async {
     final firebaseUser = _auth.currentUser;
     if (firebaseUser != null) {
-      currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+      currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
       return true;
     }
     return false;
@@ -45,7 +46,9 @@ class UserRepository extends ChangeNotifier{
   Future<LoginScreenStatus> signInOrSignUp() async {
 
     try {
-      GoogleSignInAccount signInAccount = await _googleSignIn.signIn();
+      GoogleSignInAccount? signInAccount = await _googleSignIn.signIn();
+      if(signInAccount == null) return LoginScreenStatus.FAILED;
+
       GoogleSignInAuthentication signInAuthentication = await signInAccount.authentication;
 
       final auth.AuthCredential credential = auth.GoogleAuthProvider.credential(
@@ -58,17 +61,17 @@ class UserRepository extends ChangeNotifier{
         return LoginScreenStatus.FAILED;
       }
 
-      final isUserExistedInDb = await dbManager.searchUserInDb(firebaseUser);
+      final isUserExistedInDb = await dbManager!.searchUserInDb(firebaseUser);
 
       if(!isUserExistedInDb) {
         //Sign up
-        await dbManager.insertUser(_convertToUser(firebaseUser));
-        currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+        await dbManager!.insertUser(_convertToUser(firebaseUser));
+        currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
         return LoginScreenStatus.SIGNED_UP;
 
       } else {
         //Sign in
-        currentUser = await dbManager.getUserInfoFromDbById(firebaseUser.uid);
+        currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
         return LoginScreenStatus.SIGNED_IN;
       }
 
@@ -96,7 +99,7 @@ class UserRepository extends ChangeNotifier{
   Future<void> updateUserInfo(User updatedCurrentUser) async{
 
     currentUser = updatedCurrentUser;
-    await dbManager.updateUserInfo(currentUser);
+    await dbManager!.updateUserInfo(currentUser!);
 
     //for drawing ProfileScreen again
     notifyListeners();
@@ -107,7 +110,7 @@ class UserRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _groupMembers = await dbManager.getUsersByGroupId(group.groupId);
+    _groupMembers = await dbManager!.getUsersByGroupId(group.groupId);
 
     _isProcessing = false;
     notifyListeners();
@@ -118,10 +121,10 @@ class UserRepository extends ChangeNotifier{
 
     final audioFile = File(path);
     final storageId = Uuid().v1();
-    final audioUrl = await dbManager.uploadAudioToStorage(audioFile, storageId);
+    final audioUrl = await dbManager!.uploadAudioToStorage(audioFile, storageId);
 
-    currentUser = currentUser.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
-    await dbManager.updateUserInfo(currentUser);
+    currentUser = currentUser!.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
+    await dbManager!.updateUserInfo(currentUser!);
 
     //for passing data to ProfileScreen
     notifyListeners();
@@ -140,7 +143,7 @@ class UserRepository extends ChangeNotifier{
     _isProcessing = true;
     notifyListeners();
 
-    _notifications = await dbManager.getNotifications(currentUser.userId);
+    _notifications = await dbManager!.getNotifications(currentUser!.userId);
 
     _isProcessing = false;
     notifyListeners();
@@ -148,37 +151,37 @@ class UserRepository extends ChangeNotifier{
   }
 
   Future<void> deleteNotification(
-      {@required NotificationDeleteType notificationDeleteType,
-        String postId,
-      String groupId,
-      String notificationId}) async{
+      {required NotificationDeleteType notificationDeleteType,
+        String? postId,
+      String? groupId,
+      String? notificationId}) async{
     _isUpdating = true; //to update HomeScreen
     notifyListeners();
 
     switch (notificationDeleteType) {
       case NotificationDeleteType.NOTIFICATION_ID:
-        await dbManager.deleteNotification(notificationId: notificationId);
+        await dbManager!.deleteNotification(notificationId: notificationId);
         _notifications.where((element) => element.notificationId == notificationId);
         break;
 
       case NotificationDeleteType.OPEN_POST:
-        await dbManager.deleteNotificationByPostIdAndUserId(
-            postId: postId, userId: currentUser.userId);
+        await dbManager!.deleteNotificationByPostIdAndUserId(
+            postId: postId, userId: currentUser!.userId);
         _notifications.removeWhere((element) => element.postId == postId);
         break;
 
       case NotificationDeleteType.LEAVE_GROUP:
-        await dbManager.deleteNotificationByGroupIdAndUserId(
-            groupId: groupId, userId: currentUser.userId);
+        await dbManager!.deleteNotificationByGroupIdAndUserId(
+            groupId: groupId, userId: currentUser!.userId);
         _notifications.removeWhere((element) => element.groupId == groupId);
         break;
 
       case NotificationDeleteType.DELETE_POST:
-        await dbManager.deleteNotificationByPostId(postId: postId);
+        await dbManager!.deleteNotificationByPostId(postId: postId);
         break;
 
       case NotificationDeleteType.DELETE_GROUP:
-        await dbManager.deleteNotificationByGroupId(groupId: groupId);
+        await dbManager!.deleteNotificationByGroupId(groupId: groupId);
         _notifications.removeWhere((element) => element.groupId == groupId);
         break;
     }

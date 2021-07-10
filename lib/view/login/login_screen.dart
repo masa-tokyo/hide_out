@@ -49,10 +49,7 @@ class LoginScreen extends StatelessWidget {
 
     switch(loginViewModel.loginScreenStatus) {
       case LoginScreenStatus.SIGNED_IN:
-
         _openHomeScreen(context);
-
-
         break;
 
       case LoginScreenStatus.SIGNED_UP:
@@ -60,7 +57,8 @@ class LoginScreen extends StatelessWidget {
         break;
 
       case LoginScreenStatus.FAILED:
-        Fluttertoast.showToast(msg: "Sign up failed");
+        Fluttertoast.showToast(
+            msg: "Sign up failed",);
         break;
     }
 

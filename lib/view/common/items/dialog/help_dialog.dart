@@ -3,11 +3,11 @@ import 'package:voice_put/utils/style.dart';
 
 showHelpDialog(
     {
-      @required BuildContext context,
-      @required String contentString,
-      @required String okayString,
-      @required VoidCallback onConfirmed,
-      Text title,
+      required BuildContext context,
+      required String contentString,
+      required String okayString,
+      required VoidCallback? onConfirmed,
+      Text? title,
     }
     ){
   showDialog(
@@ -22,10 +22,10 @@ showHelpDialog(
 }
 
 class HelpDialog extends StatelessWidget {
-  final String contentString;
-  final String okayString;
-  final VoidCallback onConfirmed;
-  final Text title;
+  final String? contentString;
+  final String? okayString;
+  final VoidCallback? onConfirmed;
+  final Text? title;
 
   HelpDialog({this.contentString, this.okayString, this.onConfirmed, this.title});
 
@@ -38,7 +38,7 @@ class HelpDialog extends StatelessWidget {
         ),
         backgroundColor: hintDialogBackgroundColor,
         title: Center(child: title),
-        content: Text(contentString),
+        content: Text(contentString!),
         actions: [
           Column(
             children: [
@@ -49,9 +49,9 @@ class HelpDialog extends StatelessWidget {
               TextButton(
                   onPressed:(){
                     Navigator.pop(context);
-                    onConfirmed();
+                    onConfirmed!();
                   },
-                  child: Text(okayString, style: helpDialogOkayTextStyle,)),
+                  child: Text(okayString!, style: helpDialogOkayTextStyle,)),
             ],
           ),
         ],

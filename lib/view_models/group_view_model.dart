@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/%20data_models/user.dart';
@@ -11,15 +12,15 @@ import 'package:voice_put/models/repositories/user_repository.dart';
 import 'package:voice_put/utils/constants.dart';
 
 class GroupViewModel extends ChangeNotifier {
-  final GroupRepository groupRepository;
-  final PostRepository postRepository;
-  final UserRepository userRepository;
-  final AudioPlayManager audioPlayManager;
+  final GroupRepository? groupRepository;
+  final PostRepository? postRepository;
+  final UserRepository? userRepository;
+  final AudioPlayManager? audioPlayManager;
 
   GroupViewModel(
       {this.groupRepository, this.postRepository, this.userRepository, this.audioPlayManager});
 
-  User get currentUser => UserRepository.currentUser;
+  User? get currentUser => UserRepository.currentUser;
 
   String groupName = "";
   String description = "";
@@ -27,8 +28,8 @@ class GroupViewModel extends ChangeNotifier {
   List<Post> _posts = <Post>[];
   List<Post> get posts => _posts;
 
-  Group _group;
-  Group get group => _group;
+  Group? _group;
+  Group? get group => _group;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
@@ -39,7 +40,6 @@ class GroupViewModel extends ChangeNotifier {
   List<d.Notification> _notifications = [];
   List<d.Notification> get notifications => _notifications;
 
-
   bool _isAudioFinished = false;
   bool get isAudioFinished => _isAudioFinished;
 
@@ -49,8 +49,8 @@ class GroupViewModel extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
-  int _autoExitDays = 4;
-  int get autoExitDays => _autoExitDays;
+  int? _autoExitDays = 4;
+  int? get autoExitDays => _autoExitDays;
 
   List<bool> _isPlayings = [];
   List<bool> get isPlayings => _isPlayings;
@@ -58,19 +58,22 @@ class GroupViewModel extends ChangeNotifier {
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
 
-  List<String> _audioUrls = [];
-  List<String> get audioUrls => _audioUrls;
+  List<String?> _audioUrls = [];
+  List<String?> get audioUrls => _audioUrls;
 
   List<int> _plays = [];
   List<int> get plays => _plays;
 
-  final assetsAudioPlayer = AssetsAudioPlayer();
-
+  List<AssetsAudioPlayer> _players = [];
+  List<AssetsAudioPlayer> get players => _players;
 
   //---------------------------------------------------------------------------- Audio methods
 
   void resetPlays() {
     _plays.clear();
+
+    _players.clear();
+    _players.add(AssetsAudioPlayer());
   }
 
   Future<bool> returnIsPlaying(int index) async{
@@ -80,45 +83,85 @@ class GroupViewModel extends ChangeNotifier {
 
 
   Future<void> playAudio(int index) async {
+    var player = _players[0];
 
     _plays.add(0);
 
-    //open playlist only for the first time
-    if(_plays.length == 1){
-      var audios = <Audio>[];
-      audioUrls.forEach((element) {
-        audios.add(Audio.network(element));
-      });
-      assetsAudioPlayer.open(
-        Playlist(
-            audios: audios
-        ),
-        loopMode: LoopMode.none,
-      );
+    //open the player only for the 1st time
+    if (_plays.length == 1){
+      _openPlayer();
+      _addPlayerListener();
     } else {
-      //update the button of previous audio, if any is being played
+      //update the button of previous audio, if any is played before
       _isPlayings[_currentIndex] = false;
       notifyListeners();
-
     }
-
     _currentIndex = index;
-    assetsAudioPlayer.playlistPlayAtIndex(_currentIndex);
+    player.playlistPlayAtIndex(_currentIndex);
 
     _isPlayings[_currentIndex] = true;
     notifyListeners();
+  }
 
+  void _openPlayer(){
+    var player = _players[0];
+
+    List<Audio> audios = [];
+    _audioUrls.forEach((element) {
+      audios.add(Audio.network(element!));
+    });
+
+    player.open(
+        Playlist(
+            audios: audios
+        )
+    );
+  }
+
+  void _addPlayerListener() {
+    var player = _players[0];
+
+    //listen everytime the current audio is finished, except for the last one
+    player.playlistAudioFinished.listen((event) {
+
+      _isPlayings[_currentIndex] = false;
+
+      //next audio
+      _currentIndex = event.index + 1;
+      _isPlayings[_currentIndex] = true;
+
+      if(posts[_currentIndex].userId != currentUser!.userId){
+        deleteNotification(postId: _posts[_currentIndex].postId);
+        insertListener(posts[_currentIndex]);
+      }
+
+      notifyListeners();
+    });
+
+    //listen even when the playlist is yet to be complete
+    player.playlistFinished.listen((isFinished) {
+      if(isFinished){
+        _isPlayings[_currentIndex] = false;
+
+        if(posts[_currentIndex].userId != currentUser!.userId){
+          deleteNotification(postId: _posts[_currentIndex].postId);
+          insertListener(posts[_currentIndex]);
+        }
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> pauseAudio() async {
     _isPlayings[_currentIndex] = false;
 
-    assetsAudioPlayer.pause();
+    var player = _players[0];
+    player.pause();
     notifyListeners();
   }
 
   Future<void> resumeAudio(String audioUrl) async {
-    await audioPlayManager.playAudio(audioUrl);
+    await audioPlayManager!.playAudio(audioUrl);
   }
 
   onAudioFinished(AudioPlayManager audioPlayManager) {
@@ -127,7 +170,7 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> stopAnotherAudio() async {
-    await audioPlayManager.stopAnotherAudio();
+    await audioPlayManager!.stopAnotherAudio();
   }
 
   onAnotherPlayerStopped(AudioPlayManager audioPlayManager) {
@@ -137,7 +180,7 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> updateStatus() async {
-    await audioPlayManager.updateStatus();
+    await audioPlayManager!.updateStatus();
   }
 
   onStatusUpdated(AudioPlayManager audioPlayManager) {
@@ -147,83 +190,55 @@ class GroupViewModel extends ChangeNotifier {
   }
 
 
+
   //---------------------------------------------------------------------------- PostRepository
 
   Future<void> getGroupPosts(Group group) async {
-    await postRepository.getPostsByGroup(group.groupId);
+    await postRepository!.getPostsByGroup(group.groupId);
 
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
-    _isProcessing = postRepository.isProcessing;
-    _posts = postRepository.posts;
-    _setAudioUrls(_posts);
     //to avoid being called everytime deleteNotification() is called
     if(_plays.length == 0) {
-      _setIsPlayings(_posts.length);
-      _setListener();
+      _isProcessing = postRepository.isProcessing;
+      _posts = postRepository.posts;
+      //call after posts are retrieved
+      if(_posts.length != 0){
+        _addAudioUrls(_posts);
+        _addIsPlayings(_posts.length);
+      }
     }
     notifyListeners();
   }
-  void _setIsPlayings(int length) {
-      for (var i = 0; i < length; i ++){
-        _isPlayings.length = length;
-        _isPlayings[i] = false;
-      }
 
-  }
+  void _addAudioUrls(List<Post> posts) {
 
-  void _setAudioUrls(List<Post> posts) {
-    posts.forEach((element) {
+    _audioUrls.clear();
+    _posts.forEach((element) {
       _audioUrls.add(element.audioUrl);
     });
   }
 
-  void _setListener() {
-    //called everytime the current audio is finished, except for the last one
-    assetsAudioPlayer.playlistAudioFinished.listen((event) {
+  void _addIsPlayings(int length) {
 
-        _isPlayings[_currentIndex] = false;
+      _isPlayings.clear();
 
-        //next audio
-        _currentIndex = event.index + 1;
-        _isPlayings[_currentIndex] = true;
-
-        if(posts[_currentIndex].userId != currentUser.userId){
-          deleteNotification(postId: _posts[_currentIndex].postId);
-          insertListener(posts[_currentIndex]);
-        }
-
-      notifyListeners();
-    });
-
-    //called even when the playlist is yet to be complete
-    assetsAudioPlayer.playlistFinished.listen((isFinished) {
-      if(isFinished){
-        _isPlayings[_currentIndex] = false;
-
-        if(posts[_currentIndex].userId != currentUser.userId){
-          deleteNotification(postId: _posts[_currentIndex].postId);
-          insertListener(posts[_currentIndex]);
-        }
-
-        notifyListeners();
+      for (var i = 0; i < length; i ++){
+        _isPlayings.add(false);
       }
-
-    });
 
   }
 
-
   Future<void> deletePost(Post post) async {
-    await postRepository.deletePost(post.postId);
-    await userRepository.deleteNotification(
+    await postRepository!.deletePost(post.postId);
+    await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.DELETE_POST,
         postId: post.postId);
   }
 
   Future<void> insertListener(Post post) async {
-    await postRepository.insertListener(post, currentUser);
+    await postRepository!.insertListener(post, currentUser!);
   }
 
 
@@ -231,8 +246,8 @@ class GroupViewModel extends ChangeNotifier {
 
 
   //---------------------------------------------------------------------------- GroupRepository
-  Future<void> getGroupInfo(String groupId) async {
-    await groupRepository.getGroupInfo(groupId);
+  Future<void> getGroupInfo(String? groupId) async {
+    await groupRepository!.getGroupInfo(groupId);
 
   }
 
@@ -243,20 +258,20 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateAutoExitPeriod(int intDays) {
+  void updateAutoExitPeriod(int? intDays) {
     _autoExitDays = intDays;
 
     notifyListeners();
 
   }
 
-  Future<void> updateGroupInfo(String groupId) async {
-    await groupRepository.updateGroupInfo(
-        group.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
+  Future<void> updateGroupInfo(String? groupId) async {
+    await groupRepository!.updateGroupInfo(
+        group!.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
 
     //for opening the screen next time
-    _group = await groupRepository.returnGroupInfo(groupId);
-    _autoExitDays = _group.autoExitDays;
+    _group = await groupRepository!.returnGroupInfo(groupId);
+    _autoExitDays = _group!.autoExitDays;
 
   }
 
@@ -266,14 +281,14 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> leaveGroup(Group group) async {
-    await groupRepository.leaveGroup(group, currentUser);
-    await userRepository.deleteNotification(
+    await groupRepository!.leaveGroup(group, currentUser!);
+    await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.LEAVE_GROUP,
         groupId: group.groupId);
   }
 
   Future<void> getMemberInfo(Group group) async {
-    await userRepository.getUsersByGroupId(group);
+    await userRepository!.getUsersByGroupId(group);
   }
 
   onGroupMemberInfoObtained(UserRepository userRepository) {
@@ -282,14 +297,14 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Group> returnGroupInfo(String groupId) async{
-    return await groupRepository.returnGroupInfo(groupId);
+  Future<Group> returnGroupInfo(String? groupId) async{
+    return await groupRepository!.returnGroupInfo(groupId);
 
   }
 
   Future<void> deleteGroup(Group group) async{
-    await groupRepository.deleteGroup(group, currentUser);
-    await userRepository.deleteNotification(
+    await groupRepository!.deleteGroup(group, currentUser!);
+    await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.DELETE_GROUP,
         groupId: group.groupId);
 
@@ -297,7 +312,7 @@ class GroupViewModel extends ChangeNotifier {
 
   //---------------------------------------------------------------------------- UserRepository
   Future<void> getNotifications() async{
-    await userRepository.getNotifications();
+    await userRepository!.getNotifications();
   }
 
   onNotificationsFetched(UserRepository userRepository) {
@@ -309,11 +324,12 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteNotification({String postId}) async{
-    await userRepository.deleteNotification(
+  Future<void> deleteNotification({String? postId}) async{
+    await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.OPEN_POST,
         postId: postId);
   }
+
 
 
 

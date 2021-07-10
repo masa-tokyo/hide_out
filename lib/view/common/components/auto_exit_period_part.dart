@@ -8,9 +8,9 @@ import 'package:voice_put/view_models/start_group_view_model.dart';
 
 class AutoExitPeriodPart extends StatefulWidget {
   final bool isBeginningGroup;
-  final Group group;
+  final Group? group;
 
-  AutoExitPeriodPart({@required this.isBeginningGroup, this.group});
+  AutoExitPeriodPart({required this.isBeginningGroup, this.group});
 
   @override
   _AutoExitPeriodPartState createState() => _AutoExitPeriodPartState();
@@ -24,7 +24,7 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
     DropdownMenuItem(value: 15, child: Text("15 Days"))
   ];
 
-  int _intDays = 0;
+  int? _intDays = 0;
 
 
   @override
@@ -37,7 +37,7 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
     if(widget.isBeginningGroup) {
       _intDays = _itemList[1].value;
     } else {
-      _intDays = widget.group.autoExitDays;
+      _intDays = widget.group!.autoExitDays;
     }
   }
 
@@ -83,7 +83,7 @@ class _AutoExitPeriodPartState extends State<AutoExitPeriodPart> {
           child: DropdownButton(
             items: _itemList,
             value: _intDays,
-            onChanged: (selectedValue) {
+            onChanged: (dynamic selectedValue) {
               setState(() {
                 _intDays = selectedValue;
               });

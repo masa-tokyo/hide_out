@@ -6,22 +6,25 @@ import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/user_repository.dart';
 
 class StartGroupViewModel extends ChangeNotifier {
-  final UserRepository userRepository;
-  final GroupRepository groupRepository;
+  final UserRepository? userRepository;
+  final GroupRepository? groupRepository;
 
   StartGroupViewModel({this.userRepository, this.groupRepository});
 
-  User get currentUser => UserRepository.currentUser;
+  User? get currentUser => UserRepository.currentUser;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  bool _isFirstTap = true;
+  bool get isFirstTap => _isFirstTap;
+
 
   String groupName = "";
   String description = "";
-  int autoExitDays = 4;
+  int? autoExitDays = 4;
 
-  Group group;
+  late Group group;
 
   Future<void> updateGroupName(String groupNameString) async{
     groupName = groupNameString;
@@ -33,26 +36,31 @@ class StartGroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateAutoExitPeriod(int intDays) {
+  void updateAutoExitPeriod(int? intDays) {
     autoExitDays = intDays;
   }
 
 
-  Future<void> registerGroup() async{
+  Future<void> registerGroup() async {
     group = Group(
       groupId: Uuid().v1(),
       groupName: groupName,
       description: description,
-      ownerId: currentUser.userId,
+      ownerId: currentUser!.userId,
       autoExitDays: autoExitDays,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       lastActivityAt: DateTime.now().millisecondsSinceEpoch,
     );
 
-    await groupRepository.registerGroup(group, currentUser);
+    await groupRepository!.registerGroup(group, currentUser!);
 
 
   }
+  void updateIsFirstTap() {
+    _isFirstTap = !_isFirstTap;
+    notifyListeners();
+  }
+
 
   onGroupRegistered(GroupRepository groupRepository) {
 
@@ -61,6 +69,7 @@ class StartGroupViewModel extends ChangeNotifier {
     notifyListeners();
 
   }
+
 
 
 

@@ -1,35 +1,35 @@
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:voice_put/utils/constants.dart';
 
 class Notification {
-  final NotificationType notificationType;
-  final int createdAt;
-  final String notificationId;
-  final String userId; //user who gets notification
-  final String postId;
-  final String groupId;
-  final String content;
+  final NotificationType? notificationType;
+  final int? createdAt;
+  final String? notificationId;
+  final String? userId; //user who gets notification
+  final String? postId;
+  final String? groupId;
+  final String? content;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const Notification({
-    @required this.notificationType,
-    @required this.createdAt,
-    @required this.notificationId,
-    @required this.userId,
-    @required this.postId,
-    @required this.groupId,
-    @required this.content,
+    required this.notificationType,
+    required this.createdAt,
+    required this.notificationId,
+    required this.userId,
+    required this.postId,
+    required this.groupId,
+    required this.content,
   });
 
   Notification copyWith({
-    NotificationType notificationType,
-    int createdAt,
-    String notificationId,
-    String userId,
-    String postId,
-    String groupId,
-    String content,
+    NotificationType? notificationType,
+    int? createdAt,
+    String? notificationId,
+    String? userId,
+    String? postId,
+    String? groupId,
+    String? content,
   }) {
     if ((notificationType == null ||
             identical(notificationType, this.notificationType)) &&
@@ -84,16 +84,15 @@ class Notification {
 
   factory Notification.fromMap(Map<String, dynamic> map) {
     return new Notification(
-      notificationType: NotificationType.values.firstWhere((element) =>
+      notificationType: NotificationType.values.firstWhereOrNull((element) =>
           element.toString() ==
-          "NotificationType.${map['notificationType'] as String}",
-          orElse: () => null),
-      createdAt: map['createdAt'] as int,
-      notificationId: map['notificationId'] as String,
-      userId: map['userId'] as String,
-      postId: map['postId'] as String,
-      groupId: map['groupId'] as String,
-      content: map['content'] as String,
+          "NotificationType.${map['notificationType']}"),
+      createdAt: map['createdAt'] as int?,
+      notificationId: map['notificationId'] as String?,
+      userId: map['userId'] as String?,
+      postId: map['postId'] as String?,
+      groupId: map['groupId'] as String?,
+      content: map['content'] as String?,
     );
   }
 

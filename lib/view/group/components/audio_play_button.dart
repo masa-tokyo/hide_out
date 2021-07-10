@@ -7,12 +7,11 @@ import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 class AudioPlayButton extends StatefulWidget {
-  //final int index;
-  final String audioUrl;
+  final String? audioUrl;
   final AudioPlayType audioPlayType;
-  final Post post;
+  final Post? post;
 
-  AudioPlayButton({@required this.audioUrl, @required this.audioPlayType, this.post, /*@required this.index*/});
+  AudioPlayButton({required this.audioUrl, required this.audioPlayType, this.post,});
 
   @override
   _AudioPlayButtonState createState() => _AudioPlayButtonState();
@@ -25,7 +24,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   Widget build(BuildContext context) {
 
     return AudioWidget.network(
-      url: widget.audioUrl,
+      url: widget.audioUrl!,
       play: _isPlaying,
       loopMode: LoopMode.single,
       child: !_isPlaying
@@ -70,8 +69,8 @@ setState(() {
     if(widget.audioUrl != ""){
       final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
       if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
-        groupViewModel.insertListener(widget.post);
-        groupViewModel.deleteNotification(postId: widget.post.postId);
+        groupViewModel.insertListener(widget.post!);
+        groupViewModel.deleteNotification(postId: widget.post!.postId);
       }
 
 

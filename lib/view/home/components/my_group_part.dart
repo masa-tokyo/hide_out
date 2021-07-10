@@ -11,8 +11,8 @@ import 'package:voice_put/view_models/home_screen_view_model.dart';
 class MyGroupPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final homeScreenViewModel =
-        Provider.of<HomeScreenViewModel>(context, listen: false);
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
+
     Future(() => homeScreenViewModel.getMyGroup());
     Future(() => homeScreenViewModel.getNotifications());
 
@@ -84,8 +84,7 @@ class MyGroupPart extends StatelessWidget {
 
   void _showAutoExitDialog(
       BuildContext context, List<d.Notification> notifications) async {
-    final homeScreenViewModel =
-        Provider.of<HomeScreenViewModel>(context, listen: false);
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
 
     var autoExitNotifications = notifications.where(
         (element) => element.notificationType == NotificationType.AUTO_EXIT);
@@ -107,8 +106,7 @@ class MyGroupPart extends StatelessWidget {
 
   void _showDeletedGroupDialog(
       BuildContext context, List<d.Notification> notifications) async {
-    final homeScreenViewModel =
-        Provider.of<HomeScreenViewModel>(context, listen: false);
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
 
     var deletedGroupNotifications = notifications.where((element) =>
         element.notificationType == NotificationType.DELETED_GROUP);
@@ -151,7 +149,7 @@ class MyGroupPart extends StatelessWidget {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18.0),
                       child: Text(
-                        group.groupName,
+                        group.groupName!,
                         style: listTileTitleTextStyle,
                       ),
                     ),
@@ -172,7 +170,8 @@ class MyGroupPart extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                            "${notifications.where((element) => element.notificationType == NotificationType.NEW_POST).length}"),
+                            "${notifications.where((element)
+                            => element.notificationType == NotificationType.NEW_POST).length}"),
                       ),
                     )
                   : Container(),
