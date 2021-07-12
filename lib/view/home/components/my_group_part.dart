@@ -171,7 +171,8 @@ class MyGroupPart extends StatelessWidget {
                       child: Center(
                         child: Text(
                             "${notifications.where((element)
-                            => element.notificationType == NotificationType.NEW_POST).length}"),
+                            => element.notificationType == NotificationType.NEW_POST
+                               && element.groupId == group.groupId).length}"),
                       ),
                     )
                   : Container(),
