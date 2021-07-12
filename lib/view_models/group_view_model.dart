@@ -96,8 +96,14 @@ class GroupViewModel extends ChangeNotifier {
       _isPlayings[_currentIndex] = false;
       notifyListeners();
     }
-    _currentIndex = index;
-    player.playlistPlayAtIndex(_currentIndex);
+
+    if(_currentIndex == index){
+      //resume audio
+      player.play();
+    } else {
+      _currentIndex = index;
+      player.playlistPlayAtIndex(_currentIndex);
+    }
 
     _isPlayings[_currentIndex] = true;
     notifyListeners();
@@ -156,7 +162,19 @@ class GroupViewModel extends ChangeNotifier {
     _isPlayings[_currentIndex] = false;
 
     var player = _players[0];
-    player.pause();
+
+    if(_plays.length == 1){
+      player.currentPosition.listen((event) {
+        //prevent carrying out the process when event is updated after resuming the audio
+        if(!_isPlayings[_currentIndex]){
+
+          //prevent pausing audio before starting audio
+          if(event.inMilliseconds > 0){
+            player.pause();
+          }
+        }
+      });
+    }
     notifyListeners();
   }
 

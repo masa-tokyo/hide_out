@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -34,6 +36,13 @@ class GroupScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: _floatingActionButton(context),
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Platform.isIOS? Icons.arrow_back_ios : Icons.arrow_back),
+          onPressed: () {
+            groupViewModel.pauseAudio();
+            Navigator.pop(context);
+          },
+        ),
         title: FutureBuilder(
             future: groupViewModel.returnGroupInfo(group.groupId),
             builder: (context, AsyncSnapshot<Group> snapshot) {
@@ -85,6 +94,9 @@ class GroupScreen extends StatelessWidget {
   }
 
   _openPreparationNoteScreen(BuildContext context) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    groupViewModel.pauseAudio();
+
     Navigator.push(
         context,
         _createRoute(
