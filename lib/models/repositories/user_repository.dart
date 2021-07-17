@@ -21,6 +21,10 @@ class UserRepository extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  bool _isUploading = false;
+  bool get isUploading => _isUploading;
+
+
   List<User> _groupMembers = [];
   List<User> get groupMembers => _groupMembers;
 
@@ -118,6 +122,8 @@ class UserRepository extends ChangeNotifier{
   }
 
   Future<void> uploadSelfIntro(String path) async{
+    _isUploading = true;
+    notifyListeners();
 
     final audioFile = File(path);
     final storageId = Uuid().v1();
@@ -126,7 +132,7 @@ class UserRepository extends ChangeNotifier{
     currentUser = currentUser!.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
     await dbManager!.updateUserInfo(currentUser!);
 
-    //for passing data to ProfileScreen
+    _isUploading = false;
     notifyListeners();
 
 

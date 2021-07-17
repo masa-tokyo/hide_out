@@ -20,6 +20,10 @@ class PostRepository extends ChangeNotifier {
 
   bool get isProcessing => _isProcessing;
 
+  bool _isUploading = false;
+
+  bool get isUploading => _isUploading;
+
   Future<void> postRecording(
     User currentUser,
     String? groupId,
@@ -27,12 +31,13 @@ class PostRepository extends ChangeNotifier {
     File audioFile,
     String audioDuration,
   ) async {
-    _isProcessing = true;
+    _isUploading = true;
     notifyListeners();
 
     //get audioUrl from Firebase Storage
     final storageId = Uuid().v1();
-    final audioUrl = await dbManager!.uploadAudioToStorage(audioFile, storageId);
+    final audioUrl =
+        await dbManager!.uploadAudioToStorage(audioFile, storageId);
 
     //post on Cloud Firestore
     final post = Post(
@@ -49,13 +54,16 @@ class PostRepository extends ChangeNotifier {
 
     await dbManager!.postRecording(post, currentUser.userId, groupId);
 
+    _posts.add(post); //the post is added at the end of the list
+    _posts.sort((Post a, Post b) => b.postDateTime!.compareTo(a.postDateTime!));
+
     //update lastActivityAt @groups collection
     await dbManager!.updateLastActivityAt(groupId);
 
     //insert notification
     final members = await dbManager!.getUsersByGroupId(groupId);
     members.removeWhere((element) => element.userId == currentUser.userId);
-    await Future.forEach(members, (dynamic member) async{
+    await Future.forEach(members, (dynamic member) async {
       await dbManager!.insertNotification(
           notificationType: NotificationType.NEW_POST,
           userId: member.userId,
@@ -64,8 +72,7 @@ class PostRepository extends ChangeNotifier {
           content: "${post.title}");
     });
 
-
-    _isProcessing = false;
+    _isUploading = false;
     notifyListeners();
   }
 
@@ -76,9 +83,7 @@ class PostRepository extends ChangeNotifier {
     //not to show the posts of the previous group
     _posts.clear();
 
-
     _posts = await dbManager!.getPostsByGroup(groupId);
-
 
     _isProcessing = false;
     notifyListeners();
@@ -86,6 +91,8 @@ class PostRepository extends ChangeNotifier {
 
   Future<void> deletePost(String? postId) async {
     await dbManager!.deletePost(postId);
+    _posts.removeWhere((element) => element.postId == postId);
+    notifyListeners();
   }
 
   Future<void> insertListener(Post post, User user) async {
@@ -93,6 +100,4 @@ class PostRepository extends ChangeNotifier {
 
     await dbManager!.insertListener(updatedPost, user);
   }
-
-
 }

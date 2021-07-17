@@ -23,6 +23,9 @@ class RecordingViewModel extends ChangeNotifier{
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
+  bool _isUploading = false;
+  bool get isUploading => _isUploading;
+
   bool _isTyping = false;
   bool get isTyping => _isTyping;
 
@@ -61,8 +64,10 @@ class RecordingViewModel extends ChangeNotifier{
 
   onRecordingPosted(PostRepository postRepository) {
     _isProcessing = postRepository.isProcessing;
+    _isUploading = postRepository.isUploading;
     notifyListeners();
   }
+
 
   void clearGroupIds() {
     _groupIds.clear();
@@ -111,6 +116,11 @@ class RecordingViewModel extends ChangeNotifier{
 
     await userRepository!.uploadSelfIntro(path);
 
+  }
+
+  onSelfIntroUploaded (UserRepository userRepository) {
+    _isUploading = userRepository.isUploading;
+    notifyListeners();
   }
 
 

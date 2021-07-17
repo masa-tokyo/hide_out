@@ -401,8 +401,6 @@ class GroupScreen extends StatelessWidget {
             await groupViewModel.deletePost(post);
             Fluttertoast.showToast(
                 msg: "Post Deleted", gravity: ToastGravity.CENTER);
-
-            await groupViewModel.getGroupPosts(group);
           }
         },
         yesText: Text(

@@ -27,6 +27,9 @@ final buttonNotChosenColor = Colors.white;
 const buttonChosenColor = Colors.cyan;
 const notChosenButtonBorderSideColor = Colors.black54;
 const notificationBadgeColor = Colors.redAccent;
+final uploadingAppbarColor = Colors.black.withOpacity(0.3);
+final uploadingBodyColor = Colors.black.withOpacity(0.5);
+
 
 //Home
 const drawerHeaderColor = Colors.cyan;
@@ -109,3 +112,4 @@ const postAudioDurationTextStyle = TextStyle(fontSize: 14.0,color: Colors.black5
 const GroupEditMenuCautionTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.red);
 const groupEditMenuTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold,);
 const listenedDescriptionTextStyle = TextStyle(fontSize: 14.0, color: Colors.black54);
+const uploadingDescriptionTextStyle = TextStyle(fontSize: 26.0, color: Colors.white);
