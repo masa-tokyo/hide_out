@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/common/uploading_page.dart';
 import 'package:voice_put/view/recording/components/sub/post_title_input_text_field.dart';
 import 'package:voice_put/view/recording/send_to_group_screen.dart';
+import 'package:voice_put/view_models/group_view_model.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class PostTitleScreen extends StatelessWidget {
@@ -23,25 +25,38 @@ class PostTitleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Title"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          PostTitleInputTextField(),
-          SizedBox(
-            height: 72.0,
+    return Consumer<RecordingViewModel>(
+      builder: (context, model, child){
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: model.isUploading
+                ? uploadingAppbarColor: null,
+            title: Text("Title"),
           ),
-          _nextOrDoneButton(context)
-        ],
-      ),
+          body: Stack(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PostTitleInputTextField(),
+                    SizedBox(
+                      height: 72.0,
+                    ),
+                    _nextOrDoneButton(context),
+                  ],
+                ),
+                model.isUploading ?
+                    UploadingPage()
+                    : Container(),
+              ]
+          ),
+        );
+      },
     );
   }
 
+
   Widget _nextOrDoneButton(BuildContext context) {
-    var _isFirstPress = true;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -61,59 +76,19 @@ class PostTitleScreen extends StatelessWidget {
             from == RecordingButtonOpenMode.POST_FROM_HOME ? "Next" : "Done",
             style: enabledButtonTextStyle,
           ),
-          onPressed: () async{
-
-            final recordingViewModel =
-            Provider.of<RecordingViewModel>(context, listen: false);
-
-            //todo: do this after the post was done(from_group)
-            //todo: or going to the next screen(from_home_screen)
-            // FocusScopeNode currentFocus = FocusScope.of(context);
-            // if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-            //   FocusManager.instance.primaryFocus.unfocus();
-            // }
-
-            if (from == RecordingButtonOpenMode.POST_FROM_HOME) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          SendToGroupScreen(audioDuration: audioDuration, path: path)));
-            } else {
-              //from == RecordingButtonOpenMode.POST_FROM_GROUP
-              if(_isFirstPress){
-                _isFirstPress = false;
-
-                //post
-                recordingViewModel.addGroupId(group!.groupId);
-                await recordingViewModel.postRecording(path, audioDuration);
-
-                //back to GroupScreen
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
-
-                recordingViewModel
-                    .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
-
-                Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
-              }
-            }
-          },
+          onPressed: () => _onButtonPressed(context),
 
         ),
       ),
     );
   }
 
-  _onButtonPressed(BuildContext context, bool _isFirstPress) async {
-    print("_isFirstPress: $_isFirstPress");
+  _onButtonPressed(BuildContext context) async {
 
     final recordingViewModel =
         Provider.of<RecordingViewModel>(context, listen: false);
 
-    //todo: do this after the post was done(from_group)
-    //todo: or going to the next screen(from_home_screen)
+
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus!.unfocus();
@@ -127,9 +102,6 @@ class PostTitleScreen extends StatelessWidget {
                   SendToGroupScreen(audioDuration: audioDuration, path: path)));
     } else {
 
-      if(_isFirstPress){
-        //todo keep this state
-        _isFirstPress = false;
 
         //post
         recordingViewModel.addGroupId(group!.groupId);
@@ -144,7 +116,7 @@ class PostTitleScreen extends StatelessWidget {
             .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
 
         Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
-      }
+
 
     }
   }

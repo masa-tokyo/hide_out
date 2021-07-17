@@ -334,6 +334,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     if (widget.from == RecordingButtonOpenMode.POST_FROM_HOME ||
         widget.from == RecordingButtonOpenMode.POST_FROM_GROUP) {
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -397,6 +398,8 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         }
     var temDir = await getTemporaryDirectory();
     _path = "${temDir.path}/flutter_sound_example.aac";
+    //todo delete
+    print("_path: $_path");
     var outputFile = File(_path);
     if (outputFile.existsSync()) {
       await outputFile.delete();

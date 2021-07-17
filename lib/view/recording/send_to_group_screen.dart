@@ -7,70 +7,64 @@ import 'package:tuple/tuple.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
+import 'package:voice_put/view/common/uploading_page.dart';
 import 'package:voice_put/view/home/components/new_group_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
-//todo change into StatelessWidget
-class SendToGroupScreen extends StatefulWidget {
+class SendToGroupScreen extends StatelessWidget {
   final String path;
   final String audioDuration;
 
   SendToGroupScreen({required this.audioDuration, required this.path});
 
   @override
-  _SendToGroupScreenState createState() => _SendToGroupScreenState();
-}
-
-class _SendToGroupScreenState extends State<SendToGroupScreen> {
-  bool _isButtonAvailable = true;
-
-
-  @override
   Widget build(BuildContext context) {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    final recordingViewModel =
+    Provider.of<RecordingViewModel>(context, listen: false);
     Future(() => recordingViewModel.getMyGroup());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Send to"),
-        leading: IconButton(
-          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-          onPressed: (){
-            Navigator.pop(context);
-            recordingViewModel.clearGroupIds();
-          },
-        ),
-      ),
-      body: Center(
-        child: Selector<RecordingViewModel, Tuple2<List<Group>, bool>>(
-          selector: (context, viewModel) => Tuple2(viewModel.groups, viewModel.isProcessing),
-          builder: (context, data, child) {
-            if (data.item2) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              if (data.item1.isEmpty){
-                return Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: NewGroupPart(),
-                );
-              } else {
-                return Column(
+    return Selector<RecordingViewModel, Tuple3<List<Group>, bool, bool>>(
+      selector: (context, viewModel) => Tuple3(
+          viewModel.groups, viewModel.isProcessing, viewModel.isUploading),
+      builder: (context, data, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: data.item3 ? uploadingAppbarColor : null,
+            title: Text("Send to"),
+            leading: IconButton(
+              icon: Icon(
+                  Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+                recordingViewModel.clearGroupIds();
+              },
+            ),
+          ),
+          body: Stack(
+              children: [Center(
+                child: data.item2
+                    ? Center(child: CircularProgressIndicator())
+                    : data.item1.isEmpty
+                    ? Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: NewGroupPart())
+                    : Column(
                   children: [
-                    SizedBox(height: 16.0,),
+                    SizedBox(
+                      height: 16.0,
+                    ),
                     _myGroupListView(context, data.item1),
                     _doneButton(),
                   ],
-                );
-              }
-
-            }
-
-          },
-        ),
-      ),
+                ),
+              ),
+                data.item3 ? UploadingPage(): Container()
+              ]
+          ),
+        );
+      },
     );
   }
-
 
 
 
@@ -103,7 +97,7 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
     );
   }
 
-  //--------------------------------------------------------------------------------------------------- _doneButton()
+  //---------------------------------------------------------------------------- _doneButton()
 
   Widget _doneButton() {
     return Padding(
@@ -115,7 +109,9 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
             return ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(
-                      model.groupIds.isEmpty ? buttonNotEnabledColor : buttonEnabledColor),
+                      model.groupIds.isEmpty
+                          ? buttonNotEnabledColor
+                          : buttonEnabledColor),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -126,38 +122,33 @@ class _SendToGroupScreenState extends State<SendToGroupScreen> {
                   "Done",
                   style: enabledButtonTextStyle,
                 ),
-                onPressed: () => model.groupIds.isEmpty ? null : _onDoneButtonPressed());
+                onPressed: () =>
+                model.groupIds.isEmpty ? null : _onDoneButtonPressed(context));
           },
         ),
       ),
     );
   }
 
-  _onDoneButtonPressed() async {
-    if (_isButtonAvailable){
+  _onDoneButtonPressed(BuildContext context) async {
+    final recordingViewModel =
+    Provider.of<RecordingViewModel>(context, listen: false);
+    await recordingViewModel.postRecording(path, audioDuration);
 
-      _isButtonAvailable = false;
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
 
-      final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-      await recordingViewModel.postRecording(widget.path, widget.audioDuration);
+    recordingViewModel
+        .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
 
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-
-      recordingViewModel.updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
-
-      Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
-
-
-    } else {
-      //no posting several times
-      return null;
-    }
+    Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
 
   }
 }
+
+
 
 //------------------------------------------------------------------------------ ChooseGroupButton class
 
@@ -174,7 +165,6 @@ class ChooseGroupButton extends StatefulWidget {
 class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   bool _isChooseGroupButtonPressed = false;
 
-
   @override
   Widget build(BuildContext context) {
     return _isChooseGroupButtonPressed ? _undoButton() : _sendButton();
@@ -183,14 +173,18 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   Widget _undoButton() {
     return ElevatedButton(
         style: ButtonStyle(
-            shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)))),
-        child: Text("Undo", style: sendOrUndoButtonTextStyle,),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0)))),
+        child: Text(
+          "Undo",
+          style: sendOrUndoButtonTextStyle,
+        ),
         onPressed: () => _onUndoButtonPressed());
   }
 
   _onUndoButtonPressed() {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
     recordingViewModel.removeGroupId(widget.groupId);
 
     setState(() {
@@ -206,12 +200,16 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
           ),
           backgroundColor: MaterialStateProperty.all(sendToGroupButtonColor),
         ),
-        child: Text("Send", style: sendOrUndoButtonTextStyle,),
+        child: Text(
+          "Send",
+          style: sendOrUndoButtonTextStyle,
+        ),
         onPressed: () => _onSendButtonPressed());
   }
 
   _onSendButtonPressed() {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
     recordingViewModel.addGroupId(widget.groupId);
 
     setState(() {

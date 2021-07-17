@@ -65,9 +65,14 @@ class DatabaseManager {
 
   Future<String> uploadAudioToStorage(File audioFile, String storageId) async {
     final storageRef = FirebaseStorage.instance.ref().child(storageId);
-    final uploadTask = storageRef.putFile(audioFile);
+    // specify the file type to prevent Android uploading "audio/X-HX-AAC-ADTS"
+    final uploadTask = storageRef.putFile(audioFile, SettableMetadata(
+      contentType: "audio/aac",
+      // contentEncoding: "audio/aac", //todo no difference, so delete this
+    ));
     final downloadUrl = uploadTask
         .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
+
     return downloadUrl;
   }
 

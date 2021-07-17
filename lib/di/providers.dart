@@ -1,6 +1,5 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:voice_put/models/audio_play_manager.dart';
 import 'package:voice_put/models/database_manager.dart';
 import 'package:voice_put/models/repositories/group_repository.dart';
 import 'package:voice_put/models/repositories/post_repository.dart';
@@ -21,7 +20,6 @@ List<SingleChildWidget> globalProviders = [
 
 List<SingleChildWidget> independentModels = [
   Provider<DatabaseManager>(create: (_) => DatabaseManager()),
-  ChangeNotifierProvider<AudioPlayManager>(create: (_) => AudioPlayManager()),
 ];
 
 List<SingleChildWidget> dependentModels = [
@@ -93,23 +91,18 @@ List<SingleChildWidget> viewModels = [
         (context, userRepository, groupRepository, postRepository, viewModel) =>
             viewModel!
               ..onRecordingPosted(postRepository)
-              ..onMyGroupObtained(groupRepository),
+              ..onMyGroupObtained(groupRepository)
+              ..onSelfIntroUploaded(userRepository),
   ),
-  ChangeNotifierProxyProvider4<UserRepository, GroupRepository, PostRepository,
-      AudioPlayManager, GroupViewModel>(
+  ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository, GroupViewModel>(
     create: (context) => GroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
-      audioPlayManager: Provider.of<AudioPlayManager>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, postRepository,
-            audioPlayManager, viewModel) =>
+    update: (context, userRepository, groupRepository, postRepository, viewModel) =>
         viewModel!
           ..onGroupPostsObtained(postRepository)
-          ..onAudioFinished(audioPlayManager)
-          ..onAnotherPlayerStopped(audioPlayManager)
-          ..onStatusUpdated(audioPlayManager)
           ..onGroupInfoObtained(groupRepository)
           ..onGroupMemberInfoObtained(userRepository)
           ..onGroupInfoUpdated(groupRepository)
