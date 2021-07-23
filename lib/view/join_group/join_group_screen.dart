@@ -34,20 +34,23 @@ class JoinGroupScreen extends StatelessWidget {
               itemCount: model.groups.length,
               itemBuilder: (context, int index) {
                 final group = model.groups[index];
-                return Card(
-                  color: listTileColor,
-                  elevation: 2.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.blueGrey,
-                    onTap: () => _openGroupDetailScreen(context, group),
-                    child: ListTile(
-                      title: Text(group.groupName!),
-                      subtitle: Text(group.description!, maxLines: 1, overflow: TextOverflow
-                          .ellipsis,),
-                      trailing: Icon(Icons.arrow_forward_ios_rounded),
+                return Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Card(
+                    color: listTileColor,
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: InkWell(
+                      splashColor: Colors.blueGrey,
+                      onTap: () => _openGroupDetailScreen(context, group),
+                      child: ListTile(
+                        title: Text(group.groupName!),
+                        subtitle: Text(group.description!, maxLines: 1, overflow: TextOverflow
+                            .ellipsis,),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded),
+                      ),
                     ),
                   ),
                 );

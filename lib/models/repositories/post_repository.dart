@@ -34,7 +34,7 @@ class PostRepository extends ChangeNotifier {
     _isUploading = true;
     notifyListeners();
 
-    //get audioUrl from Firebase Storage
+    // get audioUrl from Firebase Storage
     final storageId = Uuid().v1();
     final audioUrl =
         await dbManager!.uploadAudioToStorage(audioFile, storageId);

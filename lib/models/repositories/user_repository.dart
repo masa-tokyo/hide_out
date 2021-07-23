@@ -24,7 +24,6 @@ class UserRepository extends ChangeNotifier{
   bool _isUploading = false;
   bool get isUploading => _isUploading;
 
-
   List<User> _groupMembers = [];
   List<User> get groupMembers => _groupMembers;
 
@@ -125,6 +124,7 @@ class UserRepository extends ChangeNotifier{
     _isUploading = true;
     notifyListeners();
 
+
     final audioFile = File(path);
     final storageId = Uuid().v1();
     final audioUrl = await dbManager!.uploadAudioToStorage(audioFile, storageId);
@@ -135,11 +135,9 @@ class UserRepository extends ChangeNotifier{
     _isUploading = false;
     notifyListeners();
 
-
-
   }
 
-  Future<void> signOut() async{
+  Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
     currentUser = null;

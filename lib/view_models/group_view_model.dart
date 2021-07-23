@@ -75,7 +75,7 @@ class GroupViewModel extends ChangeNotifier {
     _players.add(AssetsAudioPlayer());
   }
 
-  Future<bool> returnIsPlaying(int index) async{
+  Future<bool> returnIsPlaying(int index) async {
     var result = _isPlayings[index];
     return result;
   }

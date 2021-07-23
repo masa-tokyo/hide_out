@@ -57,7 +57,6 @@ class _UserNameInputScreenState extends State<UserNameInputScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: TextField(
         controller: _controller,
-        //todo not enable to withdraw keyboard
         autofocus: true,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(

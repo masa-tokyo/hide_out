@@ -70,7 +70,7 @@ const unavailableButtonTextStyle = TextStyle(color: Color(0xFF757575));//= Color
 
 
 //Login
-const slideDoneButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
+const slideDoneButtonTextStyle = TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white);
 const slideTitleTextStyle = TextStyle(color: Colors.black);
 const slideDescriptionTextStyle = TextStyle(fontSize: 16.0, color: Colors.black);
 const selfIntroTitleTextStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,);
