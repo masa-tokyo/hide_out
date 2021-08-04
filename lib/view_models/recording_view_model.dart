@@ -44,7 +44,7 @@ class RecordingViewModel extends ChangeNotifier{
 
 
   Future<void> postRecording(String path, String audioDuration) async{
-    //the order of update properties @providers.dart matters
+    //the order of methods @update properties in providers.dart matters
     //prevent _isUploading from being synced with userRepository.isUploading
     _isPostRepositorySynced = true;
 

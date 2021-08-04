@@ -102,7 +102,6 @@ class PostTitleScreen extends StatelessWidget {
                   SendToGroupScreen(audioDuration: audioDuration, path: path)));
     } else {
 
-
         //post
         recordingViewModel.addGroupId(group!.groupId);
         await recordingViewModel.postRecording(path, audioDuration);

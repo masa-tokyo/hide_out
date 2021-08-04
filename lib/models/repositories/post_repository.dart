@@ -54,9 +54,6 @@ class PostRepository extends ChangeNotifier {
 
     await dbManager!.postRecording(post, currentUser.userId, groupId);
 
-    _posts.add(post); //the post is added at the end of the list
-    _posts.sort((Post a, Post b) => b.postDateTime!.compareTo(a.postDateTime!));
-
     //update lastActivityAt @groups collection
     await dbManager!.updateLastActivityAt(groupId);
 

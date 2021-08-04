@@ -45,14 +45,11 @@ final popupMenuButtonColor = Colors.white;
 final currentUserListTileColor = Colors.cyan[50];
 
 
-
 //SendToGroup
 final sendToGroupButtonColor = Colors.cyan;
 
 //StartGroup
 final autoExitButtonColor = Colors.grey[200];
-
-
 
 
 //----------------------------------------------------------------------------------------------------TextStyle

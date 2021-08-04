@@ -16,7 +16,7 @@ class UploadingPage extends StatelessWidget {
             SizedBox(height: 50.0,),
             CircularProgressIndicator(color: Colors.white,),
             SizedBox(height: 50.0,),
-            Text("Please wait a while.", style: uploadingDescriptionTextStyle,),
+            Text("Please wait for a while.", style: uploadingDescriptionTextStyle,),
           ],
         ),
       ),

@@ -186,16 +186,20 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
+
     //to avoid being called everytime deleteNotification() is called
     if(_plays.length == 0) {
-      _isProcessing = postRepository.isProcessing;
       _posts = postRepository.posts;
+      _isProcessing = postRepository.isProcessing;
+
       //call after posts are retrieved
       if(_posts.length != 0){
         _addAudioUrls(_posts);
         _addIsPlayings(_posts.length);
       }
     }
+
+
     notifyListeners();
   }
 

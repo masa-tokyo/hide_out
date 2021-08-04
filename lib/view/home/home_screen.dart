@@ -201,7 +201,7 @@ class _FloatingActionButtonForHomeState extends State<FloatingActionButtonForHom
           children: [
             Column(
               children: [
-                Text("Make your 1st record now!", style: tutorialTextStyle,),
+                Text("You can record from here!", style: tutorialTextStyle,),
               ],
             ),
           ],
