@@ -354,13 +354,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
           Provider.of<RecordingViewModel>(context, listen: false);
       await recordingViewModel.uploadSelfIntro(_path);
 
-      //change RecordingButtonStatus from AFTER to BEFORE
-      setState(() {
-        _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
-      });
-
-      await recordingViewModel
-          .updateRecordingButtonStatus(_recordingButtonStatus);
     } else {
       //widget.from == RecordingButtonOpenMode.SELF_INTRO_FROM_PROFILE
 

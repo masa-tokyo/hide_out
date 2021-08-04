@@ -34,7 +34,7 @@ class PostRepository extends ChangeNotifier {
     _isUploading = true;
     notifyListeners();
 
-    //get audioUrl from Firebase Storage
+    // get audioUrl from Firebase Storage
     final storageId = Uuid().v1();
     final audioUrl =
         await dbManager!.uploadAudioToStorage(audioFile, storageId);
@@ -53,9 +53,6 @@ class PostRepository extends ChangeNotifier {
         isListened: false);
 
     await dbManager!.postRecording(post, currentUser.userId, groupId);
-
-    _posts.add(post); //the post is added at the end of the list
-    _posts.sort((Post a, Post b) => b.postDateTime!.compareTo(a.postDateTime!));
 
     //update lastActivityAt @groups collection
     await dbManager!.updateLastActivityAt(groupId);

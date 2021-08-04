@@ -75,7 +75,7 @@ class GroupViewModel extends ChangeNotifier {
     _players.add(AssetsAudioPlayer());
   }
 
-  Future<bool> returnIsPlaying(int index) async{
+  Future<bool> returnIsPlaying(int index) async {
     var result = _isPlayings[index];
     return result;
   }
@@ -186,16 +186,20 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
+
     //to avoid being called everytime deleteNotification() is called
     if(_plays.length == 0) {
-      _isProcessing = postRepository.isProcessing;
       _posts = postRepository.posts;
+      _isProcessing = postRepository.isProcessing;
+
       //call after posts are retrieved
       if(_posts.length != 0){
         _addAudioUrls(_posts);
         _addIsPlayings(_posts.length);
       }
     }
+
+
     notifyListeners();
   }
 

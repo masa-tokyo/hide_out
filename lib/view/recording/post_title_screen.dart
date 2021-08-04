@@ -25,11 +25,12 @@ class PostTitleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Consumer<RecordingViewModel>(
-      builder: (context, model, child){
+    return Selector<RecordingViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isUploading,
+      builder: (context, isUploading, child){
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: model.isUploading
+            backgroundColor: isUploading
                 ? uploadingAppbarColor: null,
             title: Text("Title"),
           ),
@@ -45,7 +46,7 @@ class PostTitleScreen extends StatelessWidget {
                     _nextOrDoneButton(context),
                   ],
                 ),
-                model.isUploading ?
+                isUploading ?
                     UploadingPage()
                     : Container(),
               ]
@@ -54,7 +55,6 @@ class PostTitleScreen extends StatelessWidget {
       },
     );
   }
-
 
   Widget _nextOrDoneButton(BuildContext context) {
 
@@ -101,7 +101,6 @@ class PostTitleScreen extends StatelessWidget {
               builder: (_) =>
                   SendToGroupScreen(audioDuration: audioDuration, path: path)));
     } else {
-
 
         //post
         recordingViewModel.addGroupId(group!.groupId);

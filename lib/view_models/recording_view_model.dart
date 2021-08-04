@@ -18,7 +18,6 @@ class RecordingViewModel extends ChangeNotifier{
 
 
   String title = "";
-  late File audioFile;
 
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
@@ -38,14 +37,18 @@ class RecordingViewModel extends ChangeNotifier{
   List<String?> _groupIds = [];
   List<String?> get groupIds => _groupIds;
 
+  bool _isPostRepositorySynced = false;
+  bool get isPostRepositorySynced => _isPostRepositorySynced;
 
   User? get currentUser => UserRepository.currentUser;
 
 
   Future<void> postRecording(String path, String audioDuration) async{
+    //the order of methods @update properties in providers.dart matters
+    //prevent _isUploading from being synced with userRepository.isUploading
+    _isPostRepositorySynced = true;
 
-
-    audioFile = File(path);
+    final audioFile = File(path);
 
     await Future.forEach(_groupIds, (dynamic groupId) async{
 
@@ -60,18 +63,20 @@ class RecordingViewModel extends ChangeNotifier{
 
    _groupIds.clear();
 
+    _isPostRepositorySynced = false;
   }
 
   onRecordingPosted(PostRepository postRepository) {
-    _isProcessing = postRepository.isProcessing;
-    _isUploading = postRepository.isUploading;
-    notifyListeners();
+
+    if(_isPostRepositorySynced){
+      _isUploading = postRepository.isUploading;
+      notifyListeners();
+    }
   }
 
 
   void clearGroupIds() {
     _groupIds.clear();
-
   }
 
 
@@ -112,15 +117,18 @@ class RecordingViewModel extends ChangeNotifier{
   }
 
 
-  Future <void> uploadSelfIntro(String path) async{
+  Future <void> uploadSelfIntro(String path) async {
 
     await userRepository!.uploadSelfIntro(path);
 
   }
 
   onSelfIntroUploaded (UserRepository userRepository) {
-    _isUploading = userRepository.isUploading;
-    notifyListeners();
+    if(!_isPostRepositorySynced){
+      _isUploading = userRepository.isUploading;
+      notifyListeners();
+    }
+
   }
 
 

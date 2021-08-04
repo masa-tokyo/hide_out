@@ -60,6 +60,8 @@ dependencies:
   tutorial: ^1.0.8
   collection: ^1.15.0-nullsafety.4
 
+  #for Android
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:

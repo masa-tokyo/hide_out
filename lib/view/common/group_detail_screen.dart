@@ -8,6 +8,7 @@ import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/profile/profile_screen.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
+import 'package:voice_put/view_models/recording_view_model.dart';
 
 import '../../utils/style.dart';
 
@@ -247,11 +248,19 @@ class GroupDetailScreen extends StatelessWidget {
   _joinButtonPressed(BuildContext context, Group group) async {
     final joinGroupViewModel =
         Provider.of<JoinGroupViewModel>(context, listen: false);
+
     await joinGroupViewModel.chooseGroup(group);
     await joinGroupViewModel.joinGroup();
 
     switch (from) {
       case GroupDetailScreenOpenMode.SIGN_UP:
+
+        final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
+        //change RecordingButtonStatus from AFTER to BEFORE
+        await recordingViewModel
+            .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+
         Navigator.pop(context);
         Navigator.pop(context);
         Navigator.pop(context);
