@@ -18,9 +18,6 @@ exports.deleteMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * 
 
     if (members.docs.length != 0) {
       for (const member of members.docs) {
-
-        //TODO: for now, apply this to only masa
-        if(member.data().userId == "0fzwzx2ZJAQvSkA052nsO9kPpy33"){
   
           const lastPostDateTime = new Date(member.data().lastPostDateTime);
     
@@ -59,7 +56,6 @@ exports.deleteMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * 
           } 
     
   
-        }
   
   
   
