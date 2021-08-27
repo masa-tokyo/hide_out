@@ -39,7 +39,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   bool _isRecorderInitiated = false;
   String _path = "";
   Duration _duration = Duration();
-  bool _isZeroText = false;
 
   @override
   void initState() {
@@ -95,7 +94,9 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     return Column(
       children: [
-        _timeDisplay(),
+        _recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING
+            ? _timeDisplay()
+            : Container(),
         SizedBox(
           height: 8.0,
         ),
@@ -106,7 +107,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   //----------------------------------------------------------------------------TimeDisplay
   Widget _timeDisplay() {
-    if (!_isZeroText) {
       return StreamBuilder<RecordingDisposition>(
           stream: _flutterSoundRecorder!.onProgress,
           initialData: RecordingDisposition.zero(),
@@ -117,12 +117,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
               style: timeDisplayTextStyle,
             );
           });
-    } else {
-      return Text(
-        "00:00",
-        style: timeDisplayTextStyle,
-      );
-    }
+
   }
 
   //----------------------------------------------------------------------------BEFORE_RECORDING
@@ -180,8 +175,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         //change RecordingButtonStatus from BEFORE to DURING
         _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
 
-        //switch to StreamBuilder when recording again
-        _isZeroText = false;
+
       });
       final recordingViewModel =
           Provider.of<RecordingViewModel>(context, listen: false);
@@ -290,8 +284,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       //change RecordingButtonStatus from AFTER to BEFORE
       _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
 
-      //show 00:00
-      _isZeroText = true;
     });
 
     final recordingViewModel =
@@ -391,8 +383,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
         }
     var temDir = await getTemporaryDirectory();
     _path = "${temDir.path}/flutter_sound_example.aac";
-    //todo delete
-    print("_path: $_path");
     var outputFile = File(_path);
     if (outputFile.existsSync()) {
       await outputFile.delete();
