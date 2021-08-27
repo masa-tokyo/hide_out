@@ -7,7 +7,6 @@ import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/uploading_page.dart';
 import 'package:voice_put/view/recording/components/sub/post_title_input_text_field.dart';
 import 'package:voice_put/view/recording/send_to_group_screen.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class PostTitleScreen extends StatelessWidget {

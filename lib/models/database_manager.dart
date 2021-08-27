@@ -68,7 +68,6 @@ class DatabaseManager {
     // specify the file type to prevent Android uploading "audio/X-HX-AAC-ADTS"
     final uploadTask = storageRef.putFile(audioFile, SettableMetadata(
       contentType: "audio/aac",
-      // contentEncoding: "audio/aac", //todo no difference, so delete this
     ));
     final downloadUrl = uploadTask
         .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
@@ -105,21 +104,6 @@ class DatabaseManager {
 
     //update isListened
     await _db.collection("posts").doc(post.postId).update(post.toMap());
-  }
-
-  Future<void> insertClosedGroupOnMember(
-      String groupId, String groupName, List<String> userIds) async {
-    userIds.forEach((userId) async {
-      await _db
-          .collection("users")
-          .doc(userId)
-          .collection("closedGroups")
-          .doc(groupId)
-          .set({
-        "groupId": groupId,
-        "groupName": groupName,
-      });
-    });
   }
 
   Future<void> insertNotification({
