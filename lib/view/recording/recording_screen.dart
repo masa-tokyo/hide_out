@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/utils/functions.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
 import 'package:voice_put/view/recording/components/post_description_part.dart';
@@ -11,17 +12,21 @@ import 'package:voice_put/view/recording/components/recording_button_part.dart';
 import 'package:voice_put/view_models/recording_view_model.dart';
 
 class RecordingScreen extends StatelessWidget {
-  final String noteText;
   final RecordingButtonOpenMode from;
   final Group? group;
 
-  RecordingScreen({required this.noteText, required this.from, required this.group});
+  RecordingScreen({required this.from, required this.group});
 
   @override
   Widget build(BuildContext context) {
     final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
     return GestureDetector(
-      onTap: () => _unFocusKeyboard(context),
+      onTap: () => unFocusKeyboard(
+          context: context,
+          onUnFocused: (){
+            final recordingViewModel = context.read<RecordingViewModel>();
+            recordingViewModel.updateForNotTyping();
+          }),
       child: Scaffold(
         appBar: AppBar(
           leading: _backButton(context),
@@ -52,7 +57,6 @@ class RecordingScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   PostDescriptionPart(
-                    noteText: noteText,
                   ),
                   RecordingButtonPart(from: from, group: group),
                 ],
@@ -99,15 +103,5 @@ class RecordingScreen extends StatelessWidget {
             Navigator.pop(context);
           }
         });
-  }
-
-  _unFocusKeyboard(BuildContext context) {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
-
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
-      recordingViewModel.updateForNotTyping();
-    }
   }
 }
