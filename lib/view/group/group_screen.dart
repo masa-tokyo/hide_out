@@ -1,19 +1,21 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/post.dart';
 import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/utils/functions.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
+import 'package:voice_put/view/common/items/user_avatar.dart';
 import 'package:voice_put/view/group/group_detail_edit_screen.dart';
 import 'package:voice_put/view/common/group_detail_screen.dart';
-import 'package:voice_put/view/recording/preparation_note_screen.dart';
+import 'package:voice_put/view/recording/recording_screen.dart';
 import 'package:voice_put/view_models/group_view_model.dart';
 
 import 'components/post_audio_play_button.dart';
@@ -27,17 +29,18 @@ class GroupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     Future(() => groupViewModel.resetPlays());
-   Future(() => groupViewModel.getGroupPosts(group));
+    Future(() => groupViewModel.getGroupPosts(group));
 
     Future(() => groupViewModel
-       .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
+        .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
     Future(() => groupViewModel.getNotifications());
+    Future(() => groupViewModel.getMemberInfo(group));
 
     return Scaffold(
       floatingActionButton: _floatingActionButton(context),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Platform.isIOS? Icons.arrow_back_ios : Icons.arrow_back),
+          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
           onPressed: () {
             groupViewModel.pauseAudio();
             Navigator.pop(context);
@@ -69,42 +72,24 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  Route<Object> _createRoute(BuildContext context, Widget screen) {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(0.0, 1.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        });
-  }
-
   //---------------------------------------------------------------------------------------------- FloatingActionButton
   _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
         child: Icon(Icons.keyboard_voice),
-        onPressed: () => _openPreparationNoteScreen(context));
+        onPressed: () => _openRecordingScreen(context));
   }
 
-  _openPreparationNoteScreen(BuildContext context) {
+  _openRecordingScreen(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     groupViewModel.pauseAudio();
 
     Navigator.push(
-        context,
-        _createRoute(
-            context,
-            PreparationNoteScreen(
-              from: RecordingButtonOpenMode.POST_FROM_GROUP,
-              group: group,
-            )));
+      context,
+      createRouteFromBottom(
+          context,
+          RecordingScreen(from: RecordingButtonOpenMode.POST_FROM_GROUP, group: group),
+      ),
+    );
   }
 
   //---------------------------------------------------------------------------------------------- AppBar
@@ -119,7 +104,8 @@ class GroupScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(4.0),
             ),
             icon: Icon(Icons.more_vert),
-            onSelected: (dynamic value) => _onPopupMenuSelected(context, value, model),
+            onSelected: (dynamic value) =>
+                _onPopupMenuSelected(context, value, model),
             itemBuilder: (context) {
               if (groupViewModel.currentUser!.userId == group.ownerId) {
                 return [
@@ -171,7 +157,7 @@ class GroupScreen extends StatelessWidget {
       case GroupEditMenu.EDIT:
         Navigator.push(
             context,
-            _createRoute(
+            createRouteFromBottom(
                 context,
                 GroupDetailEditScreen(
                   group: model.group,
@@ -195,7 +181,6 @@ class GroupScreen extends StatelessWidget {
               if (isConfirmed) {
                 await groupViewModel.leaveGroup(group);
                 Navigator.pop(context);
-
                 Fluttertoast.showToast(msg: "You have left the group.");
               }
             },
@@ -237,7 +222,6 @@ class GroupScreen extends StatelessWidget {
 //------------------------------------------------------------------------------body
 
   Widget _postListView(BuildContext context) {
-
     return Expanded(
       child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 60.0),
@@ -254,138 +238,119 @@ class GroupScreen extends StatelessWidget {
                       itemBuilder: (context, int index) {
                         final post = model.posts[index];
                         return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            _postDateFormat(model, post, index),
                             post.userId == model.currentUser!.userId
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 24.0),
-                                    child: Card(
-                                        color: currentUserListTileColor,
-                                        elevation: 2.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16.0)),
-                                        child: Slidable(
-                                          actionPane:
-                                              SlidableDrawerActionPane(),
-                                          actionExtentRatio: 0.25,
-                                          child: ListTile(
-                                            trailing: Container(
-                                              width: 50,
-                                              height: 50,
-                                              child: PostAudioPlayButton(
-                                                index: index,
-                                                audioUrl: post.audioUrl,
-                                                audioPlayType:
-                                                    AudioPlayType.POST_MINE,
-                                              ),
-                                            ),
-                                            title: RichText(
-                                                text: TextSpan(
-                                                    style: DefaultTextStyle.of(
-                                                            context)
-                                                        .style,
-                                                    children: [
-                                                  TextSpan(
-                                                      text: post.title,
-                                                      style:
-                                                          postTitleTextStyle),
-                                                  TextSpan(text: "  "),
-                                                  TextSpan(
-                                                      text:
-                                                          "(${post.audioDuration})",
-                                                      style:
-                                                          postAudioDurationTextStyle),
-                                                ])),
-                                          ),
-                                          secondaryActions: [
-                                            IconSlideAction(
-                                              caption: "Delete",
-                                              icon: Icons.delete,
-                                              color: Colors.redAccent,
-                                              onTap: () => _onDeleteTapped(
-                                                  context, post),
-                                            )
-                                          ],
-                                        )),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 24.0),
-                                    child: Stack(
-                                        alignment: Alignment.topRight,
-                                        children: [
-                                          Card(
-                                            color: listTileColor,
-                                            elevation: 2.0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        16.0)),
-                                            child: ListTile(
-                                              trailing: Container(
-                                                width: 50,
-                                                height: 50,
-                                                child: PostAudioPlayButton(
-                                                  index: index,
-                                                  audioUrl: post.audioUrl,
-                                                  audioPlayType:
-                                                      AudioPlayType.POST_OTHERS,
-                                                  post: post,
-                                                ),
-                                              ),
-                                              subtitle: Text(post.userName!),
-                                              title: RichText(
-                                                  text: TextSpan(
-                                                      style:
-                                                          DefaultTextStyle.of(
-                                                                  context)
-                                                              .style,
-                                                      children: [
-                                                    TextSpan(
-                                                        text: post.title,
-                                                        style:
-                                                            postTitleTextStyle),
-                                                    TextSpan(text: "  "),
-                                                    TextSpan(
-                                                        text:
-                                                            "(${post.audioDuration})",
-                                                        style:
-                                                            postAudioDurationTextStyle),
-                                                  ])),
-                                            ),
-                                          ),
-                                          model.notifications.any((element) =>
-                                                  element.postId == post.postId)
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 6.0),
-                                                  child: Container(
-                                                    width: 10.0,
-                                                    height: 10.0,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color:
-                                                            notificationBadgeColor),
-                                                  ),
-                                                )
-                                              : Container(),
-                                        ]),
-                                  ),
-                            post.userId == model.currentUser!.userId
-                                ? post.isListened!
-                                    ? Text(
-                                        "Listened",
-                                        style: listenedDescriptionTextStyle,
-                                      )
-                                    : Container()
-                                : Container(),
+                                ? _currentUserPost(context, index, post)
+                                : _memberPost(context, index, model, post),
                           ],
                         );
                       },
                     );
             },
           )),
+    );
+  }
+
+  Widget _postDateFormat(GroupViewModel model, Post post, int index) {
+    final postDateTime = post.postDateTime!;
+    final now = DateTime.now();
+
+    var dateStr = "";
+
+    if (postDateTime.year == now.year &&
+        postDateTime.month == now.month &&
+        postDateTime.day == now.day) {
+      dateStr = "Today";
+    } else if (postDateTime.year == now.year &&
+        postDateTime.month == now.month &&
+        postDateTime.day == now.day - 1) {
+      dateStr = "Yesterday";
+    } else {
+      dateStr = DateFormat.MMM().format(postDateTime) +
+          " " +
+          DateFormat.d().format(postDateTime);
+    }
+
+    //check whether a newer post is posted on the same date or not
+    if (index != 0){
+      final newerPost = model.posts[index - 1];
+      final newerPostDateTime = newerPost.postDateTime!;
+
+      if(postDateTime.year == newerPostDateTime.year &&
+      postDateTime.month == newerPostDateTime.month &&
+      postDateTime.day == newerPostDateTime.day) {
+        return Container();
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0, bottom: 4.0),
+      child: Text(dateStr, style: dateFormatTextStyle,),
+    );
+
+  }
+
+  Widget _currentUserPost(BuildContext context, int index, Post post) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Card(
+              color: currentUserListTileColor,
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      bottomLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                  )),
+              child: Slidable(
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: ListTile(
+                  onLongPress: () => _onDeleteTapped(context, post),
+                  trailing: Container(
+                    width: 50,
+                    height: 50,
+                    child: PostAudioPlayButton(
+                      index: index,
+                      audioUrl: post.audioUrl,
+                      audioPlayType: AudioPlayType.POST_MINE,
+                    ),
+                  ),
+                  title: RichText(
+                      text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                        TextSpan(text: post.title, style: postTitleTextStyle),
+                        TextSpan(text: "  "),
+                        TextSpan(
+                            text: "(${post.audioDuration})",
+                            style: postAudioDurationTextStyle),
+                      ])),
+                ),
+                secondaryActions: [
+                  IconSlideAction(
+                    caption: "Delete",
+                    icon: Icons.delete,
+                    color: Colors.redAccent,
+                    onTap: () => _onDeleteTapped(context, post),
+                  )
+                ],
+              )),
+        ),
+        post.isListened!
+            ? Text(
+                "Listened",
+                style: listenedDescriptionTextStyle,
+              )
+            : Container(),
+        SizedBox(
+          height: 8.0,
+        )
+      ],
     );
   }
 
@@ -411,5 +376,105 @@ class GroupScreen extends StatelessWidget {
           "Cancel",
           style: showConfirmDialogNoTextStyle,
         ));
+  }
+
+  Widget _memberPost(
+      BuildContext context, int index, GroupViewModel model, Post post) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0, bottom: 12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+              flex: 1,
+              child: UserAvatar(
+                radius: 20.0,
+                url: _getPhotoUrl(model, post),
+              )),
+          Expanded(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(alignment: Alignment.topRight, children: [
+                  Column(
+                    children: [
+                      Card(
+                        color: listTileColor,
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.0),
+                            bottomRight: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                        ),),
+                        child: ListTile(
+                          trailing: Container(
+                            width: 50,
+                            height: 50,
+                            child: PostAudioPlayButton(
+                              index: index,
+                              audioUrl: post.audioUrl,
+                              audioPlayType: AudioPlayType.POST_OTHERS,
+                              post: post,
+                            ),
+                          ),
+                          title: RichText(
+                              text: TextSpan(
+                                  style: DefaultTextStyle.of(context).style,
+                                  children: [
+                                TextSpan(
+                                    text: post.title,
+                                    style: postTitleTextStyle),
+                                TextSpan(text: "  "),
+                                TextSpan(
+                                    text: "(${post.audioDuration})",
+                                    style: postAudioDurationTextStyle),
+                              ])),
+                        ),
+                      ),
+                    ],
+                  ),
+                  model.notifications
+                          .any((element) => element.postId == post.postId)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 6.0),
+                          child: Container(
+                            width: 10.0,
+                            height: 10.0,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: notificationBadgeColor),
+                          ),
+                        )
+                      : Container(),
+                ]),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 2.0,
+                    left: 8.0,
+                  ),
+                  child: Text(
+                    post.userName!,
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getPhotoUrl(GroupViewModel model, Post post) {
+    if (model.groupMembers.any((member) => member.userId == post.userId)) {
+      return model.groupMembers
+          .where((member) => member.userId == post.userId)
+          .first
+          .photoUrl!;
+    } else {
+      return userIconUrl();
+    }
   }
 }
