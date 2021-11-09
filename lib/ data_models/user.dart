@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 
 class User {
   final String? userId;
   final String? displayName; //initial user name registered on firebase
   final String? inAppUserName; //changeable user name on the app
   final String? photoUrl;
+  final String? photoStoragePath;
   final String? audioUrl; //for self-introduction
   final String? audioStoragePath; //for self-introduction
   final String? email;
@@ -12,14 +14,15 @@ class User {
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const User({
-    required this.userId,
-    required this.displayName,
-    required this.inAppUserName,
-    required this.photoUrl,
-    required this.audioUrl,
-    required this.audioStoragePath,
-    required this.email,
-    required this.createdAt,
+    @required this.userId,
+    @required this.displayName,
+    @required this.inAppUserName,
+    @required this.photoUrl,
+    @required this.photoStoragePath,
+    @required this.audioUrl,
+    @required this.audioStoragePath,
+    @required this.email,
+    @required this.createdAt,
   });
 
   User copyWith({
@@ -27,6 +30,7 @@ class User {
     String? displayName,
     String? inAppUserName,
     String? photoUrl,
+    String? photoStoragePath,
     String? audioUrl,
     String? audioStoragePath,
     String? email,
@@ -37,6 +41,8 @@ class User {
         (inAppUserName == null ||
             identical(inAppUserName, this.inAppUserName)) &&
         (photoUrl == null || identical(photoUrl, this.photoUrl)) &&
+        (photoStoragePath == null ||
+            identical(photoStoragePath, this.photoStoragePath)) &&
         (audioUrl == null || identical(audioUrl, this.audioUrl)) &&
         (audioStoragePath == null ||
             identical(audioStoragePath, this.audioStoragePath)) &&
@@ -50,6 +56,7 @@ class User {
       displayName: displayName ?? this.displayName,
       inAppUserName: inAppUserName ?? this.inAppUserName,
       photoUrl: photoUrl ?? this.photoUrl,
+      photoStoragePath: photoStoragePath ?? this.photoStoragePath,
       audioUrl: audioUrl ?? this.audioUrl,
       audioStoragePath: audioStoragePath ?? this.audioStoragePath,
       email: email ?? this.email,
@@ -59,7 +66,7 @@ class User {
 
   @override
   String toString() {
-    return 'User{userId: $userId, displayName: $displayName, inAppUserName: $inAppUserName, photoUrl: $photoUrl, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, email: $email, createdAt: $createdAt}';
+    return 'User{userId: $userId, displayName: $displayName, inAppUserName: $inAppUserName, photoUrl: $photoUrl, photoStoragePath: $photoStoragePath, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, email: $email, createdAt: $createdAt}';
   }
 
   @override
@@ -71,6 +78,7 @@ class User {
           displayName == other.displayName &&
           inAppUserName == other.inAppUserName &&
           photoUrl == other.photoUrl &&
+          photoStoragePath == other.photoStoragePath &&
           audioUrl == other.audioUrl &&
           audioStoragePath == other.audioStoragePath &&
           email == other.email &&
@@ -82,6 +90,7 @@ class User {
       displayName.hashCode ^
       inAppUserName.hashCode ^
       photoUrl.hashCode ^
+      photoStoragePath.hashCode ^
       audioUrl.hashCode ^
       audioStoragePath.hashCode ^
       email.hashCode ^
@@ -93,13 +102,14 @@ class User {
       displayName: map['displayName'] as String?,
       inAppUserName: map['inAppUserName'] as String?,
       photoUrl: map['photoUrl'] as String?,
+      photoStoragePath: map['photoStoragePath'] as String?,
       audioUrl: map['audioUrl'] as String?,
       audioStoragePath: map['audioStoragePath'] as String?,
       email: map['email'] as String?,
-      createdAt: map['createdAt'] == null
-          ? null : map['createdAt'] as int?,
+      createdAt: map['createdAt'] as int?,
     );
   }
+
 
   Map<String, dynamic> toMap() {
     // ignore: unnecessary_cast
@@ -108,12 +118,14 @@ class User {
       'displayName': this.displayName,
       'inAppUserName': this.inAppUserName,
       'photoUrl': this.photoUrl,
+      'photoStoragePath': this.photoStoragePath,
       'audioUrl': this.audioUrl,
       'audioStoragePath': this.audioStoragePath,
       'email': this.email,
       'createdAt': this.createdAt,
     } as Map<String, dynamic>;
   }
+
 
 //</editor-fold>
 
