@@ -4,6 +4,7 @@ import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/utils/constants.dart';
 import 'package:voice_put/utils/style.dart';
 import 'package:voice_put/view/common/group_detail_screen.dart';
+import 'package:voice_put/view/common/items/user_avatar.dart';
 import 'package:voice_put/view_models/join_group_view_model.dart';
 import 'dart:io';
 
@@ -46,6 +47,9 @@ class JoinGroupScreen extends StatelessWidget {
                       splashColor: Colors.blueGrey,
                       onTap: () => _openGroupDetailScreen(context, group),
                       child: ListTile(
+                        leading: UserAvatar(
+                            radius: 26.0,
+                            url: group.ownerPhotoUrl ?? userIconUrl()),
                         title: Text(group.groupName!),
                         subtitle: Text(group.description!, maxLines: 1, overflow: TextOverflow
                             .ellipsis,),

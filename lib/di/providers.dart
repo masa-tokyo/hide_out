@@ -41,16 +41,18 @@ List<SingleChildWidget> dependentModels = [
 ];
 
 List<SingleChildWidget> viewModels = [
-  ChangeNotifierProvider<LoginViewModel>(
+  ChangeNotifierProxyProvider<UserRepository, LoginViewModel>(
       create: (context) => LoginViewModel(
             userRepository: Provider.of<UserRepository>(context, listen: false),
-          )),
+          ),
+      update: (context, userRepository, viewModel) =>
+      viewModel!..onUserInfoUpdated(userRepository)),
   ChangeNotifierProxyProvider<UserRepository, ProfileViewModel>(
       create: (context) => ProfileViewModel(
             userRepository: Provider.of<UserRepository>(context, listen: false),
           ),
       update: (context, userRepository, viewModel) =>
-          viewModel!..onUserInfoUpdated(userRepository)),
+          viewModel!..onUserInfoUpdated(userRepository),),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       StartGroupViewModel>(
     create: (context) => StartGroupViewModel(

@@ -47,6 +47,7 @@ class StartGroupViewModel extends ChangeNotifier {
       groupName: groupName,
       description: description,
       ownerId: currentUser!.userId,
+      ownerPhotoUrl: currentUser!.photoUrl,
       autoExitDays: autoExitDays,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       lastActivityAt: DateTime.now().millisecondsSinceEpoch,
