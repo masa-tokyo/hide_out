@@ -32,7 +32,7 @@ class RecordingScreen extends StatelessWidget {
           leading: _backButton(context),
           title: Consumer<RecordingViewModel>(
             builder: (context, model, child) {
-              return model.isTyping ? Container() : Text("New Recording");
+              return model.isTyping ? Container() : Text("New Talk");
             },
           ),
           actions: [

@@ -42,7 +42,9 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app does not use the information for calendar.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app does not use the camera.</string>
+	<string>This app uses the camera for updating the profile image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app uses the photo library for updating the profile image.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app does not use the information for contacts.</string>
 	<key>NSMicrophoneUsageDescription</key>
