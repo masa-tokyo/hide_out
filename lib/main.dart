@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/di/providers.dart';
+import 'package:voice_put/models/repositories/user_repository.dart';
+import 'package:voice_put/utils/functions.dart';
 import 'package:voice_put/view/home/home_screen.dart';
 import 'package:voice_put/view/login/before_login_screen.dart';
 import 'package:voice_put/view_models/login_view_model.dart';
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
     return GestureDetector(
-      onTap: () => _unFocusKeyboard(context),
+      onTap: () => unFocusKeyboard(context: context),
       child: MaterialApp(
         title: "HideOut",
         debugShowCheckedModeBanner: false,
@@ -72,8 +74,7 @@ class MyApp extends StatelessWidget {
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData && snapshot.data!){
-
-              return HomeScreen(isSignedUp: false);
+              return SetUp(child: HomeScreen(isSignedUp: false));
 
             } else if (snapshot.hasData && !snapshot.data!){
               return BeforeLoginScreen();
@@ -89,10 +90,32 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  _unFocusKeyboard(BuildContext context) {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus!.unfocus();
-    }
+
+}
+
+class SetUp extends StatefulWidget {
+  const SetUp({required this.child});
+  final Widget child;
+
+  @override
+  _SetUpState createState() => _SetUpState();
+}
+
+class _SetUpState extends State<SetUp> {
+
+  @override
+  void initState() {
+    _setUp();
+    super.initState();
+  }
+
+  Future<void> _setUp() async {
+    final userRepository = context.read<UserRepository>();
+    await userRepository.createImageFile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
