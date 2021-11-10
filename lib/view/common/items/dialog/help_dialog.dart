@@ -42,16 +42,16 @@ class HelpDialog extends StatelessWidget {
         actions: [
           Column(
             children: [
-              Container(
-                width: 1000,
-              ),
               Divider(),
-              TextButton(
-                  onPressed:(){
-                    Navigator.pop(context);
-                    onConfirmed!();
-                  },
-                  child: Text(okayString!, style: helpDialogOkayTextStyle,)),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                    onPressed:(){
+                      Navigator.pop(context);
+                      onConfirmed!();
+                    },
+                    child: Text(okayString!, style: helpDialogOkayTextStyle,)),
+              ),
             ],
           ),
         ],

@@ -108,7 +108,6 @@ class PostTitleScreen extends StatelessWidget {
         //back to GroupScreen
         Navigator.pop(context);
         Navigator.pop(context);
-        Navigator.pop(context);
 
         recordingViewModel
             .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);

@@ -37,7 +37,7 @@ const drawerHeaderColor = Colors.cyan;
 
 
 //Login
-const googleIconButtonColor = Color(0xFF4285F4);
+const googleIconButtonColor = Colors.white;
 
 
 //Group
@@ -54,13 +54,14 @@ final autoExitButtonColor = Colors.grey[200];
 
 //----------------------------------------------------------------------------------------------------TextStyle
 //Common
-const buttonWithImageTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
+const buttonBlackTextStyle = TextStyle(fontSize: 18.0, color: Colors.black);
+const buttonWhiteTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle = TextStyle(fontSize: 18.0, color: Colors.black87);
 const listTileTitleTextStyle = TextStyle(fontSize: 18.0,);
 const enabledButtonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 const showConfirmDialogYesTextStyle = TextStyle(color: Colors.redAccent,);
 const showConfirmDialogNoTextStyle = TextStyle(color: Colors.black87,);
-const timeDisplayTextStyle = TextStyle(fontSize: 48.0,);
+const timeDisplayTextStyle = TextStyle(fontSize: 32.0,);
 const instructionTextStyle = TextStyle(fontSize: 18.0);
 const helpDialogOkayTextStyle = TextStyle(fontSize: 18.0);
 const unavailableButtonTextStyle = TextStyle(color: Color(0xFF757575));//= Colors.grey[600]
@@ -108,5 +109,6 @@ const postTitleTextStyle = TextStyle(fontSize: 16.0, color: Colors.black87);
 const postAudioDurationTextStyle = TextStyle(fontSize: 14.0,color: Colors.black54);
 const GroupEditMenuCautionTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.red);
 const groupEditMenuTextStyle = TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold,);
-const listenedDescriptionTextStyle = TextStyle(fontSize: 14.0, color: Colors.black54);
+const listenedDescriptionTextStyle = TextStyle(fontSize: 12.0, color: Colors.black54);
 const uploadingDescriptionTextStyle = TextStyle(fontSize: 26.0, color: Colors.white);
+const dateFormatTextStyle = TextStyle(fontSize: 14.0, color: Colors.grey);
