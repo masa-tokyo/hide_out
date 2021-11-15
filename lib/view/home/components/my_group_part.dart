@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_put/%20data_models/group.dart';
 import 'package:voice_put/%20data_models/notification.dart' as d;
 import 'package:voice_put/utils/constants.dart';
+import 'package:voice_put/view/common/items/dialog/custom_alert_dialog.dart';
 import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
 import 'package:voice_put/view/group/group_screen.dart';
 import 'package:voice_put/utils/style.dart';
@@ -36,6 +38,7 @@ class MyGroupPart extends StatelessWidget {
             } else {
               if (model.isFirstCall) {
                 homeScreenViewModel.stopCall();
+                _showAlertAutoExitDialog(context, model.notifications);
                 _showAutoExitDialog(context, model.notifications);
                 _showDeletedGroupDialog(context, model.notifications);
               }
@@ -82,6 +85,35 @@ class MyGroupPart extends StatelessWidget {
     );
   }
 
+  void _showAlertAutoExitDialog(
+      BuildContext context, List<d.Notification> notifications) async {
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
+
+    var alertNotifications = notifications.where(
+        (element) => element.notificationType == NotificationType.ALERT_AUTO_EXIT);
+
+    if (alertNotifications.isNotEmpty) {
+      alertNotifications.forEach((element) {
+        Future(() => showCustomAlertDialog(
+            context: context,
+            titleStr: "Warning!",
+            contentStr: 'You are about to be kicked out of "${element.content}". Please make a recording TODAY!',
+            confirmedStr: "I will do it!",
+            circleColor: Colors.red.shade400,
+            icon: Icon(
+              FontAwesomeIcons.calendarAlt,
+              size: 28.0,
+              color: Colors.white,
+            ),
+            onConfirmed: (){
+              homeScreenViewModel.deleteNotification(element.notificationId);
+              homeScreenViewModel.updateIsAlerted(element.groupId!, element.userId!);
+
+            }));
+      });
+    }
+  }
+
   void _showAutoExitDialog(
       BuildContext context, List<d.Notification> notifications) async {
     final homeScreenViewModel = context.read<HomeScreenViewModel>();
@@ -91,15 +123,22 @@ class MyGroupPart extends StatelessWidget {
 
     if (autoExitNotifications.isNotEmpty) {
       autoExitNotifications.forEach((element) {
-        Future(() => showHelpDialog(
+        Future(() =>
+        showCustomAlertDialog(
             context: context,
-            title: Text("Auto-Exit Period"),
-            contentString:
-                'You have exited from "${element.content}". Please enter again if you want.',
-            okayString: "Okay",
-            onConfirmed: () {
+            titleStr: "Sorry to see you go!",
+            contentStr: "You were kicked out of '${element.content}'. "
+                "But don't cry! You can join the group again!!",
+            confirmedStr: "Okay!",
+            circleColor: Colors.blue.shade400,
+            icon: Icon(FontAwesomeIcons.sadTear,
+            color: Colors.white,
+            size: 28.0,),
+            onConfirmed: (){
+              print('pushed');
               homeScreenViewModel.deleteNotification(element.notificationId);
-            }));
+            })
+        );
       });
     }
   }
