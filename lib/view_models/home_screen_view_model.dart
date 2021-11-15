@@ -84,4 +84,8 @@ class HomeScreenViewModel extends ChangeNotifier {
         notificationId: notificationId,
         notificationDeleteType: NotificationDeleteType.NOTIFICATION_ID);
   }
+
+  Future<void> updateIsAlerted(String groupId, String userId) async{
+    await groupRepository!.updateIsAlerted(groupId, userId);
+  }
 }

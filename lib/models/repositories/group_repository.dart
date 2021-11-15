@@ -114,12 +114,16 @@ class GroupRepository extends ChangeNotifier{
 
   Future<void> deleteGroup(Group group, User currentUser) async{
 
-    await dbManager!/*!*/.deleteGroup(group, currentUser.userId);
+    await dbManager!.deleteGroup(group, currentUser.userId);
 
     //update group information for MyGroup@HomeScreen
     _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
 
     notifyListeners();
+  }
+
+  Future<void> updateIsAlerted(String groupId, String userId) async{
+    await dbManager!.updateIsAlerted(groupId, userId);
   }
 
 
