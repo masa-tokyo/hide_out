@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
 
-class ButtonWithImage extends StatelessWidget {
+class ButtonWithIcon extends StatelessWidget {
   final VoidCallback onPressed;
-  final String imagePath;
+  final Icon icon;
   final Text label;
   final Color? color;
-  final double? height;
-  final double? width;
   final bool isBordered;
 
-  ButtonWithImage(
+  ButtonWithIcon(
       {required this.onPressed,
-      required this.imagePath,
-      required this.label,
+        required this.icon,
+        required this.label,
         required this.isBordered,
-      this.color,
-      this.height,
-      this.width});
+        this.color,});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +25,9 @@ class ButtonWithImage extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
             ),
             side: isBordered ? MaterialStateProperty.all<BorderSide>(
-              BorderSide(
-                width: 0.6
-              )
+                BorderSide(
+                    width: 0.6
+                )
             ) : null,
             backgroundColor: MaterialStateProperty.all<Color?>(color)),
         onPressed: onPressed,
@@ -40,15 +36,11 @@ class ButtonWithImage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                imagePath,
-                height: height ?? null,
-                width: width ?? null,
-              ),
+              icon,
               SizedBox(
                 width: 16,
               ),
-                label,
+              label,
             ],
           ),
         ),
