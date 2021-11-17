@@ -51,6 +51,8 @@
 	<string>This app uses the microphone to record your speech.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This app does not use the information for motion.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app uses the photo library for updating the profile image.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app does not use the information for speech recognition.</string>
 	<key>UILaunchStoryboardName</key>
