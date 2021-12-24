@@ -6,17 +6,17 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/functions.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
-import 'package:voice_put/view/common/items/user_avatar.dart';
-import 'package:voice_put/view/group/group_detail_edit_screen.dart';
-import 'package:voice_put/view/common/group_detail_screen.dart';
-import 'package:voice_put/view/recording/recording_screen.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/functions.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
+import 'package:hide_out/view/common/items/user_avatar.dart';
+import 'package:hide_out/view/group/group_detail_edit_screen.dart';
+import 'package:hide_out/view/common/group_detail_screen.dart';
+import 'package:hide_out/view/recording/recording_screen.dart';
+import 'package:hide_out/view_models/group_view_model.dart';
 
 import 'components/post_audio_play_button.dart';
 

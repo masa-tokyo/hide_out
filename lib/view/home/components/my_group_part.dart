@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/view/common/items/dialog/custom_alert_dialog.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
-import 'package:voice_put/view/group/group_screen.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view_models/home_screen_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/common/items/dialog/custom_alert_dialog.dart';
+import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
+import 'package:hide_out/view/group/group_screen.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view_models/home_screen_view_model.dart';
 
 class MyGroupPart extends StatelessWidget {
   @override
@@ -41,6 +41,7 @@ class MyGroupPart extends StatelessWidget {
                 _showAlertAutoExitDialog(context, model.notifications);
                 _showAutoExitDialog(context, model.notifications);
                 _showDeletedGroupDialog(context, model.notifications);
+                _showNewOwnerDialog(context, model.notifications);
               }
 
               return model.groups.isEmpty
@@ -164,6 +165,32 @@ class MyGroupPart extends StatelessWidget {
       });
     }
   }
+  void _showNewOwnerDialog(
+      BuildContext context,
+      List<d.Notification> notifications) {
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
+
+    var newOwnerNotifications = notifications.where((element) =>
+    element.notificationType == NotificationType.NEW_OWNER);
+
+    if (newOwnerNotifications.isNotEmpty) {
+      newOwnerNotifications.forEach((element) {
+        Future(() => showHelpDialog(
+            context: context,
+            title: Text("You are the owner!"),
+            contentString:
+            'In "${element.content}", you have become the new owner because the previous owner exited from the group.',
+            okayString: "Okay",
+            onConfirmed: () {
+              homeScreenViewModel.deleteNotification(element.notificationId);
+            }));
+      });
+    }
+
+  }
+
+
+
 
   Widget _myGroupListView(
       List<Group> groups, List<d.Notification> notifications) {
@@ -219,4 +246,5 @@ class MyGroupPart extends StatelessWidget {
           );
         });
   }
+
 }

@@ -4,11 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -29,6 +29,7 @@ class DatabaseManager {
         .doc(currentUser.userId)
         .set({
       "userId": currentUser.userId,
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
       "lastPostDateTime": DateTime.now().toUtc().toIso8601String(),
       "timeZoneOffsetInMinutes": DateTime.now().timeZoneOffset.inMinutes,
       "isAlerted": false,
@@ -61,6 +62,7 @@ class DatabaseManager {
         .doc(userId)
         .set({
       "userId": userId,
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
       "lastPostDateTime": DateTime.now().toUtc().toIso8601String(),
       "timeZoneOffsetInMinutes": DateTime.now().timeZoneOffset.inMinutes,
       "isAlerted": false,
@@ -142,6 +144,21 @@ class DatabaseManager {
         .collection("notifications")
         .doc(notificationId)
         .set(notification.toMap());
+  }
+
+  Future<void> createDeleteAccountTrigger(User user) async {
+
+    await _db
+        .collection("triggers")
+        .doc("1")
+        .collection("deleted_users")
+    //do not set userId as document Id in case that the same user
+    //deletes account several times and a new document is not made,
+    //which prevents the onCreate method from being called
+        .add({
+      "userId": user.userId,
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
+    });
   }
 
   //-----------------------------------------------------------------------------Read
@@ -234,7 +251,6 @@ class DatabaseManager {
   }
 
   List<Group> _removeTopicGroups(List<Group> results) {
-
     final topicGroupIds = [
       "00cfff40-7673-11eb-80dc-7138d5ef930f",
       "26581cd0-8734-11eb-8bc9-5145735be640",
@@ -471,23 +487,11 @@ class DatabaseManager {
 
     //@groups collection
 
-    //delete members collection
-    await _db
-        .collection("groups")
-        .doc(group.groupId)
-        .collection("members")
-        .get()
-        .then((value) {
-      value.docs.forEach((doc) {
-        doc.reference.delete();
-      });
-    });
-
-    //delete group doc itself
+    //delete group doc itself as well as members sub-collection
     await _db.collection("groups").doc(group.groupId).delete();
 
     //@users collection
-    userIds.forEach((userId) async {
+    await Future.forEach(userIds, (String? userId) async {
       await _db
           .collection("users")
           .doc(userId)
@@ -495,6 +499,16 @@ class DatabaseManager {
           .doc(group.groupId)
           .delete();
     });
+
+    //todo delete
+    // userIds.forEach((userId) async {
+    //   await _db
+    //       .collection("users")
+    //       .doc(userId)
+    //       .collection("groups")
+    //       .doc(group.groupId)
+    //       .delete();
+    // });
 
     //insert notification
     var memberIds = userIds;

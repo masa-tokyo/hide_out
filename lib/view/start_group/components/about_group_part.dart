@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/start_group/components/sub/about_group_input_text_field.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/start_group/components/sub/about_group_input_text_field.dart';
 
 class AboutGroupPart extends StatelessWidget {
   @override

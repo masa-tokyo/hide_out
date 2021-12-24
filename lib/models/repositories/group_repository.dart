@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/models/database_manager.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/database_manager.dart';
 
 class GroupRepository extends ChangeNotifier{
   final DatabaseManager? dbManager;

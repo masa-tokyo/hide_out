@@ -6,13 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/models/database_manager.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/models/database_manager.dart';
+import 'package:hide_out/utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:voice_put/utils/functions.dart';
+import 'package:hide_out/utils/functions.dart';
 
 class UserRepository extends ChangeNotifier {
   final DatabaseManager? dbManager;
@@ -306,5 +306,11 @@ class UserRepository extends ChangeNotifier {
       _imageFile = await createFileFromUrl(currentUser!.photoUrl!);
       notifyListeners();
     }
+  }
+
+  Future<void> deleteAccount() async {
+    // carry out the deletion from cloud functions
+    await dbManager!.createDeleteAccountTrigger(currentUser!);
+    await signOut();
   }
 }

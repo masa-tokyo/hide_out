@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
-import 'package:voice_put/view/home/home_screen.dart';
-import 'package:voice_put/view/profile/profile_screen.dart';
-import 'package:voice_put/view_models/join_group_view_model.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
+import 'package:hide_out/view/home/home_screen.dart';
+import 'package:hide_out/view/profile/profile_screen.dart';
+import 'package:hide_out/view_models/join_group_view_model.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 import '../../utils/style.dart';
 

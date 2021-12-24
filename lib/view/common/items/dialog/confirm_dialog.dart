@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:voice_put/utils/style.dart';
+import 'package:hide_out/utils/style.dart';
 
 showConfirmDialog({
   required BuildContext context,

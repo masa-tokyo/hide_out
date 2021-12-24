@@ -50,6 +50,7 @@ enum NotificationType {
   AUTO_EXIT,
   DELETED_GROUP,
   ALERT_AUTO_EXIT,
+  NEW_OWNER,
 }
 
 enum NotificationDeleteType {

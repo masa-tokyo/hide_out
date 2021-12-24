@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
+import 'package:hide_out/view_models/group_view_model.dart';
 
 class PostAudioPlayButton extends StatefulWidget {
   final int index;

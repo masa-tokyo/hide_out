@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/utils/style.dart';
+import 'package:hide_out/utils/style.dart';
 
 class JournalDescriptionPart extends StatelessWidget {
   final String questionString1;

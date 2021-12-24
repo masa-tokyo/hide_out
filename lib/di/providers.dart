@@ -1,16 +1,16 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:voice_put/models/database_manager.dart';
-import 'package:voice_put/models/repositories/group_repository.dart';
-import 'package:voice_put/models/repositories/post_repository.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
-import 'package:voice_put/view_models/home_screen_view_model.dart';
-import 'package:voice_put/view_models/join_group_view_model.dart';
-import 'package:voice_put/view_models/login_view_model.dart';
-import 'package:voice_put/view_models/profile_view_model.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
-import 'package:voice_put/view_models/start_group_view_model.dart';
+import 'package:hide_out/models/database_manager.dart';
+import 'package:hide_out/models/repositories/group_repository.dart';
+import 'package:hide_out/models/repositories/post_repository.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/view_models/group_view_model.dart';
+import 'package:hide_out/view_models/home_screen_view_model.dart';
+import 'package:hide_out/view_models/join_group_view_model.dart';
+import 'package:hide_out/view_models/login_view_model.dart';
+import 'package:hide_out/view_models/profile_view_model.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
+import 'package:hide_out/view_models/start_group_view_model.dart';
 
 List<SingleChildWidget> globalProviders = [
   ...independentModels,

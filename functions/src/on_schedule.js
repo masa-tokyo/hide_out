@@ -1,7 +1,6 @@
 const functions = require('firebase-functions').region('asia-northeast1');
 const uuid = require("uuid");
-const admin = require("firebase-admin");
-const _db = admin.firestore();
+const _db = require("firebase-admin").firestore();
 
 
 exports.deleteMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * *').onRun(async (context) => {
@@ -61,7 +60,7 @@ exports.deleteMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * 
 
 
                             //insert AUTO_EXIT notification
-                            const notificationId = uuid.v1();
+                            const notificationId = uuid.v4();
 
                             await _db.collection("notifications").doc(notificationId).set({
                                 "createdAt": Date.now(),
@@ -137,7 +136,7 @@ exports.alertMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * *
                         console.log(`[ALERT] ${member.data().userId} from ${group.data().groupName}, ${group.data().groupId}`);
 
                         //insert notification
-                        const notificationId = uuid.v1();
+                        const notificationId = uuid.v4();
 
                         await _db.collection("notifications").doc(notificationId).set({
                             "createdAt": Date.now(),

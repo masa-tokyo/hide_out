@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/user_avatar.dart';
-import 'package:voice_put/view/group/components/audio_play_button.dart';
-import 'package:voice_put/view/login/self_intro_recording_screen.dart';
-import 'package:voice_put/view/login/user_info_input_screen.dart';
-import 'package:voice_put/view_models/profile_view_model.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/items/user_avatar.dart';
+import 'package:hide_out/view/group/components/audio_play_button.dart';
+import 'package:hide_out/view/login/self_intro_recording_screen.dart';
+import 'package:hide_out/view/login/user_info_input_screen.dart';
+import 'package:hide_out/view_models/profile_view_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   final bool isCurrentUser;

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/models/database_manager.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/database_manager.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class PostRepository extends ChangeNotifier {
   final DatabaseManager? dbManager;

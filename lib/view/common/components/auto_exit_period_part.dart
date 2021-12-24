@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/help_icon.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
-import 'package:voice_put/view_models/start_group_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/items/help_icon.dart';
+import 'package:hide_out/view_models/group_view_model.dart';
+import 'package:hide_out/view_models/start_group_view_model.dart';
 
 class AutoExitPeriodPart extends StatefulWidget {
   final bool isBeginningGroup;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
+import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 
 class HelpIcon extends StatelessWidget {
   final String message;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/group_detail_screen.dart';
-import 'package:voice_put/view/common/items/user_avatar.dart';
-import 'package:voice_put/view_models/join_group_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/group_detail_screen.dart';
+import 'package:hide_out/view/common/items/user_avatar.dart';
+import 'package:hide_out/view_models/join_group_view_model.dart';
 import 'dart:io';
 
 class JoinGroupScreen extends StatelessWidget {

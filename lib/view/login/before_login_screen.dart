@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:voice_put/utils/style.dart';
+import 'package:hide_out/utils/style.dart';
 
 import 'login_screen.dart';
 

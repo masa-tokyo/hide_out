@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/di/providers.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/functions.dart';
-import 'package:voice_put/view/home/home_screen.dart';
-import 'package:voice_put/view/login/before_login_screen.dart';
-import 'package:voice_put/view_models/login_view_model.dart';
-import 'package:voice_put/utils/style.dart';
+import 'package:hide_out/di/providers.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/functions.dart';
+import 'package:hide_out/view/home/home_screen.dart';
+import 'package:hide_out/view/login/before_login_screen.dart';
+import 'package:hide_out/view_models/login_view_model.dart';
+import 'package:hide_out/utils/style.dart';
 
 void main() async{
 

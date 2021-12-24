@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 class PostTitleInputTextField extends StatefulWidget {
   @override

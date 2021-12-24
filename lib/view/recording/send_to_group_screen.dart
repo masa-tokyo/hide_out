@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/uploading_page.dart';
-import 'package:voice_put/view/home/components/new_group_part.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/uploading_page.dart';
+import 'package:hide_out/view/home/components/new_group_part.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 class SendToGroupScreen extends StatelessWidget {
   final String path;

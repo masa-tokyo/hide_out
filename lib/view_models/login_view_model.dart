@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final UserRepository? userRepository;
@@ -56,6 +56,15 @@ class LoginViewModel extends ChangeNotifier {
   onUserInfoUpdated(UserRepository userRepository) {
     _imageFile = userRepository.imageFile;
     notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    await userRepository!.signOut();
+  }
+
+
+  Future<void> deleteAccount() async{
+    await userRepository!.deleteAccount();
   }
 
 }

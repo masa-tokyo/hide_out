@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class Notification {
   final NotificationType? notificationType;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/view/recording/components/sub/recording_buttons.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/recording/components/sub/recording_buttons.dart';
 
 class RecordingButtonPart extends StatelessWidget {
   final RecordingButtonOpenMode from;

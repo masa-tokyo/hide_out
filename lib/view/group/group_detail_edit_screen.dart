@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
-import 'package:voice_put/view/profile/profile_screen.dart';
-import 'package:voice_put/view_models/group_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/components/auto_exit_period_part.dart';
+import 'package:hide_out/view/profile/profile_screen.dart';
+import 'package:hide_out/view_models/group_view_model.dart';
 
 class GroupDetailEditScreen extends StatefulWidget {
   final Group? group;

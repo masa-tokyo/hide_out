@@ -9,13 +9,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/dialog/confirm_dialog.dart';
-import 'package:voice_put/view/join_group/join_group_screen.dart';
-import 'package:voice_put/view/recording/post_title_screen.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
+import 'package:hide_out/view/join_group/join_group_screen.dart';
+import 'package:hide_out/view/recording/post_title_screen.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 class RecordingButtons extends StatefulWidget {
   final RecordingButtonOpenMode from;
