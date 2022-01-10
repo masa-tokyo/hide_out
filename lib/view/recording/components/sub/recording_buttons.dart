@@ -6,9 +6,6 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
@@ -16,6 +13,9 @@ import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
 import 'package:hide_out/view/join_group/join_group_screen.dart';
 import 'package:hide_out/view/recording/post_title_screen.dart';
 import 'package:hide_out/view_models/recording_view_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class RecordingButtons extends StatefulWidget {
   final RecordingButtonOpenMode from;
@@ -63,10 +63,10 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     _flutterSoundRecorder!.closeAudioSession();
     _flutterSoundRecorder = null;
 
-      var outputFile = File(_path);
-      if (outputFile.existsSync()) {
-        outputFile.delete();
-      }
+    var outputFile = File(_path);
+    if (outputFile.existsSync()) {
+      outputFile.delete();
+    }
 
     if (_recorderSubscription != null) {
       _recorderSubscription!.cancel();
@@ -107,57 +107,43 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
   //----------------------------------------------------------------------------TimeDisplay
   Widget _timeDisplay() {
-      return StreamBuilder<RecordingDisposition>(
-          stream: _flutterSoundRecorder!.onProgress,
-          initialData: RecordingDisposition.zero(),
-          builder: (context, snapshot) {
-            var txt = snapshot.data!.duration.toString().substring(2, 7);
-            return Text(
-              txt,
-              style: timeDisplayTextStyle,
-            );
-          });
-
+    return StreamBuilder<RecordingDisposition>(
+        stream: _flutterSoundRecorder!.onProgress,
+        initialData: RecordingDisposition.zero(),
+        builder: (context, snapshot) {
+          var txt = snapshot.data!.duration.toString().substring(2, 7);
+          return Text(
+            txt,
+            style: timeDisplayTextStyle,
+          );
+        });
   }
 
   //----------------------------------------------------------------------------BEFORE_RECORDING
   Widget _beforeRecordingButton() {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
-        _backwardCircle(),
-        _forwardCircle(context),
+        SizedBox(
+          width: 100.0,
+          height: 100.0,
+          child: ElevatedButton(
+            onPressed: () => _onCircleButtonPressed(context),
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(3.0),
+              backgroundColor: MaterialStateProperty.all(customSwatch),
+              shape: MaterialStateProperty.all(CircleBorder()),
+            ),
+            child: const FaIcon(
+              FontAwesomeIcons.solidCommentDots,
+              size: 42,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 12.0,
+        ),
+        const Text('Start'),
       ],
-    );
-  }
-
-  Widget _backwardCircle() {
-    return Container(
-      width: 100.0,
-      height: 100.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.grey,
-          width: 2.0,
-        ),
-      ),
-    );
-  }
-
-  Widget _forwardCircle(BuildContext context) {
-    return Container(
-      width: 80.0,
-      height: 80.0,
-      child: ElevatedButton(
-        onPressed: () => _onCircleButtonPressed(context),
-        style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3.0),
-          backgroundColor: MaterialStateProperty.all(Colors.redAccent),
-          shape: MaterialStateProperty.all(CircleBorder()),
-        ),
-        child: Container(),
-      ),
     );
   }
 
@@ -174,8 +160,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       setState(() {
         //change RecordingButtonStatus from BEFORE to DURING
         _recordingButtonStatus = RecordingButtonStatus.DURING_RECORDING;
-
-
       });
       final recordingViewModel =
           Provider.of<RecordingViewModel>(context, listen: false);
@@ -188,31 +172,50 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
 //------------------------------------------------------------------------------DURING_RECORDING
   Widget _duringRecordingButton() {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
-        _backwardCircle(),
-        _forwardRectangle(context),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            _backwardCircle(),
+            _forwardSquare(context),
+          ],
+        ),
+        const SizedBox(
+          height: 12.0,
+        ),
+        const Text('Stop'),
       ],
     );
   }
 
-  Widget _forwardRectangle(BuildContext context) {
+  Widget _backwardCircle() {
     return Container(
-      width: 60.0,
-      height: 60.0,
+      width: 100.0,
+      height: 100.0,
+      decoration: BoxDecoration(
+        color: customSwatch,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _forwardSquare(BuildContext context) {
+    return SizedBox(
+      width: 48.0,
+      height: 48.0,
       child: ElevatedButton(
         onPressed: () => _onRectangleButtonPressed(context),
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(3.0),
-          backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+          backgroundColor: MaterialStateProperty.all(Colors.white),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),
           ),
         ),
-        child: Container(),
+        child: const SizedBox.shrink(),
       ),
     );
   }
@@ -283,7 +286,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     setState(() {
       //change RecordingButtonStatus from AFTER to BEFORE
       _recordingButtonStatus = RecordingButtonStatus.BEFORE_RECORDING;
-
     });
 
     final recordingViewModel =
@@ -326,7 +328,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
 
     if (widget.from == RecordingButtonOpenMode.POST_FROM_HOME ||
         widget.from == RecordingButtonOpenMode.POST_FROM_GROUP) {
-
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -345,7 +346,6 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       final recordingViewModel =
           Provider.of<RecordingViewModel>(context, listen: false);
       await recordingViewModel.uploadSelfIntro(_path);
-
     } else {
       //widget.from == RecordingButtonOpenMode.SELF_INTRO_FROM_PROFILE
 
@@ -367,20 +367,21 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   Future<void> openTheRecorder() async {
     //upgraded the minimum SDK version of Android(23) & minimum OS version of iOS(10.0)
 
-        var status = await Permission.microphone.request();
-        if (status != PermissionStatus.granted) {
-          showConfirmDialog
-            (context: context,
-              titleString: "Microphone Settings",
-              contentString: "Please enable Microphone in the settings.",
-              onConfirmed: (isConfirmed){
-              if(isConfirmed){
-                openAppSettings();}
-              },
-              yesText: Text("OK"),
-              noText: Text("Don't Allow"),
-          );
-        }
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      showConfirmDialog(
+        context: context,
+        titleString: "Microphone Settings",
+        contentString: "Please enable Microphone in the settings.",
+        onConfirmed: (isConfirmed) {
+          if (isConfirmed) {
+            openAppSettings();
+          }
+        },
+        yesText: Text("OK"),
+        noText: Text("Don't Allow"),
+      );
+    }
     var temDir = await getTemporaryDirectory();
     _path = "${temDir.path}/flutter_sound_example.aac";
     var outputFile = File(_path);
