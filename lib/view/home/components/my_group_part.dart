@@ -11,6 +11,10 @@ import 'package:hide_out/view_models/home_screen_view_model.dart';
 import 'package:provider/provider.dart';
 
 class MyGroupPart extends StatelessWidget {
+  MyGroupPart({Key? key, required this.globalKey}) : super(key: key);
+
+  final GlobalKey globalKey;
+
   @override
   Widget build(BuildContext context) {
     final homeScreenViewModel = context.read<HomeScreenViewModel>();
@@ -25,6 +29,7 @@ class MyGroupPart extends StatelessWidget {
           padding: const EdgeInsets.only(left: 24.0),
           child: Text(
             "My Group",
+            key: globalKey,
             style: homeScreenLabelTextStyle,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/functions.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
 import 'package:hide_out/view/login/login_screen.dart';
@@ -24,52 +25,69 @@ class HomeScreen extends StatelessWidget {
     final homeScreenViewModel = context.read<HomeScreenViewModel>();
 
     final deviceData = MediaQuery.of(context);
+    final globalKey = GlobalKey();
 
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButton:
-            FloatingActionButtonForHome(isSignedUp: isSignedUp),
-        drawer: _drawer(context),
-        appBar: AppBar(
-          leading: _settingsButton(context),
-          title: Image.asset(
-            "assets/images/logo.png",
-            width: 0.4 * deviceData.size.width,
+    return SetUpHomeScreen(
+      globalKey: globalKey,
+      isSignedUp: isSignedUp,
+      child: SafeArea(
+        child: Scaffold(
+          floatingActionButton: _floatingActionButton(context),
+          drawer: _drawer(context),
+          appBar: AppBar(
+            leading: _settingsButton(context),
+            title: Image.asset(
+              "assets/images/logo.png",
+              width: 0.4 * deviceData.size.width,
+            ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              await homeScreenViewModel.getMyGroup();
-              await homeScreenViewModel.getNotifications();
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 26.0,
-                ),
-                MyGroupPart(),
-                SizedBox(
-                  height: 28.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 28.0),
-                  child: Text(
-                    "New Group",
-                    style: homeScreenLabelTextStyle,
+          body: SingleChildScrollView(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await homeScreenViewModel.getMyGroup();
+                await homeScreenViewModel.getNotifications();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 26.0,
                   ),
-                ),
-                NewGroupPart(),
-                SizedBox(
-                  height: 28.0,
-                ),
-              ],
+                  MyGroupPart(
+                    globalKey: globalKey,
+                  ),
+                  SizedBox(
+                    height: 28.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28.0),
+                    child: Text(
+                      "New Group",
+                      style: homeScreenLabelTextStyle,
+                    ),
+                  ),
+                  NewGroupPart(),
+                  SizedBox(
+                    height: 28.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _floatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+        child: const FaIcon(FontAwesomeIcons.solidCommentDots),
+        onPressed: () {
+          Navigator.of(context).push(createRouteFromBottom(
+              context,
+              RecordingScreen(
+                  from: RecordingButtonOpenMode.POST_FROM_HOME, group: null)));
+        });
   }
 
   Widget _settingsButton(BuildContext passedContext) {
@@ -198,23 +216,25 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-//------------------------------------------------------------------------------FloatingActionButton
+//------------------------------------------------------------------------------SetUpHomeScreen
 
-// using tutorial requires StatefulWidget
-class FloatingActionButtonForHome extends StatefulWidget {
+class SetUpHomeScreen extends StatefulWidget {
+  const SetUpHomeScreen(
+      {Key? key,
+      required this.child,
+      required this.isSignedUp,
+      required this.globalKey})
+      : super(key: key);
+
+  final Widget child;
   final bool isSignedUp;
-
-  FloatingActionButtonForHome({required this.isSignedUp});
+  final GlobalKey globalKey;
 
   @override
-  _FloatingActionButtonForHomeState createState() =>
-      _FloatingActionButtonForHomeState();
+  _SetUpHomeScreenState createState() => _SetUpHomeScreenState();
 }
 
-class _FloatingActionButtonForHomeState
-    extends State<FloatingActionButtonForHome> {
-  final buttonKey = GlobalKey();
-
+class _SetUpHomeScreenState extends State<SetUpHomeScreen> {
   @override
   void initState() {
     if (widget.isSignedUp) {
@@ -227,22 +247,17 @@ class _FloatingActionButtonForHomeState
     List<TutorialItens> _tutorialItems = [];
 
     _tutorialItems.add(TutorialItens(
-      globalKey: buttonKey,
+      globalKey: widget.globalKey,
       touchScreen: true,
-      bottom: 130,
-      right: 20,
+      top: 240,
       shapeFocus: ShapeFocus.oval,
       children: [
-        Column(
-          children: [
-            Text(
-              "You can record from here!",
-              style: tutorialTextStyle,
-            ),
-          ],
+        Text(
+          "Say hello to the group members!",
+          style: tutorialTextStyle,
         ),
       ],
-      widgetNext: Container(),
+      widgetNext: const SizedBox.shrink(),
     ));
 
     Future.delayed(Duration(milliseconds: 1000)).then((value) {
@@ -252,33 +267,6 @@ class _FloatingActionButtonForHomeState
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-        key: buttonKey,
-        child: const FaIcon(FontAwesomeIcons.solidCommentDots),
-        onPressed: () => _openRecordingScreen(context));
-  }
-
-  _openRecordingScreen(BuildContext context) {
-    Navigator.of(context).push(_createRoute(
-        context,
-        RecordingScreen(
-            from: RecordingButtonOpenMode.POST_FROM_HOME, group: null)));
-  }
-
-  Route<Object> _createRoute(BuildContext context, Widget screen) {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(0.0, 1.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        });
+    return widget.child;
   }
 }
