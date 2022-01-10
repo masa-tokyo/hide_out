@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hide_out/utils/style.dart';
 
 showConfirmDialog({
   required BuildContext context,
@@ -56,7 +55,6 @@ class ConfirmDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
-      backgroundColor: confirmDialogBackgroundColor,
       title: Center(child: Text(titleString!)),
       content: Text(contentString!),
       actions: [

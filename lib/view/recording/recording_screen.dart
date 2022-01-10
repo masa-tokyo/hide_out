@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/functions.dart';
@@ -10,6 +9,7 @@ import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
 import 'package:hide_out/view/recording/components/post_description_part.dart';
 import 'package:hide_out/view/recording/components/recording_button_part.dart';
 import 'package:hide_out/view_models/recording_view_model.dart';
+import 'package:provider/provider.dart';
 
 class RecordingScreen extends StatelessWidget {
   final RecordingButtonOpenMode from;
@@ -19,11 +19,12 @@ class RecordingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
     return GestureDetector(
       onTap: () => unFocusKeyboard(
           context: context,
-          onUnFocused: (){
+          onUnFocused: () {
             final recordingViewModel = context.read<RecordingViewModel>();
             recordingViewModel.updateForNotTyping();
           }),
@@ -56,8 +57,7 @@ class RecordingScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  PostDescriptionPart(
-                  ),
+                  PostDescriptionPart(),
                   RecordingButtonPart(from: from, group: group),
                 ],
               ),
@@ -69,15 +69,18 @@ class RecordingScreen extends StatelessWidget {
   }
 
   Widget _backButton(BuildContext context) {
-    final recordingViewModel = Provider.of<RecordingViewModel>(context, listen: false);
+    final recordingViewModel =
+        Provider.of<RecordingViewModel>(context, listen: false);
 
     return IconButton(
         icon: Icon(
           Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
         ),
         onPressed: () {
-          if (recordingViewModel.recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING ||
-              recordingViewModel.recordingButtonStatus == RecordingButtonStatus.AFTER_RECORDING) {
+          if (recordingViewModel.recordingButtonStatus ==
+                  RecordingButtonStatus.DURING_RECORDING ||
+              recordingViewModel.recordingButtonStatus ==
+                  RecordingButtonStatus.AFTER_RECORDING) {
             showConfirmDialog(
               context: context,
               titleString: "Quit Recording?",
@@ -85,8 +88,8 @@ class RecordingScreen extends StatelessWidget {
               onConfirmed: (isConfirmed) async {
                 if (isConfirmed) {
                   Navigator.pop(context);
-                  await recordingViewModel
-                      .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+                  await recordingViewModel.updateRecordingButtonStatus(
+                      RecordingButtonStatus.BEFORE_RECORDING);
                 }
               },
               yesText: Text(
@@ -95,7 +98,6 @@ class RecordingScreen extends StatelessWidget {
               ),
               noText: Text(
                 "Cancel",
-                style: showConfirmDialogNoTextStyle,
               ),
             );
           } else {

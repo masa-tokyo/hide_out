@@ -1,26 +1,25 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/di/providers.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
 import 'package:hide_out/utils/functions.dart';
+import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/home/home_screen.dart';
 import 'package:hide_out/view/login/before_login_screen.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
-import 'package:hide_out/utils/style.dart';
+import 'package:provider/provider.dart';
 
-void main() async{
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
 
   runApp(
-  MultiProvider(
+    MultiProvider(
       providers: globalProviders,
       child: MyApp(),
-  ),
-);
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -33,55 +32,19 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "HideOut",
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primaryColor: primaryColor,
-            accentColor: accentColor,
-            scaffoldBackgroundColor: backgroundThemeColor,
-            appBarTheme: AppBarTheme(
-                color: backgroundThemeColor
-            ),
-            primaryIconTheme: IconThemeData.fallback().copyWith(
-                color: primaryIconColor
-            ),
-            primaryTextTheme: const TextTheme().copyWith(
-              headline6: TextStyle().copyWith(
-                  color: primaryTextColor
-              ),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-              ),
-              fillColor: textFieldFillColor,
-            ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color?>(elevatedButtonBackgroundColor),
-              foregroundColor: MaterialStateProperty.all<Color>(elevatedButtonForegroundColor),
-            )
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all<Color>(textButtonForeGroundColor)
-            )
-          )
-        ),
-        home:
-        FutureBuilder(
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: ThemeMode.dark,
+        home: FutureBuilder(
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
-            if (snapshot.hasData && snapshot.data!){
+            if (snapshot.hasData && snapshot.data!) {
               return SetUp(child: HomeScreen(isSignedUp: false));
-
-            } else if (snapshot.hasData && !snapshot.data!){
+            } else if (snapshot.hasData && !snapshot.data!) {
               return BeforeLoginScreen();
             } else {
               return Scaffold(
-                body: Center(child
-                    : CircularProgressIndicator()),
+                body: Center(child: CircularProgressIndicator()),
               );
             }
           },
@@ -89,8 +52,6 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 class SetUp extends StatefulWidget {
@@ -102,7 +63,6 @@ class SetUp extends StatefulWidget {
 }
 
 class _SetUpState extends State<SetUp> {
-
   @override
   void initState() {
     _setUp();

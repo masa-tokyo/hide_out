@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/functions.dart';
 import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/group_detail_screen.dart';
 import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
 import 'package:hide_out/view/common/items/user_avatar.dart';
 import 'package:hide_out/view/group/group_detail_edit_screen.dart';
-import 'package:hide_out/view/common/group_detail_screen.dart';
 import 'package:hide_out/view/recording/recording_screen.dart';
 import 'package:hide_out/view_models/group_view_model.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'components/post_audio_play_button.dart';
 
@@ -36,37 +37,41 @@ class GroupScreen extends StatelessWidget {
     Future(() => groupViewModel.getNotifications());
     Future(() => groupViewModel.getMemberInfo(group));
 
-    return Scaffold(
-      floatingActionButton: _floatingActionButton(context),
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-          onPressed: () {
-            groupViewModel.pauseAudio();
-            Navigator.pop(context);
-          },
+    return Theme(
+      data: lightTheme,
+      child: Scaffold(
+        floatingActionButton: _floatingActionButton(context),
+        appBar: AppBar(
+          leading: IconButton(
+            icon:
+                Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+            onPressed: () {
+              groupViewModel.pauseAudio();
+              Navigator.pop(context);
+            },
+          ),
+          title: FutureBuilder(
+              future: groupViewModel.returnGroupInfo(group.groupId),
+              builder: (context, AsyncSnapshot<Group> snapshot) {
+                return snapshot.hasData
+                    ? Text(snapshot.data!.groupName!)
+                    : Text(""); //for updating after editing
+              }),
+          actions: [_groupEditButton(context)],
         ),
-        title: FutureBuilder(
-            future: groupViewModel.returnGroupInfo(group.groupId),
-            builder: (context, AsyncSnapshot<Group> snapshot) {
-              return snapshot.hasData
-                  ? Text(snapshot.data!.groupName!)
-                  : Text(""); //for updating after editing
-            }),
-        actions: [_groupEditButton(context)],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          groupViewModel.resetPlays();
-          await groupViewModel.getGroupPosts(group);
-          //in order to update the group name after the owner edit it
-          await groupViewModel.getGroupInfo(group.groupId);
-          await groupViewModel.getNotifications();
-        },
-        child: Column(
-          children: [
-            _postListView(context),
-          ],
+        body: RefreshIndicator(
+          onRefresh: () async {
+            groupViewModel.resetPlays();
+            await groupViewModel.getGroupPosts(group);
+            //in order to update the group name after the owner edit it
+            await groupViewModel.getGroupInfo(group.groupId);
+            await groupViewModel.getNotifications();
+          },
+          child: Column(
+            children: [
+              _postListView(context),
+            ],
+          ),
         ),
       ),
     );
@@ -75,7 +80,7 @@ class GroupScreen extends StatelessWidget {
   //---------------------------------------------------------------------------------------------- FloatingActionButton
   _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
-        child: Icon(Icons.keyboard_voice),
+        child: const FaIcon(FontAwesomeIcons.solidCommentDots),
         onPressed: () => _openRecordingScreen(context));
   }
 
@@ -86,22 +91,23 @@ class GroupScreen extends StatelessWidget {
     Navigator.push(
       context,
       createRouteFromBottom(
-          context,
-          RecordingScreen(from: RecordingButtonOpenMode.POST_FROM_GROUP, group: group),
+        context,
+        RecordingScreen(
+            from: RecordingButtonOpenMode.POST_FROM_GROUP, group: group),
       ),
     );
   }
 
-  //---------------------------------------------------------------------------------------------- AppBar
+  //------------------------------------------------------------------------------ AppBar
 
   Widget _groupEditButton(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     return Consumer<GroupViewModel>(
       builder: (context, model, child) {
         return PopupMenuButton(
-            color: popupMenuButtonColor,
+            color: lightThemeBackgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             icon: Icon(Icons.more_vert),
             onSelected: (dynamic value) =>
@@ -190,7 +196,6 @@ class GroupScreen extends StatelessWidget {
             ),
             noText: Text(
               "Cancel",
-              style: showConfirmDialogNoTextStyle,
             ));
         break;
       case GroupEditMenu.DELETE:
@@ -213,7 +218,6 @@ class GroupScreen extends StatelessWidget {
           ),
           noText: Text(
             "Cancel",
-            style: showConfirmDialogNoTextStyle,
           ),
         );
     }
@@ -273,22 +277,24 @@ class GroupScreen extends StatelessWidget {
     }
 
     //check whether a newer post is posted on the same date or not
-    if (index != 0){
+    if (index != 0) {
       final newerPost = model.posts[index - 1];
       final newerPostDateTime = newerPost.postDateTime!;
 
-      if(postDateTime.year == newerPostDateTime.year &&
-      postDateTime.month == newerPostDateTime.month &&
-      postDateTime.day == newerPostDateTime.day) {
+      if (postDateTime.year == newerPostDateTime.year &&
+          postDateTime.month == newerPostDateTime.month &&
+          postDateTime.day == newerPostDateTime.day) {
         return Container();
       }
     }
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 4.0),
-      child: Text(dateStr, style: dateFormatTextStyle,),
+      child: Text(
+        dateStr,
+        style: dateFormatTextStyle,
+      ),
     );
-
   }
 
   Widget _currentUserPost(BuildContext context, int index, Post post) {
@@ -302,10 +308,10 @@ class GroupScreen extends StatelessWidget {
               elevation: 2.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16.0),
-                      bottomLeft: Radius.circular(16.0),
-                      topRight: Radius.circular(16.0),
-                  )),
+                topLeft: Radius.circular(16.0),
+                bottomLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0),
+              )),
               child: Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
@@ -315,6 +321,7 @@ class GroupScreen extends StatelessWidget {
                     width: 50,
                     height: 50,
                     child: PostAudioPlayButton(
+                      color: lightThemeBackgroundColor!,
                       index: index,
                       audioUrl: post.audioUrl,
                       audioPlayType: AudioPlayType.POST_MINE,
@@ -374,7 +381,6 @@ class GroupScreen extends StatelessWidget {
         ),
         noText: Text(
           "Cancel",
-          style: showConfirmDialogNoTextStyle,
         ));
   }
 
@@ -400,19 +406,21 @@ class GroupScreen extends StatelessWidget {
                   Column(
                     children: [
                       Card(
-                        color: listTileColor,
+                        color: memberListTitleColor,
                         elevation: 2.0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),
                             bottomRight: Radius.circular(16.0),
                             topRight: Radius.circular(16.0),
-                        ),),
+                          ),
+                        ),
                         child: ListTile(
-                          trailing: Container(
+                          trailing: SizedBox(
                             width: 50,
                             height: 50,
                             child: PostAudioPlayButton(
+                              color: lightThemeBackgroundColor!,
                               index: index,
                               audioUrl: post.audioUrl,
                               audioPlayType: AudioPlayType.POST_OTHERS,

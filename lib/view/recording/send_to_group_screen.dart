@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/uploading_page.dart';
 import 'package:hide_out/view/home/components/new_group_part.dart';
 import 'package:hide_out/view_models/recording_view_model.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class SendToGroupScreen extends StatelessWidget {
   final String path;
@@ -20,7 +20,7 @@ class SendToGroupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recordingViewModel =
-    Provider.of<RecordingViewModel>(context, listen: false);
+        Provider.of<RecordingViewModel>(context, listen: false);
     Future(() => recordingViewModel.getMyGroup());
 
     return Selector<RecordingViewModel, Tuple3<List<Group>, bool, bool>>(
@@ -40,33 +40,30 @@ class SendToGroupScreen extends StatelessWidget {
               },
             ),
           ),
-          body: Stack(
-              children: [Center(
-                child: data.item2
-                    ? Center(child: CircularProgressIndicator())
-                    : data.item1.isEmpty
-                    ? Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: NewGroupPart())
-                    : Column(
-                  children: [
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    _myGroupListView(context, data.item1),
-                    _doneButton(),
-                  ],
-                ),
-              ),
-                data.item3 ? UploadingPage(): Container()
-              ]
-          ),
+          body: Stack(children: [
+            Center(
+              child: data.item2
+                  ? Center(child: CircularProgressIndicator())
+                  : data.item1.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: NewGroupPart())
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: 16.0,
+                            ),
+                            _myGroupListView(context, data.item1),
+                            _doneButton(),
+                          ],
+                        ),
+            ),
+            data.item3 ? UploadingPage() : Container()
+          ]),
         );
       },
     );
   }
-
-
 
   Widget _myGroupListView(BuildContext context, List<Group> groups) {
     var deviceData = MediaQuery.of(context);
@@ -122,8 +119,9 @@ class SendToGroupScreen extends StatelessWidget {
                   "Done",
                   style: enabledButtonTextStyle,
                 ),
-                onPressed: () =>
-                model.groupIds.isEmpty ? null : _onDoneButtonPressed(context));
+                onPressed: () => model.groupIds.isEmpty
+                    ? null
+                    : _onDoneButtonPressed(context));
           },
         ),
       ),
@@ -132,7 +130,7 @@ class SendToGroupScreen extends StatelessWidget {
 
   _onDoneButtonPressed(BuildContext context) async {
     final recordingViewModel =
-    Provider.of<RecordingViewModel>(context, listen: false);
+        Provider.of<RecordingViewModel>(context, listen: false);
     await recordingViewModel.postRecording(path, audioDuration);
 
     Navigator.pop(context);
@@ -144,11 +142,8 @@ class SendToGroupScreen extends StatelessWidget {
         .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
 
     Fluttertoast.showToast(msg: "Done!", gravity: ToastGravity.CENTER);
-
   }
 }
-
-
 
 //------------------------------------------------------------------------------ ChooseGroupButton class
 
@@ -177,7 +172,6 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
                 borderRadius: BorderRadius.circular(24.0)))),
         child: Text(
           "Undo",
-          style: sendOrUndoButtonTextStyle,
         ),
         onPressed: () => _onUndoButtonPressed());
   }
@@ -195,14 +189,12 @@ class _ChooseGroupButtonState extends State<ChooseGroupButton> {
   Widget _sendButton() {
     return ElevatedButton(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
-          ),
-          backgroundColor: MaterialStateProperty.all(sendToGroupButtonColor),
-        ),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+            ),
+            backgroundColor: MaterialStateProperty.all(buttonNotEnabledColor)),
         child: Text(
           "Send",
-          style: sendOrUndoButtonTextStyle,
         ),
         onPressed: () => _onSendButtonPressed());
   }

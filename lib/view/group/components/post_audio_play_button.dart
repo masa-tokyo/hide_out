@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view_models/group_view_model.dart';
+import 'package:provider/provider.dart';
 
 class PostAudioPlayButton extends StatefulWidget {
   final int index;
   final String? audioUrl;
   final AudioPlayType audioPlayType;
   final Post? post;
+  final Color color;
 
   PostAudioPlayButton({
     required this.audioUrl,
     required this.audioPlayType,
     this.post,
-    required this.index
+    required this.index,
+    required this.color,
   });
 
   @override
@@ -23,25 +25,21 @@ class PostAudioPlayButton extends StatefulWidget {
 }
 
 class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
-
   @override
   Widget build(BuildContext context) {
-    final groupViewModel =
-    Provider.of<GroupViewModel>(context, listen: false);
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
     return FutureBuilder(
         future: groupViewModel.returnIsPlaying(widget.index),
-        builder: (context, AsyncSnapshot<bool> snapshot){
-          if(snapshot.hasData) {
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
             final _isPlaying = snapshot.data!;
 
-            return !_isPlaying
-                ? _notPlayingButton()
-                : _duringPlayingButton();
-          } else {return Container();}
+            return !_isPlaying ? _notPlayingButton() : _duringPlayingButton();
+          } else {
+            return Container();
+          }
         });
-
   }
-
 
   //---------------------------------------------------------------------------- NOT_PLAYING
 
@@ -49,6 +47,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
     return InkWell(
       onTap: () => _onNotPlayingButtonPressed(),
       child: Card(
+        color: widget.color,
         elevation: 3.0,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
@@ -74,9 +73,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
         groupViewModel.deleteNotification(postId: widget.post!.postId);
       }
 
-
       groupViewModel.playAudio(widget.index);
-
     } else {
       showHelpDialog(
           context: context,
@@ -93,6 +90,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
     return InkWell(
       onTap: () => _onDuringPlayingButtonPressed(),
       child: Card(
+        color: widget.color,
         elevation: 3.0,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
@@ -110,9 +108,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
   }
 
   _onDuringPlayingButtonPressed() {
-
-    final groupViewModel =
-    Provider.of<GroupViewModel>(context, listen: false);
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     groupViewModel.pauseAudio();
   }

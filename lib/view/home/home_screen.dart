@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:tutorial/tutorial.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/dialog/confirm_dialog.dart';
-import 'package:hide_out/view/common/items/dialog/custom_alert_dialog.dart';
 import 'package:hide_out/view/login/login_screen.dart';
 import 'package:hide_out/view/profile/profile_screen.dart';
 import 'package:hide_out/view/recording/recording_screen.dart';
 import 'package:hide_out/view_models/home_screen_view_model.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
+import 'package:provider/provider.dart';
+import 'package:tutorial/tutorial.dart';
 
 import 'components/my_group_part.dart';
 import 'components/new_group_part.dart';
@@ -84,44 +83,41 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _drawer(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: Drawer(
-        child: ListView(
-          children: [
-            _drawerHeader(),
-            _listTile(
-                leading: Icon(Icons.account_circle),
-                title: Text("Profile"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ProfileScreen(
-                                isCurrentUser: true,
-                              )));
-                }),
-            _listTile(
-              leading: Icon(Icons.logout),
-              title: Text("Log out"),
-              onTap: () => _signOut(context),
-            ),
-            _listTile(
-                title: Text("Delete account"),
-                leading: Icon(FontAwesomeIcons.exclamationTriangle),
-                onTap: () => _deleteAccount(context))
-          ],
-        ),
+    return Drawer(
+      child: ListView(
+        children: [
+          _drawerHeader(),
+          _listTile(
+              leading: Icon(Icons.account_circle),
+              title: Text("Profile"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(
+                              isCurrentUser: true,
+                            )));
+              }),
+          _listTile(
+            leading: Icon(Icons.logout),
+            title: Text("Log out"),
+            onTap: () => _signOut(context),
+          ),
+          _listTile(
+              title: Text("Delete account"),
+              leading: Icon(FontAwesomeIcons.exclamationTriangle),
+              onTap: () => _deleteAccount(context))
+        ],
       ),
     );
   }
 
   Widget _drawerHeader() {
     return Container(
-      height: 120.0,
+      height: 80.0,
       child: DrawerHeader(
-          decoration: BoxDecoration(color: drawerHeaderColor),
+          decoration: BoxDecoration(color: primaryColor),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +169,6 @@ class HomeScreen extends StatelessWidget {
       ),
       noText: Text(
         "Cancel",
-        style: showConfirmDialogNoTextStyle,
       ),
     );
   }
@@ -182,24 +177,24 @@ class HomeScreen extends StatelessWidget {
     final loginViewModel = context.read<LoginViewModel>();
 
     showConfirmDialog(
-        context: context,
-        titleString: "Are you sure to delete?",
-        contentString: "You will permanently lose all the data",
-        onConfirmed: (isConfirmed) async{
-          if(isConfirmed){
-            await loginViewModel.deleteAccount();
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => LoginScreen()));
-          }
-        },
-        yesText: Text(
-          "Delete",
-          style: showConfirmDialogYesTextStyle,
-        ),
-        noText: Text(
-          "Cancel",
-          style: showConfirmDialogNoTextStyle,
-        ),);
+      context: context,
+      titleString: "Are you sure to delete?",
+      contentString: "You will permanently lose all the data",
+      onConfirmed: (isConfirmed) async {
+        if (isConfirmed) {
+          await loginViewModel.deleteAccount();
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => LoginScreen()));
+        }
+      },
+      yesText: Text(
+        "Delete",
+        style: showConfirmDialogYesTextStyle,
+      ),
+      noText: Text(
+        "Cancel",
+      ),
+    );
   }
 }
 
@@ -259,7 +254,7 @@ class _FloatingActionButtonForHomeState
   Widget build(BuildContext context) {
     return FloatingActionButton(
         key: buttonKey,
-        child: Icon(Icons.keyboard_voice),
+        child: const FaIcon(FontAwesomeIcons.solidCommentDots),
         onPressed: () => _openRecordingScreen(context));
   }
 

@@ -16,7 +16,7 @@ class NewGroupPart extends StatelessWidget {
         RoundedRaisedButton(
           onPressed: () => _openJoinGroupScreen(context),
           label: "Join Group",
-          color: startOrJoinGroupButtonColor,
+          color: darkBackgroundButtonColor,
         ),
         SizedBox(
           height: 12.0,
@@ -24,7 +24,7 @@ class NewGroupPart extends StatelessWidget {
         RoundedRaisedButton(
           label: "Start New Group",
           onPressed: () => _openStartGroupScreen(context),
-          color: startOrJoinGroupButtonColor,
+          color: darkBackgroundButtonColor,
         ),
       ],
     );
@@ -35,13 +35,8 @@ class NewGroupPart extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => StartGroupScreen(),
-
       ),
     );
-
-
-
-
   }
 
   _openJoinGroupScreen(BuildContext context) {

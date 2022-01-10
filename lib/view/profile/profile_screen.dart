@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
@@ -8,6 +7,7 @@ import 'package:hide_out/view/group/components/audio_play_button.dart';
 import 'package:hide_out/view/login/self_intro_recording_screen.dart';
 import 'package:hide_out/view/login/user_info_input_screen.dart';
 import 'package:hide_out/view_models/profile_view_model.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   final bool isCurrentUser;
@@ -37,8 +37,7 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 height: 24.0,
               ),
-              _selfIntroPart(context,
-                  isCurrentUser ? currentUser! : user!),
+              _selfIntroPart(context, isCurrentUser ? currentUser! : user!),
             ]);
           },
         ),
@@ -59,7 +58,8 @@ class ProfileScreen extends StatelessWidget {
             children: [
               UserAvatar(
                 url: model.currentUser!.photoUrl!,
-                file: model.imageFile ?? null,),
+                file: model.imageFile ?? null,
+              ),
               Container(
                 width: 32.0,
                 height: 32.0,
@@ -132,9 +132,12 @@ class ProfileScreen extends StatelessWidget {
 
   _openUserInfoInputScreen(BuildContext context, User user) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (_) =>
-        UserInfoInputScreen(
-          from: ProfileEditScreensOpenMode.PROFILE, name: user.inAppUserName,)));
+        context,
+        MaterialPageRoute(
+            builder: (_) => UserInfoInputScreen(
+                  from: ProfileEditScreensOpenMode.PROFILE,
+                  name: user.inAppUserName,
+                )));
   }
 
   Widget _selfIntroPart(BuildContext context, User user) {
@@ -155,37 +158,31 @@ class ProfileScreen extends StatelessWidget {
             ),
             isCurrentUser
                 ? GestureDetector(
-                onTap: () =>
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (_) =>
-                        SelfIntroRecordingScreen(from: ProfileEditScreensOpenMode.PROFILE))),
-                child: Icon(
-                  Icons.mic,
-                  size: 20.0,
-                ))
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => SelfIntroRecordingScreen(
+                                from: ProfileEditScreensOpenMode.PROFILE))),
+                    child: Icon(
+                      Icons.mic,
+                      size: 20.0,
+                    ))
                 : Container(),
           ],
         ),
         SizedBox(
           height: 8.0,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: textFieldFillColor,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: AudioPlayButton(
-                    audioUrl: user.audioUrl,
-                    audioPlayType: AudioPlayType.SELF_INTRO)),
-          ),
+        SizedBox(
+          width: double.infinity,
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AudioPlayButton(
+                  color: listTileColor,
+                  audioUrl: user.audioUrl,
+                  audioPlayType: AudioPlayType.SELF_INTRO)),
         ),
       ],
     );
   }
-
 }
