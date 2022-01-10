@@ -18,8 +18,8 @@ showCustomAlertDialog({
             contentStr: contentStr,
             onConfirmed: onConfirmed,
             confirmStr: confirmedStr,
-          circleColor: circleColor,
-          icon: icon,
+            circleColor: circleColor,
+            icon: icon,
           ));
 }
 
@@ -99,7 +99,6 @@ class CustomAlertDialog extends StatelessWidget {
                 radius: 30.0,
                 backgroundColor: circleColor,
                 child: icon,
-                // foregroundImage: AssetImage("assets/images/app_icon.png"),
               ),
             ),
           ]),

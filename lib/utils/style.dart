@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 //Theme Data
 final lightTheme = ThemeData(
@@ -147,9 +146,8 @@ const unavailableButtonTextStyle =
 //Login
 const slideDoneButtonTextStyle =
     TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white);
-const slideTitleTextStyle = TextStyle(color: Colors.black);
 const slideDescriptionTextStyle =
-    TextStyle(fontSize: 18.0, color: Colors.black);
+    TextStyle(fontSize: 18.0, color: darkThemeTextColor);
 const selfIntroTitleTextStyle = TextStyle(
   fontSize: 18.0,
   fontWeight: FontWeight.bold,

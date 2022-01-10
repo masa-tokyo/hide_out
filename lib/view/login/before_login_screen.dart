@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/login/login_screen.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:hide_out/utils/style.dart';
-
-import 'login_screen.dart';
 
 class BeforeLoginScreen extends StatelessWidget {
   @override
@@ -28,26 +27,26 @@ class BeforeLoginScreen extends StatelessWidget {
 
     slides
       ..add(Slide(
-          pathImage: "assets/images/slides/mic.png",
-          backgroundColor: Colors.cyan[300],
-          title: "Accelerate Learning",
+          pathImage: "assets/images/icon.png",
+          backgroundColor: darkThemeBackgroundColor,
+          title: "Welcome to HideOut",
           description:
-              "Welcome to HideOut!"
-                  " You can output what you learn in everyday life with audio recordings.",
+              " HideOut is a place where you can share audio with people in the same group.",
           styleDescription: slideDescriptionTextStyle))
       ..add(Slide(
           pathImage: "assets/images/slides/group.png",
-          backgroundColor: Colors.yellowAccent[300],
-          title: "Closed Community",
+          backgroundColor: Colors.orange[300],
+          title: "Output what you learn",
           description:
-              "You can share audio within groups you belong to, which consist of up to 5 members.",
+              "You can talk about whatever that happened to your daily lives."
+              "There are always someone who have the same interests and listen to you.",
           styleDescription: slideDescriptionTextStyle))
       ..add(Slide(
           pathImage: "assets/images/slides/deadline.png",
-          backgroundColor: Colors.orange[300],
-          title: "Auto-Exit System",
-          description:
-              "Each member needs to share audio in every certain period, which makes their bonds stronger.",
+          backgroundColor: Colors.deepOrangeAccent[100],
+          title: "Work together",
+          description: "All the members share the same goal: Auto-Exit Period. "
+              "Let's record audio before the deadline!",
           styleDescription: slideDescriptionTextStyle));
 
     return slides;
