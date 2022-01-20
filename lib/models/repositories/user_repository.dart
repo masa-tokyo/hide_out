@@ -175,9 +175,9 @@ class UserRepository extends ChangeNotifier {
     return (urls..shuffle()).first;
   }
 
-  Future<void> updateUserInfo(User updatedCurrentUser) async {
+  Future<void> updateUserInfo({required User updatedCurrentUser, required bool isNameUpdated}) async {
     currentUser = updatedCurrentUser;
-    await dbManager!.updateUserInfo(currentUser!);
+    await dbManager!.updateUserInfo(currentUser!, isNameUpdated);
 
     //for drawing ProfileScreen again
     notifyListeners();
@@ -204,7 +204,7 @@ class UserRepository extends ChangeNotifier {
 
     currentUser =
         currentUser!.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
-    await dbManager!.updateUserInfo(currentUser!);
+    await dbManager!.updateUserInfo(currentUser!, false);
 
     _isUploading = false;
     notifyListeners();
@@ -291,7 +291,7 @@ class UserRepository extends ChangeNotifier {
         photoStoragePath: storageId,
       );
 
-      await dbManager!.updateUserInfo(currentUser!);
+      await dbManager!.updateUserInfo(currentUser!, false);
       if (previousStoragePath != "") {
         await dbManager!.deleteFileOnStorage(previousStoragePath!);
       }

@@ -16,7 +16,7 @@ class ProfileViewModel extends ChangeNotifier {
 
 
   Future<void> updateUserName(String userName) async {
-    await userRepository!.updateUserInfo(currentUser!.copyWith(inAppUserName: userName));
+    await userRepository!.updateUserInfo(updatedCurrentUser: currentUser!.copyWith(inAppUserName: userName), isNameUpdated: true);
   }
 
   onUserInfoUpdated(UserRepository userRepository) {

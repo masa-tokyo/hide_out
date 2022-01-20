@@ -147,14 +147,10 @@ class DatabaseManager {
   }
 
   Future<void> createDeleteAccountTrigger(User user) async {
-
-    await _db
-        .collection("triggers")
-        .doc("1")
-        .collection("deleted_users")
-    //do not set userId as document Id in case that the same user
-    //deletes account several times and a new document is not made,
-    //which prevents the onCreate method from being called
+    await _db.collection("triggers").doc("1").collection("deleted_users")
+        //do not set userId as document Id in case that the same user
+        //deletes account several times and a new document is not made,
+        //which prevents the onCreate method from being called
         .add({
       "userId": user.userId,
       "createdAt": DateTime.now().millisecondsSinceEpoch,
@@ -213,8 +209,8 @@ class DatabaseManager {
         .collection("users")
         .doc(userId)
         .collection("groups")
-        .limit(10)
         .get();
+
     if (query.docs.length == 0) return [];
 
     var results = <String?>[];
@@ -383,12 +379,14 @@ class DatabaseManager {
   }
 
   Future<List<d.Notification>> getNotifications(String? userId) async {
-    final query = await _db.collection("notifications").where('userId', isEqualTo: userId).get();
+    final query = await _db
+        .collection("notifications")
+        .where('userId', isEqualTo: userId)
+        .get();
     if (query.docs.length == 0) return [];
 
     var results = <d.Notification>[];
-    query.docs
-        .forEach((doc) {
+    query.docs.forEach((doc) {
       results.add(d.Notification.fromMap(doc.data()));
     });
 
@@ -404,10 +402,50 @@ class DatabaseManager {
         .update(updatedGroup.toMap());
   }
 
-  Future<void> updateUserInfo(User user) async {
+  Future<void> updateUserInfo(User user, bool isNameUpdated) async {
     await _db.collection("users").doc(user.userId).update(user.toMap());
-  }
 
+    if (isNameUpdated) {
+      //update userName on posts
+      await _db
+          .collection("posts")
+          .where("userId", isEqualTo: user.userId)
+          .get()
+          .then((posts) {
+        posts.docs.forEach((post) async {
+          await post.reference.update({"userName": user.inAppUserName});
+        });
+      });
+
+      //update userName on listeners
+      final groupIds = await getGroupIds(user.userId);
+      groupIds.forEach((groupId) async {
+        await _db
+            .collection("posts")
+            .where("groupId", isEqualTo: groupId)
+            .get()
+            .then((posts) {
+          posts.docs.forEach((post) async {
+            await _db
+                .collection("posts")
+                .doc(post.id)
+                .collection("listeners")
+                .where("userId", isEqualTo: user.userId)
+                .get()
+                .then((listeners) {
+                  listeners.docs.forEach((listener) async{
+                    await listener.reference.update(
+                      {
+                        "userName": user.inAppUserName
+                      }
+                    );
+                  });
+            });
+          });
+        });
+      });
+    }
+  }
 
   Future<void> updateIsAlerted(String groupId, String userId) async {
     await _db
