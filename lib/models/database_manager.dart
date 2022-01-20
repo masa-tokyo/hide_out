@@ -408,11 +408,6 @@ class DatabaseManager {
     await _db.collection("users").doc(user.userId).update(user.toMap());
   }
 
-  Future<void> updateLastActivityAt(String? groupId) async {
-    await _db.collection("groups").doc(groupId).update({
-      "lastActivityAt": DateTime.now().millisecondsSinceEpoch,
-    });
-  }
 
   Future<void> updateIsAlerted(String groupId, String userId) async {
     await _db

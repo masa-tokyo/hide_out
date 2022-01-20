@@ -6,6 +6,15 @@ const _db = admin.firestore();
 const _auth = admin.auth();
 const _storage = admin.storage();
 
+exports.onCreatePost = functions.firestore.document('posts/{postId}').onCreate(
+    async  (snap) => {
+        const groupId = snap.data().groupId;
+        await _db.doc(`groups/${groupId}`).update({
+            lastActivityAt: Date.now()
+        });
+    }
+);
+
 exports.testHttps = functions.https.onRequest(async (req, res) => {
     console.log('testHttps starts');
 
