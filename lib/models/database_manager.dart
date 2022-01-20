@@ -383,12 +383,11 @@ class DatabaseManager {
   }
 
   Future<List<d.Notification>> getNotifications(String? userId) async {
-    final query = await _db.collection("notifications").get();
+    final query = await _db.collection("notifications").where('userId', isEqualTo: userId).get();
     if (query.docs.length == 0) return [];
 
     var results = <d.Notification>[];
     query.docs
-        .where((element) => element.data()["userId"] == userId)
         .forEach((doc) {
       results.add(d.Notification.fromMap(doc.data()));
     });
