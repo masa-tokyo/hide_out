@@ -1,17 +1,15 @@
 const admin = require('firebase-admin');
-admin.initializeApp(
-    // {
-    //     databaseURL: 'https://console.firebase.google.com/u/1/project/voiceput-e9f38/firestore/data/~2F',
-    // }
-);
+admin.initializeApp();
 
-const modifyDb = require('./src/modify_db');
+const onRequest = require('./src/on_request');
 
-exports.onSchedule = require('./src/on_schedule');
+exports.schedule = require('./src/schedule');
 exports.onCreate = require('./src/on_create');
+exports.onDelete = require('./src/on_delete');
 
 // deploy only necessary functions
-exports.modifyDb = modifyDb.modifyDb;
+exports.modifyDb = onRequest.modifyDb;
+exports.testFunction = onRequest.testFunction;
 
 
 

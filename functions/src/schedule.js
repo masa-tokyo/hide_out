@@ -1,6 +1,7 @@
 const functions = require('firebase-functions').region('asia-northeast1');
 const uuid = require("uuid");
-const _db = require("firebase-admin").firestore();
+const admin = require("firebase-admin");
+const _db = admin.firestore();
 
 
 exports.deleteMembersByLastPostDateTime = functions.pubsub.schedule('0 0-23 * * *').onRun(async (context) => {
