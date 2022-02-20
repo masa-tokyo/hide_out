@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/button_with_icon.dart';
 import 'package:hide_out/view/common/items/button_with_image.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view/home/home_screen.dart';
 import 'package:hide_out/view/login/user_info_input_screen.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
-import 'package:hide_out/utils/style.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -20,7 +20,6 @@ class LoginScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         body: Center(
           child: Consumer<LoginViewModel>(
             builder: (context, model, child) {
@@ -31,6 +30,7 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         Image.asset(
                           "assets/images/logo.png",
+                          fit: BoxFit.cover,
                           width: 0.8 * deviceData.size.width,
                         ),
                         SizedBox(

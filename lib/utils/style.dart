@@ -99,7 +99,6 @@ final buttonNotEnabledColor = customSwatch[100];
 const buttonEnabledColor = customSwatch;
 const audioJournalButtonColor = Colors.white30;
 final listTileColor = Colors.grey[700];
-final hintDialogBackgroundColor = Colors.grey[200];
 final buttonNotChosenColor = Colors.white;
 const buttonChosenColor = customSwatch;
 const notChosenButtonBorderSideColor = Colors.black54;

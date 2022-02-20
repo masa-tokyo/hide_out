@@ -136,7 +136,6 @@ class SendToGroupScreen extends StatelessWidget {
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
-    Navigator.pop(context);
 
     recordingViewModel
         .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
