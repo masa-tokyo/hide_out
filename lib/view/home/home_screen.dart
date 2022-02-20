@@ -194,15 +194,31 @@ class HomeScreen extends StatelessWidget {
   _deleteAccount(BuildContext context) {
     final loginViewModel = context.read<LoginViewModel>();
 
+    //confirm twice
     showConfirmDialog(
       context: context,
       titleString: "Are you sure to delete?",
       contentString: "You will permanently lose all the data",
       onConfirmed: (isConfirmed) async {
         if (isConfirmed) {
-          await loginViewModel.deleteAccount();
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => LoginScreen()));
+          showConfirmDialog(
+              context: context,
+              titleString: "Final Confirmation",
+              contentString: "Delete account?",
+              onConfirmed: (isConfirmed) async {
+                if (isConfirmed) {
+                  await loginViewModel.deleteAccount();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()));
+                }
+              },
+              yesText: Text(
+                "Delete",
+                style: showConfirmDialogYesTextStyle,
+              ),
+              noText: Text(
+                "Cancel",
+              ));
         }
       },
       yesText: Text(

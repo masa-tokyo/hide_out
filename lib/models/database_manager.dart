@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:uuid/uuid.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/utils/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -69,8 +69,9 @@ class DatabaseManager {
     });
   }
 
-  Future<String> uploadAudioToStorage(File audioFile, String storageId) async {
-    final storageRef = FirebaseStorage.instance.ref().child(storageId);
+  Future<String> uploadAudioToStorage(
+      File audioFile, String storagePath) async {
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
     // specify the file type to prevent Android uploading "audio/X-HX-AAC-ADTS"
     final uploadTask = storageRef.putFile(
         audioFile,
@@ -83,8 +84,9 @@ class DatabaseManager {
     return downloadUrl;
   }
 
-  Future<String> uploadPhotoToStorage(File imageFile, String storageId) async {
-    final storageRef = FirebaseStorage.instance.ref().child(storageId);
+  Future<String> uploadPhotoToStorage(
+      File imageFile, String storagePath) async {
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
     final uploadTask = storageRef.putFile(imageFile);
     final downloadUrl = uploadTask
         .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
@@ -147,7 +149,10 @@ class DatabaseManager {
   }
 
   Future<void> createDeleteAccountTrigger(User user) async {
-    await _db.collection("triggers").doc("1").collection("deleted_users")
+    await _db
+        .collection("triggers")
+        .doc(user.userId)
+        .collection("delete_account")
         //do not set userId as document Id in case that the same user
         //deletes account several times and a new document is not made,
         //which prevents the onCreate method from being called
@@ -205,11 +210,8 @@ class DatabaseManager {
   }
 
   Future<List<String?>> getGroupIds(String? userId) async {
-    final query = await _db
-        .collection("users")
-        .doc(userId)
-        .collection("groups")
-        .get();
+    final query =
+        await _db.collection("users").doc(userId).collection("groups").get();
 
     if (query.docs.length == 0) return [];
 
@@ -393,6 +395,20 @@ class DatabaseManager {
     return results;
   }
 
+  Future<bool> isAccountDeleted(String uid) async {
+    final query = await _db
+        .collection('triggers')
+        .doc(uid)
+        .collection('delete_account')
+        .get();
+
+    if (query.docs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   //-----------------------------------------------------------------------------Update
 
   Future<void> updateGroupInfo(Group updatedGroup) async {
@@ -433,13 +449,10 @@ class DatabaseManager {
                 .where("userId", isEqualTo: user.userId)
                 .get()
                 .then((listeners) {
-                  listeners.docs.forEach((listener) async{
-                    await listener.reference.update(
-                      {
-                        "userName": user.inAppUserName
-                      }
-                    );
-                  });
+              listeners.docs.forEach((listener) async {
+                await listener.reference
+                    .update({"userName": user.inAppUserName});
+              });
             });
           });
         });
@@ -476,11 +489,11 @@ class DatabaseManager {
         .delete();
   }
 
-  Future<void> deletePost(String? postId) async {
+  Future<void> deletePost(Post post) async {
     //delete "listeners" first
     await _db
         .collection("posts")
-        .doc(postId)
+        .doc(post.postId)
         .collection("listeners")
         .get()
         .then((value) {
@@ -490,7 +503,12 @@ class DatabaseManager {
     });
 
     //delete post
-    await _db.collection("posts").doc(postId).delete();
+    await _db.collection("posts").doc(post.postId).delete();
+
+    //on storage
+    if (post.audioStoragePath != null) {
+      deleteFileOnStorage(post.audioStoragePath!);
+    }
   }
 
   Future<void> deleteGroup(Group group, String? userId) async {
@@ -514,7 +532,7 @@ class DatabaseManager {
     });
 
     posts.forEach((post) async {
-      await deletePost(post.postId);
+      await deletePost(post);
     });
 
     //@groups collection
@@ -531,16 +549,6 @@ class DatabaseManager {
           .doc(group.groupId)
           .delete();
     });
-
-    //todo delete
-    // userIds.forEach((userId) async {
-    //   await _db
-    //       .collection("users")
-    //       .doc(userId)
-    //       .collection("groups")
-    //       .doc(group.groupId)
-    //       .delete();
-    // });
 
     //insert notification
     var memberIds = userIds;

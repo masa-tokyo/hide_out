@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:uuid/uuid.dart';
 import 'package:hide_out/%20data_models/group.dart';
-import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
 import 'package:hide_out/utils/constants.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:hide_out/utils/functions.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:uuid/uuid.dart';
 
 class UserRepository extends ChangeNotifier {
   final DatabaseManager? dbManager;
@@ -91,6 +91,14 @@ class UserRepository extends ChangeNotifier {
         return LoginScreenStatus.SIGNED_UP;
       } else {
         //Sign in
+
+        //check whether the user signs in again right after deleting account
+        final isAccountDeleted =
+            await dbManager!.isAccountDeleted(firebaseUser.uid);
+        if (isAccountDeleted) {
+          return LoginScreenStatus.FAILED;
+        }
+
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
         await createImageFile();
@@ -134,6 +142,14 @@ class UserRepository extends ChangeNotifier {
         return LoginScreenStatus.SIGNED_UP;
       } else {
         //Sign in
+
+        //check whether the user signs in again right after deleting account
+        final isAccountDeleted =
+            await dbManager!.isAccountDeleted(firebaseUser.uid);
+        if (isAccountDeleted) {
+          return LoginScreenStatus.FAILED;
+        }
+
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
         await createImageFile();
@@ -175,7 +191,8 @@ class UserRepository extends ChangeNotifier {
     return (urls..shuffle()).first;
   }
 
-  Future<void> updateUserInfo({required User updatedCurrentUser, required bool isNameUpdated}) async {
+  Future<void> updateUserInfo(
+      {required User updatedCurrentUser, required bool isNameUpdated}) async {
     currentUser = updatedCurrentUser;
     await dbManager!.updateUserInfo(currentUser!, isNameUpdated);
 
@@ -199,11 +216,12 @@ class UserRepository extends ChangeNotifier {
 
     final audioFile = File(path);
     final storageId = Uuid().v1();
+    final storagePath = "users/$storageId";
     final audioUrl =
-        await dbManager!.uploadAudioToStorage(audioFile, storageId);
+        await dbManager!.uploadAudioToStorage(audioFile, storagePath);
 
-    currentUser =
-        currentUser!.copyWith(audioUrl: audioUrl, audioStoragePath: storageId);
+    currentUser = currentUser!
+        .copyWith(audioUrl: audioUrl, audioStoragePath: storagePath);
     await dbManager!.updateUserInfo(currentUser!, false);
 
     _isUploading = false;
@@ -255,6 +273,7 @@ class UserRepository extends ChangeNotifier {
         _notifications.removeWhere((element) => element.groupId == groupId);
         break;
 
+      //this is no longer used
       case NotificationDeleteType.DELETE_POST:
         await dbManager!.deleteNotificationByPostId(postId: postId);
         break;
@@ -281,8 +300,9 @@ class UserRepository extends ChangeNotifier {
       notifyListeners();
 
       final storageId = Uuid().v1();
+      final storagePath = "users/$storageId";
       final photoUrl =
-          await dbManager!.uploadPhotoToStorage(_imageFile!, storageId);
+          await dbManager!.uploadPhotoToStorage(_imageFile!, storagePath);
 
       final previousStoragePath = currentUser!.photoStoragePath;
 

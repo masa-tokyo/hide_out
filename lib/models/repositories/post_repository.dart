@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:uuid/uuid.dart';
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
-import 'package:hide_out/utils/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class PostRepository extends ChangeNotifier {
   final DatabaseManager? dbManager;
@@ -36,8 +35,9 @@ class PostRepository extends ChangeNotifier {
 
     // get audioUrl from Firebase Storage
     final storageId = Uuid().v1();
+    final audioStoragePath = "posts/$storageId";
     final audioUrl =
-        await dbManager!.uploadAudioToStorage(audioFile, storageId);
+        await dbManager!.uploadAudioToStorage(audioFile, audioStoragePath);
 
     //post on Cloud Firestore
     final post = Post(
@@ -47,27 +47,12 @@ class PostRepository extends ChangeNotifier {
         userName: currentUser.inAppUserName,
         title: title,
         audioUrl: audioUrl,
-        audioStoragePath: storageId,
+        audioStoragePath: audioStoragePath,
         audioDuration: audioDuration,
         postDateTime: DateTime.now().toUtc(),
         isListened: false);
 
     await dbManager!.postRecording(post, currentUser.userId, groupId);
-
-    //update lastActivityAt @groups collection
-    await dbManager!.updateLastActivityAt(groupId);
-
-    //insert notification
-    final members = await dbManager!.getUsersByGroupId(groupId);
-    members.removeWhere((element) => element.userId == currentUser.userId);
-    await Future.forEach(members, (dynamic member) async {
-      await dbManager!.insertNotification(
-          notificationType: NotificationType.NEW_POST,
-          userId: member.userId,
-          postId: post.postId,
-          groupId: groupId,
-          content: "${post.title}");
-    });
 
     _isUploading = false;
     notifyListeners();
@@ -86,9 +71,9 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deletePost(String? postId) async {
-    await dbManager!.deletePost(postId);
-    _posts.removeWhere((element) => element.postId == postId);
+  Future<void> deletePost(Post post) async {
+    await dbManager!.deletePost(post);
+    _posts.removeWhere((element) => element.postId == post.postId);
     notifyListeners();
   }
 
