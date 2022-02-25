@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "voiceput-e9f38"
-  }
+    "prod": "hideout-production",
+    "dev": "voiceput-e9f38"
+  },
+  "targets": {}
 }
