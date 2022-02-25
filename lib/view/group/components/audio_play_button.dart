@@ -28,7 +28,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   @override
   Widget build(BuildContext context) {
     return AudioWidget.network(
-      url: widget.audioUrl!,
+      url: widget.audioUrl ?? '',
       play: _isPlaying,
       loopMode: LoopMode.single,
       child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),

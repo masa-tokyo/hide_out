@@ -25,7 +25,7 @@ class PostRepository extends ChangeNotifier {
 
   Future<void> postRecording(
     User currentUser,
-    String? groupId,
+    String groupId,
     String title,
     File audioFile,
     String audioDuration,

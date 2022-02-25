@@ -110,12 +110,8 @@ class HomeScreen extends StatelessWidget {
               title: Text("Profile"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => ProfileScreen(
-                              isCurrentUser: true,
-                            )));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => ProfileScreen()));
               }),
           _listTile(
             leading: Icon(Icons.logout),

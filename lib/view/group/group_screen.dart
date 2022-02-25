@@ -479,7 +479,7 @@ class GroupScreen extends StatelessWidget {
       return model.groupMembers
           .where((member) => member.userId == post.userId)
           .first
-          .photoUrl!;
+          .photoUrl;
     } else {
       return userIconUrl();
     }

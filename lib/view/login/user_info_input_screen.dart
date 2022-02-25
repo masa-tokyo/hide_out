@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/user_avatar.dart';
 import 'package:hide_out/view/login/self_intro_recording_screen.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
 import 'package:hide_out/view_models/profile_view_model.dart';
+import 'package:provider/provider.dart';
 
 class UserInfoInputScreen extends StatefulWidget {
   final ProfileEditScreensOpenMode from;
@@ -79,7 +78,7 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
             alignment: Alignment.bottomRight,
             children: [
               UserAvatar(
-                url: model.currentUser!.photoUrl!,
+                url: model.currentUser!.photoUrl,
                 file: model.imageFile ?? null,
               ),
               Container(

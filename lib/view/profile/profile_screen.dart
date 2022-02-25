@@ -10,35 +10,48 @@ import 'package:hide_out/view_models/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final bool isCurrentUser;
-  final User? user;
+  final String? memberId;
+  final String? memberName;
+  bool get isCurrentUser => memberId == null && memberName == null;
 
-  ProfileScreen({required this.isCurrentUser, this.user});
+  ProfileScreen({this.memberName, this.memberId});
 
   @override
   Widget build(BuildContext context) {
+    if (!isCurrentUser) {
+      Future(() => context.read<ProfileViewModel>().fetchMember(memberId!));
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(isCurrentUser ? "Profile" : user!.inAppUserName!),
+        title: Text(isCurrentUser ? "Profile" : memberName!),
       ),
       body: SingleChildScrollView(
-        child: Selector<ProfileViewModel, User?>(
-          selector: (context, viewModel) => viewModel.currentUser,
-          builder: (context, currentUser, child) {
-            return Column(children: [
-              SizedBox(
-                height: 24.0,
-              ),
-              _profilePicture(context),
-              SizedBox(
-                height: 24.0,
-              ),
-              isCurrentUser ? _namePart(context, currentUser!) : Container(),
-              SizedBox(
-                height: 24.0,
-              ),
-              _selfIntroPart(context, isCurrentUser ? currentUser! : user!),
-            ]);
+        child: Consumer<ProfileViewModel>(
+          builder: (context, model, child) {
+            return model.isProcessing
+                ? SizedBox(
+                    height: 0.7 * MediaQuery.of(context).size.height,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Column(children: [
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    _profilePicture(context),
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    isCurrentUser
+                        ? _namePart(context, model.currentUser!)
+                        : const SizedBox.shrink(),
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    _selfIntroPart(context,
+                        isCurrentUser ? model.currentUser : model.member),
+                  ]);
           },
         ),
       ),
@@ -57,7 +70,7 @@ class ProfileScreen extends StatelessWidget {
             alignment: Alignment.bottomRight,
             children: [
               UserAvatar(
-                url: model.currentUser!.photoUrl!,
+                url: model.currentUser!.photoUrl,
                 file: model.imageFile ?? null,
               ),
               Container(
@@ -120,7 +133,7 @@ class ProfileScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    user.inAppUserName!,
+                    user.inAppUserName,
                     style: profileDescriptionTextStyle,
                   ),
                 )),
@@ -140,7 +153,7 @@ class ProfileScreen extends StatelessWidget {
                 )));
   }
 
-  Widget _selfIntroPart(BuildContext context, User user) {
+  Widget _selfIntroPart(BuildContext context, User? user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: AudioPlayButton(
                   color: listTileColor,
-                  audioUrl: user.audioUrl,
+                  audioUrl: user?.audioUrl,
                   audioPlayType: AudioPlayType.SELF_INTRO)),
         ),
       ],

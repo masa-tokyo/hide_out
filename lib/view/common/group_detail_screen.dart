@@ -33,8 +33,8 @@ class GroupDetailScreen extends StatelessWidget {
         child: Consumer<JoinGroupViewModel>(
           builder: (context, model, child) {
             return model.isProcessing
-                ? Container(
-                    height: deviceData.size.height - 200.0,
+                ? SizedBox(
+                    height: 0.7 * deviceData.size.height,
                     child: Center(child: CircularProgressIndicator()))
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class GroupDetailScreen extends StatelessWidget {
                           onTap: () =>
                               _openProfileScreen(context, member, model),
                           title: Text(
-                            member.inAppUserName!,
+                            member.inAppUserName,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios_rounded,
@@ -130,8 +130,9 @@ class GroupDetailScreen extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (_) => ProfileScreen(
-                  isCurrentUser: model.currentUser == member ? true : false,
-                  user: member,
+                  memberName:
+                      model.currentUser == member ? null : member.inAppUserName,
+                  memberId: model.currentUser == member ? null : member.userId,
                 )));
   }
 

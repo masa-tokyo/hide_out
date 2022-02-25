@@ -45,6 +45,9 @@ class UserRepository extends ChangeNotifier {
 
   File? get imageFile => _imageFile;
 
+  User? _member;
+  User? get member => _member;
+
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -165,8 +168,8 @@ class UserRepository extends ChangeNotifier {
   User _convertToUser(auth.User firebaseUser) {
     return User(
       userId: firebaseUser.uid,
-      displayName: firebaseUser.displayName,
-      inAppUserName: firebaseUser.displayName,
+      displayName: firebaseUser.displayName ?? '',
+      inAppUserName: firebaseUser.displayName ?? '',
       photoUrl: _getRandomPhotoUrl(),
       photoStoragePath: "",
       email: firebaseUser.email ?? "",
@@ -194,7 +197,7 @@ class UserRepository extends ChangeNotifier {
   Future<void> updateUserInfo(
       {required User updatedCurrentUser, required bool isNameUpdated}) async {
     currentUser = updatedCurrentUser;
-    await dbManager!.updateUserInfo(currentUser!, isNameUpdated);
+    await dbManager!.updateUserInfo(currentUser!, isNameUpdated: isNameUpdated);
 
     //for drawing ProfileScreen again
     notifyListeners();
@@ -222,7 +225,7 @@ class UserRepository extends ChangeNotifier {
 
     currentUser = currentUser!
         .copyWith(audioUrl: audioUrl, audioStoragePath: storagePath);
-    await dbManager!.updateUserInfo(currentUser!, false);
+    await dbManager!.updateUserInfo(currentUser!);
 
     _isUploading = false;
     notifyListeners();
@@ -311,19 +314,19 @@ class UserRepository extends ChangeNotifier {
         photoStoragePath: storageId,
       );
 
-      await dbManager!.updateUserInfo(currentUser!, false);
+      await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
       if (previousStoragePath != "") {
         await dbManager!.deleteFileOnStorage(previousStoragePath!);
       }
 
       // set from remote in case that the photo in the local device is deleted
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl!);
+      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
     }
   }
 
   Future<void> createImageFile() async {
     if (currentUser != null) {
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl!);
+      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
       notifyListeners();
     }
   }
@@ -332,5 +335,15 @@ class UserRepository extends ChangeNotifier {
     // carry out the deletion from cloud functions
     await dbManager!.createDeleteAccountTrigger(currentUser!);
     await signOut();
+  }
+
+  Future<void> fetchUser(String memberId) async {
+    _isProcessing = true;
+    notifyListeners();
+
+    _member = await dbManager!.fetchUser(memberId);
+    _isProcessing = false;
+
+    notifyListeners();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/group.dart';
-import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
 import 'package:hide_out/utils/constants.dart';
@@ -48,9 +48,6 @@ class HomeScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
   Future<void> getNotifications() async {
     calls.add(0);
     if (calls.length == 1) {
@@ -83,7 +80,7 @@ class HomeScreenViewModel extends ChangeNotifier {
         notificationDeleteType: NotificationDeleteType.NOTIFICATION_ID);
   }
 
-  Future<void> updateIsAlerted(String groupId, String userId) async{
+  Future<void> updateIsAlerted(String groupId, String userId) async {
     await groupRepository!.updateIsAlerted(groupId, userId);
   }
 }

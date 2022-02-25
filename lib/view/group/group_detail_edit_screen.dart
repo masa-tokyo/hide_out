@@ -182,7 +182,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
                               onTap: () =>
                                   _openProfileScreen(context, member, model),
                               title: Text(
-                                member.inAppUserName!,
+                                member.inAppUserName,
                               ),
                               trailing: Icon(
                                 Icons.arrow_forward_ios_rounded,
@@ -201,8 +201,9 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => ProfileScreen(
-                  isCurrentUser: model.currentUser == member ? true : false,
-                  user: member,
+                  memberId: model.currentUser == member ? null : member.userId,
+                  memberName:
+                      model.currentUser == member ? null : member.inAppUserName,
                 )));
   }
 

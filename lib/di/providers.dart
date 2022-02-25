@@ -1,5 +1,3 @@
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 import 'package:hide_out/models/database_manager.dart';
 import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/post_repository.dart';
@@ -11,6 +9,8 @@ import 'package:hide_out/view_models/login_view_model.dart';
 import 'package:hide_out/view_models/profile_view_model.dart';
 import 'package:hide_out/view_models/recording_view_model.dart';
 import 'package:hide_out/view_models/start_group_view_model.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 List<SingleChildWidget> globalProviders = [
   ...independentModels,
@@ -46,13 +46,15 @@ List<SingleChildWidget> viewModels = [
             userRepository: Provider.of<UserRepository>(context, listen: false),
           ),
       update: (context, userRepository, viewModel) =>
-      viewModel!..onUserInfoUpdated(userRepository)),
+          viewModel!..onUserInfoUpdated(userRepository)),
   ChangeNotifierProxyProvider<UserRepository, ProfileViewModel>(
-      create: (context) => ProfileViewModel(
-            userRepository: Provider.of<UserRepository>(context, listen: false),
-          ),
-      update: (context, userRepository, viewModel) =>
-          viewModel!..onUserInfoUpdated(userRepository),),
+    create: (context) => ProfileViewModel(
+      userRepository: Provider.of<UserRepository>(context, listen: false),
+    ),
+    update: (context, userRepository, viewModel) => viewModel!
+      ..onUserInfoUpdated(userRepository)
+      ..onMemberFetched(userRepository),
+  ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
@@ -96,18 +98,20 @@ List<SingleChildWidget> viewModels = [
               ..onMyGroupObtained(groupRepository)
               ..onSelfIntroUploaded(userRepository),
   ),
-  ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository, GroupViewModel>(
+  ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository,
+      GroupViewModel>(
     create: (context) => GroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
       postRepository: Provider.of<PostRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, postRepository, viewModel) =>
-        viewModel!
-          ..onGroupPostsObtained(postRepository)
-          ..onGroupInfoObtained(groupRepository)
-          ..onGroupMemberInfoObtained(userRepository)
-          ..onGroupInfoUpdated(groupRepository)
-          ..onNotificationsFetched(userRepository),
+    update:
+        (context, userRepository, groupRepository, postRepository, viewModel) =>
+            viewModel!
+              ..onGroupPostsObtained(postRepository)
+              ..onGroupInfoObtained(groupRepository)
+              ..onGroupMemberInfoObtained(userRepository)
+              ..onGroupInfoUpdated(groupRepository)
+              ..onNotificationsFetched(userRepository),
   ),
 ];

@@ -11,12 +11,19 @@ class ProfileViewModel extends ChangeNotifier {
 
   User? get currentUser => UserRepository.currentUser;
 
+  User? _member;
+  User? get member => _member;
+
+  bool _isProcessing = false;
+  bool get isProcessing => _isProcessing;
+
   File? _imageFile;
   File? get imageFile => _imageFile;
 
-
   Future<void> updateUserName(String userName) async {
-    await userRepository!.updateUserInfo(updatedCurrentUser: currentUser!.copyWith(inAppUserName: userName), isNameUpdated: true);
+    await userRepository!.updateUserInfo(
+        updatedCurrentUser: currentUser!.copyWith(inAppUserName: userName),
+        isNameUpdated: true);
   }
 
   onUserInfoUpdated(UserRepository userRepository) {
@@ -24,15 +31,18 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProfilePicture() async{
+  Future<void> updateProfilePicture() async {
     await userRepository!.updateProfilePicture();
-
   }
 
+  Future<void> fetchMember(String memberId) async {
+    await userRepository!.fetchUser(memberId);
+  }
 
+  onMemberFetched(UserRepository userRepository) {
+    _isProcessing = userRepository.isProcessing;
+    _member = userRepository.member;
 
-
-
-
-
+    notifyListeners();
+  }
 }

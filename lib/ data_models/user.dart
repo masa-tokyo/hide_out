@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class User {
-  final String? userId;
-  final String? displayName; //initial user name registered on firebase
-  final String? inAppUserName; //changeable user name on the app
-  final String? photoUrl;
+  final String userId;
+  final String displayName; //initial user name registered on firebase
+  final String inAppUserName; //changeable user name on the app
+  final String photoUrl;
   final String? photoStoragePath;
   final String? audioUrl; //for self-introduction
   final String? audioStoragePath; //for self-introduction
@@ -14,10 +14,10 @@ class User {
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
   const User({
-    @required this.userId,
-    @required this.displayName,
-    @required this.inAppUserName,
-    @required this.photoUrl,
+    required this.userId,
+    required this.displayName,
+    required this.inAppUserName,
+    required this.photoUrl,
     @required this.photoStoragePath,
     @required this.audioUrl,
     @required this.audioStoragePath,
@@ -98,18 +98,19 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return new User(
-      userId: map['userId'] as String?,
-      displayName: map['displayName'] as String?,
-      inAppUserName: map['inAppUserName'] as String?,
-      photoUrl: map['photoUrl'] as String?,
+      userId: map['userId'] as String,
+      displayName:
+          map['displayName'] == null ? '' : map['displayName'] as String,
+      inAppUserName:
+          map['inAppUserName'] == null ? '' : map['inAppUserName'] as String,
+      photoUrl: map['photoUrl'] as String,
       photoStoragePath: map['photoStoragePath'] as String?,
       audioUrl: map['audioUrl'] as String?,
       audioStoragePath: map['audioStoragePath'] as String?,
       email: map['email'] as String?,
-      createdAt: map['createdAt'] as int?,
+      createdAt: map['createdAt'] as int,
     );
   }
-
 
   Map<String, dynamic> toMap() {
     // ignore: unnecessary_cast
@@ -125,7 +126,6 @@ class User {
       'createdAt': this.createdAt,
     } as Map<String, dynamic>;
   }
-
 
 //</editor-fold>
 
