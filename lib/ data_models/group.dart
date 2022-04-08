@@ -4,6 +4,7 @@ class Group {
   final String? groupName;
   final String? description;
   final String? ownerId;
+  final String? ownerPhotoUrl;
   final int? autoExitDays;
   final int? createdAt;
   final int? lastActivityAt;
@@ -15,6 +16,7 @@ class Group {
     required this.groupName,
     required this.description,
     required this.ownerId,
+    required this.ownerPhotoUrl,
     required this.autoExitDays,
     required this.createdAt,
     required this.lastActivityAt,
@@ -25,6 +27,7 @@ class Group {
     String? groupName,
     String? description,
     String? ownerId,
+    String? ownerPhotoUrl,
     int? autoExitDays,
     int? createdAt,
     int? lastActivityAt,
@@ -33,6 +36,8 @@ class Group {
         (groupName == null || identical(groupName, this.groupName)) &&
         (description == null || identical(description, this.description)) &&
         (ownerId == null || identical(ownerId, this.ownerId)) &&
+        (ownerPhotoUrl == null ||
+            identical(ownerPhotoUrl, this.ownerPhotoUrl)) &&
         (autoExitDays == null || identical(autoExitDays, this.autoExitDays)) &&
         (createdAt == null || identical(createdAt, this.createdAt)) &&
         (lastActivityAt == null ||
@@ -45,6 +50,7 @@ class Group {
       groupName: groupName ?? this.groupName,
       description: description ?? this.description,
       ownerId: ownerId ?? this.ownerId,
+      ownerPhotoUrl: ownerPhotoUrl ?? this.ownerPhotoUrl,
       autoExitDays: autoExitDays ?? this.autoExitDays,
       createdAt: createdAt ?? this.createdAt,
       lastActivityAt: lastActivityAt ?? this.lastActivityAt,
@@ -53,7 +59,7 @@ class Group {
 
   @override
   String toString() {
-    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, autoExitDays: $autoExitDays, createdAt: $createdAt, lastActivityAt: $lastActivityAt}';
+    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, ownerPhotoUrl: $ownerPhotoUrl, autoExitDays: $autoExitDays, createdAt: $createdAt, lastActivityAt: $lastActivityAt}';
   }
 
   @override
@@ -65,6 +71,7 @@ class Group {
           groupName == other.groupName &&
           description == other.description &&
           ownerId == other.ownerId &&
+          ownerPhotoUrl == other.ownerPhotoUrl &&
           autoExitDays == other.autoExitDays &&
           createdAt == other.createdAt &&
           lastActivityAt == other.lastActivityAt);
@@ -75,9 +82,11 @@ class Group {
       groupName.hashCode ^
       description.hashCode ^
       ownerId.hashCode ^
+      ownerPhotoUrl.hashCode ^
       autoExitDays.hashCode ^
       createdAt.hashCode ^
       lastActivityAt.hashCode;
+
 
   factory Group.fromMap(Map<String, dynamic> map) {
     return new Group(
@@ -85,13 +94,15 @@ class Group {
       groupName: map['groupName'] as String?,
       description: map['description'] as String?,
       ownerId: map['ownerId'] as String?,
+      ownerPhotoUrl: map['ownerPhotoUrl'] as String?,
       autoExitDays: map['autoExitDays'] as int?,
-      createdAt: map['createdAt'] ==null
+      createdAt: map['createdAt'] == null
           ? null: map['createdAt'] as int?,
-      lastActivityAt: map['lastActivityAt'] ==null
+      lastActivityAt: map['lastActivityAt'] == null
           ? null : map['lastActivityAt'] as int?,
     );
   }
+
 
   Map<String, dynamic> toMap() {
     // ignore: unnecessary_cast
@@ -100,6 +111,7 @@ class Group {
       'groupName': this.groupName,
       'description': this.description,
       'ownerId': this.ownerId,
+      'ownerPhotoUrl': this.ownerPhotoUrl,
       'autoExitDays': this.autoExitDays,
       'createdAt': this.createdAt,
       'lastActivityAt': this.lastActivityAt,

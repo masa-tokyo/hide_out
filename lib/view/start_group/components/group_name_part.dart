@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/view/start_group/components/sub/group_name_input_text_field.dart';
-import 'package:voice_put/utils/style.dart';
+import 'package:hide_out/view/start_group/components/sub/group_name_input_text_field.dart';
 
 class GroupNamePart extends StatelessWidget {
   @override
@@ -8,12 +7,18 @@ class GroupNamePart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 16.0,),
+        SizedBox(
+          height: 16.0,
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 18.0),
-          child: Text("Group Name", style: startGroupLabelTextStyle,),
+          child: Text(
+            "Group Name",
+          ),
         ),
-        SizedBox(height: 8.0,),
+        SizedBox(
+          height: 8.0,
+        ),
         GroupNameInputTextField(),
       ],
     );

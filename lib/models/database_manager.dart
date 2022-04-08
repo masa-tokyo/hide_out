@@ -3,17 +3,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/member.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/constants.dart';
 import 'package:uuid/uuid.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/constants.dart';
 
 class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  //--------------------------------------------------------------------------------------------------Insert
+  //----------------------------------------------------------------------------Insert
   Future<void> insertUser(User user) async {
     await _db.collection("users").doc(user.userId).set(user.toMap());
   }
@@ -21,16 +22,22 @@ class DatabaseManager {
   Future<void> registerGroup(Group group, User currentUser) async {
     await _db.collection('groups').doc(group.groupId).set(group.toMap());
 
-    //set userId and lastPostDateTime for small group on members collection
+    //set data on sub-collection
     await _db
         .collection("groups")
         .doc(group.groupId)
         .collection("members")
         .doc(currentUser.userId)
-        .set({
-      "userId": currentUser.userId,
-      "lastPostDateTime": DateTime.now().toIso8601String()
-    });
+        .set(Member(
+                createdAt: DateTime.now(),
+                isAlerted: false,
+                lastPostDateTime: DateTime.now(),
+                timeZoneOffsetInMinutes:
+                    DateTime.now().timeZoneOffset.inMinutes,
+                userId: currentUser.userId,
+                name: currentUser.inAppUserName,
+                photoUrl: currentUser.photoUrl)
+            .toMap());
   }
 
   Future<void> registerGroupIdOnUsers(String? groupId, String? userId) async {
@@ -42,52 +49,68 @@ class DatabaseManager {
         .set({"groupId": groupId});
   }
 
-  Future<void> joinGroup(String? groupId, String? userId) async {
+  Future<void> joinGroup(String? groupId, User user) async {
     //add groupId on "groups" in "users"
     await _db
         .collection("users")
-        .doc(userId)
+        .doc(user.userId)
         .collection("groups")
         .doc(groupId)
         .set({"groupId": groupId});
 
-    //add userId and lastPostDateTime on "members" in "groups"
+    //add data on sub-collection
     await _db
         .collection("groups")
         .doc(groupId)
         .collection("members")
-        .doc(userId)
-        .set({
-      "userId": userId,
-      "lastPostDateTime": DateTime.now().toIso8601String()
-    });
+        .doc(user.userId)
+        .set(Member(
+                createdAt: DateTime.now(),
+                isAlerted: false,
+                lastPostDateTime: DateTime.now(),
+                timeZoneOffsetInMinutes:
+                    DateTime.now().timeZoneOffset.inMinutes,
+                userId: user.userId,
+                name: user.inAppUserName,
+                photoUrl: user.photoUrl)
+            .toMap());
   }
 
-  Future<String> uploadAudioToStorage(File audioFile, String storageId) async {
-    final storageRef = FirebaseStorage.instance.ref().child(storageId);
+  Future<String> uploadAudioToStorage(
+      File audioFile, String storagePath) async {
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
     // specify the file type to prevent Android uploading "audio/X-HX-AAC-ADTS"
-    final uploadTask = storageRef.putFile(audioFile, SettableMetadata(
-      contentType: "audio/aac",
-    ));
+    final uploadTask = storageRef.putFile(
+        audioFile,
+        SettableMetadata(
+          contentType: "audio/aac",
+        ));
     final downloadUrl = uploadTask
         .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
 
     return downloadUrl;
   }
 
-  Future<void> postRecording(Post post, String? userId, String? groupId) async {
+  Future<String> uploadPhotoToStorage(
+      File imageFile, String storagePath) async {
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+    final uploadTask = storageRef.putFile(imageFile);
+    final downloadUrl = uploadTask
+        .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
+
+    return downloadUrl;
+  }
+
+  Future<void> postRecording(Post post, String userId, String groupId) async {
     await _db.collection("posts").doc(post.postId).set(post.toMap());
 
-    //update lastPostDateTime at members collection of groups collection
-    await _db
-        .collection("groups")
-        .doc(groupId)
-        .collection("members")
-        .doc(userId)
-        .update({
-      "userId": userId,
-      "lastPostDateTime": DateTime.now().toIso8601String()
-    });
+    //update data on members collection
+    updateMemberInfo(
+        groupId: groupId,
+        userId: userId,
+        lastPostDateTime: DateTime.now().toUtc(),
+        timeZoneOffsetInMinutes: DateTime.now().timeZoneOffset.inMinutes,
+        isAlerted: false);
   }
 
   Future<void> insertListener(Post post, User user) async {
@@ -128,7 +151,21 @@ class DatabaseManager {
         .set(notification.toMap());
   }
 
-  //--------------------------------------------------------------------------------------------------Read
+  Future<void> createDeleteAccountTrigger(User user) async {
+    await _db
+        .collection("triggers")
+        .doc(user.userId)
+        .collection("delete_account")
+        //do not set userId as document Id in case that the same user
+        //deletes account several times and a new document is not made,
+        //which prevents the onCreate method from being called
+        .add({
+      "userId": user.userId,
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
+    });
+  }
+
+  //-----------------------------------------------------------------------------Read
 
   Future<bool> searchUserInDb(auth.User firebaseUser) async {
     final query = await _db
@@ -176,12 +213,9 @@ class DatabaseManager {
   }
 
   Future<List<String?>> getGroupIds(String? userId) async {
-    final query = await _db
-        .collection("users")
-        .doc(userId)
-        .collection("groups")
-        .limit(10)
-        .get();
+    final query =
+        await _db.collection("users").doc(userId).collection("groups").get();
+
     if (query.docs.length == 0) return [];
 
     var results = <String?>[];
@@ -200,19 +234,34 @@ class DatabaseManager {
 
     var results = <Group>[];
 
-      await _db
-          .collection("groups")
-          .orderBy("lastActivityAt", descending: true)
-          .get()
-          .then((value) {
-        value.docs.forEach((element) {
-          results.add(Group.fromMap(element.data()));
-          //remove the groups that currentUser already belongs to
-          results.removeWhere((element) => groupIds.contains(element.groupId));
-
-        });
+    await _db
+        .collection("groups")
+        .orderBy("lastActivityAt", descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        results.add(Group.fromMap(element.data()));
+        //remove the groups that currentUser already belongs to
+        results.removeWhere((element) => groupIds.contains(element.groupId));
+        //remove some groups that are not necessary for now
+        results = _removeTopicGroups(results);
       });
+    });
 
+    return results;
+  }
+
+  List<Group> _removeTopicGroups(List<Group> results) {
+    final topicGroupIds = [
+      "00cfff40-7673-11eb-80dc-7138d5ef930f",
+      "26581cd0-8734-11eb-8bc9-5145735be640",
+      "3bd37d30-7671-11eb-8292-fbe39462078a",
+      "538ce750-7670-11eb-b220-6978360019b1",
+      "8cf727a0-766e-11eb-bdaa-7bed10e9b80d",
+      "b3d1fbf0-7670-11eb-b29f-0f73c644dd79",
+    ];
+
+    results.removeWhere((element) => topicGroupIds.contains(element.groupId));
 
     return results;
   }
@@ -230,6 +279,7 @@ class DatabaseManager {
           groupName: "No Group",
           description: null,
           ownerId: null,
+          ownerPhotoUrl: null,
           autoExitDays: null,
           createdAt: null,
           lastActivityAt: null);
@@ -334,20 +384,57 @@ class DatabaseManager {
   }
 
   Future<List<d.Notification>> getNotifications(String? userId) async {
-    final query = await _db.collection("notifications").get();
+    final query = await _db
+        .collection("notifications")
+        .where('userId', isEqualTo: userId)
+        .get();
     if (query.docs.length == 0) return [];
 
     var results = <d.Notification>[];
-    query.docs
-        .where((element) => element.data()["userId"] == userId)
-        .forEach((doc) {
+    query.docs.forEach((doc) {
       results.add(d.Notification.fromMap(doc.data()));
     });
 
     return results;
   }
 
-  //--------------------------------------------------------------------------------------------------Update
+  Future<bool> isAccountDeleted(String uid) async {
+    final query = await _db
+        .collection('triggers')
+        .doc(uid)
+        .collection('delete_account')
+        .get();
+
+    if (query.docs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<User> fetchUser(String memberId) async {
+    final user =
+        await _db.collection('users').doc(memberId).get().then((value) {
+      if (value.data() == null) {
+        return User(
+            userId: '',
+            displayName: '',
+            inAppUserName: 'Unknown User',
+            photoUrl: '',
+            photoStoragePath: '',
+            audioUrl: '',
+            audioStoragePath: '',
+            email: '',
+            createdAt: 0);
+      }
+      print('not null');
+      return User.fromMap(value.data()!);
+    });
+
+    return user;
+  }
+
+  //-----------------------------------------------------------------------------Update
 
   Future<void> updateGroupInfo(Group updatedGroup) async {
     await _db
@@ -356,19 +443,108 @@ class DatabaseManager {
         .update(updatedGroup.toMap());
   }
 
-  Future<void> updateUserInfo(User user) async {
+  Future<void> updateUserInfo(User user,
+      {bool isNameUpdated = false, bool isPhotoUpdated = false}) async {
     await _db.collection("users").doc(user.userId).update(user.toMap());
+
+    if (isPhotoUpdated) {
+      //update photoUrl on members
+      final groupIds = await getGroupIds(user.userId);
+      groupIds.forEach((groupId) {
+        if (groupId == null) {
+          return;
+        }
+        updateMemberInfo(
+            groupId: groupId, userId: user.userId, photoUrl: user.photoUrl);
+      });
+    }
+
+    if (isNameUpdated) {
+      //update name on members
+      final groupIds = await getGroupIds(user.userId);
+      groupIds.forEach((groupId) {
+        if (groupId == null) {
+          return;
+        }
+        updateMemberInfo(
+            groupId: groupId, userId: user.userId, name: user.inAppUserName);
+      });
+
+      //update userName on posts
+      _db
+          .collection("posts")
+          .where("userId", isEqualTo: user.userId)
+          .get()
+          .then((posts) {
+        posts.docs.forEach((post) {
+          post.reference.update({"userName": user.inAppUserName});
+        });
+      });
+
+      //update userName on listeners
+      groupIds.forEach((groupId) {
+        _db
+            .collection("posts")
+            .where("groupId", isEqualTo: groupId)
+            .get()
+            .then((posts) {
+          posts.docs.forEach((post) {
+            _db
+                .collection("posts")
+                .doc(post.id)
+                .collection("listeners")
+                .where("userId", isEqualTo: user.userId)
+                .get()
+                .then((listeners) {
+              listeners.docs.forEach((listener) {
+                listener.reference.update({"userName": user.inAppUserName});
+              });
+            });
+          });
+        });
+      });
+    }
   }
 
-  Future<void> updateLastActivityAt(String? groupId) async{
-    await _db.collection("groups").doc(groupId).update(
-      {"lastActivityAt": DateTime.now().millisecondsSinceEpoch,
-      }
-    );
+  Future<void> updateMemberInfo({
+    required String groupId,
+    required String userId,
+    bool? isAlerted,
+    DateTime? lastPostDateTime,
+    int? timeZoneOffsetInMinutes,
+    String? name,
+    String? photoUrl,
+  }) async {
+    //point out what to update
+    final map = <String, dynamic>{};
+
+    if (isAlerted != null) {
+      map.addAll({'isAlerted': isAlerted});
+    }
+    if (lastPostDateTime != null) {
+      map.addAll({'lastPostDateTime': lastPostDateTime.toIso8601String()});
+    }
+
+    if (timeZoneOffsetInMinutes != null) {
+      map.addAll({'timeZoneOffsetInMinutes': timeZoneOffsetInMinutes});
+    }
+
+    if (name != null) {
+      map.addAll({'name': name});
+    }
+    if (photoUrl != null) {
+      map.addAll({'photoUrl': photoUrl});
+    }
+
+    await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("members")
+        .doc(userId)
+        .update(map);
   }
 
-
-  //--------------------------------------------------------------------------------------------------Delete
+  //----------------------------------------------------------------------------Delete
 
   Future<void> leaveGroup(String? groupId, String? userId) async {
     //delete their own data at members of groups
@@ -388,11 +564,11 @@ class DatabaseManager {
         .delete();
   }
 
-  Future<void> deletePost(String? postId) async {
+  Future<void> deletePost(Post post) async {
     //delete "listeners" first
     await _db
         .collection("posts")
-        .doc(postId)
+        .doc(post.postId)
         .collection("listeners")
         .get()
         .then((value) {
@@ -402,16 +578,15 @@ class DatabaseManager {
     });
 
     //delete post
-    await _db.collection("posts").doc(postId).delete();
+    await _db.collection("posts").doc(post.postId).delete();
+
+    //on storage
+    if (post.audioStoragePath != null) {
+      deleteFileOnStorage(post.audioStoragePath!);
+    }
   }
 
-  Future<void> deleteGroup(
-      Group group, String? userId) async {
-
-
-
-
-
+  Future<void> deleteGroup(Group group, String? userId) async {
     //@posts collection
 
     //get all the userIds at members collection of groups collection
@@ -432,28 +607,16 @@ class DatabaseManager {
     });
 
     posts.forEach((post) async {
-      await deletePost(post.postId);
+      await deletePost(post);
     });
 
     //@groups collection
 
-    //delete members collection
-    await _db
-        .collection("groups")
-        .doc(group.groupId)
-        .collection("members")
-        .get()
-        .then((value) {
-      value.docs.forEach((doc) {
-        doc.reference.delete();
-      });
-    });
-
-    //delete group doc itself
+    //delete group doc itself as well as members sub-collection
     await _db.collection("groups").doc(group.groupId).delete();
 
     //@users collection
-    userIds.forEach((userId) async {
+    await Future.forEach(userIds, (String? userId) async {
       await _db
           .collection("users")
           .doc(userId)
@@ -462,7 +625,7 @@ class DatabaseManager {
           .delete();
     });
 
-
+    //todo delete after the method is made on CF
     //insert notification
     var memberIds = userIds;
     memberIds.removeWhere((element) => element == userId);
@@ -475,15 +638,13 @@ class DatabaseManager {
           groupId: "",
           content: group.groupName);
     });
-
-
   }
 
   Future<void> deleteNotification({required String? notificationId}) async {
     await _db.collection("notifications").doc(notificationId).delete();
   }
 
-  deleteNotificationByPostIdAndUserId(
+  Future<void> deleteNotificationByPostIdAndUserId(
       {required String? postId, required String? userId}) async {
     await _db
         .collection("notifications")
@@ -497,7 +658,7 @@ class DatabaseManager {
     });
   }
 
-  deleteNotificationByGroupIdAndUserId(
+  Future<void> deleteNotificationByGroupIdAndUserId(
       {required String? groupId, required String? userId}) async {
     await _db
         .collection("notifications")
@@ -511,7 +672,7 @@ class DatabaseManager {
     });
   }
 
-  deleteNotificationByPostId({
+  Future<void> deleteNotificationByPostId({
     required String? postId,
   }) async {
     await _db
@@ -525,7 +686,7 @@ class DatabaseManager {
     });
   }
 
-  deleteNotificationByGroupId({
+  Future<void> deleteNotificationByGroupId({
     required String? groupId,
   }) async {
     await _db
@@ -539,4 +700,8 @@ class DatabaseManager {
     });
   }
 
+  Future<void> deleteFileOnStorage(String storagePath) async {
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+    storageRef.delete();
+  }
 }

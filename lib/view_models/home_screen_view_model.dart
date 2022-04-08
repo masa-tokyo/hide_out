@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/models/repositories/group_repository.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/repositories/group_repository.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
   final GroupRepository? groupRepository;
@@ -48,11 +48,6 @@ class HomeScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  Future<void> signOut() async {
-    await userRepository!.signOut();
-  }
-
   Future<void> getNotifications() async {
     calls.add(0);
     if (calls.length == 1) {
@@ -83,5 +78,9 @@ class HomeScreenViewModel extends ChangeNotifier {
     await userRepository!.deleteNotification(
         notificationId: notificationId,
         notificationDeleteType: NotificationDeleteType.NOTIFICATION_ID);
+  }
+
+  Future<void> updateIsAlerted(String groupId, String userId) async {
+    await groupRepository!.updateIsAlerted(groupId, userId);
   }
 }

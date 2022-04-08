@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/models/repositories/group_repository.dart';
-import 'package:voice_put/models/repositories/post_repository.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/repositories/group_repository.dart';
+import 'package:hide_out/models/repositories/post_repository.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class RecordingViewModel extends ChangeNotifier{
   final GroupRepository? groupRepository;

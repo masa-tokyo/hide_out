@@ -1,13 +1,13 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/post.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/%20data_models/notification.dart' as d;
-import 'package:voice_put/models/repositories/group_repository.dart';
-import 'package:voice_put/models/repositories/post_repository.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/notification.dart' as d;
+import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/repositories/group_repository.dart';
+import 'package:hide_out/models/repositories/post_repository.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class GroupViewModel extends ChangeNotifier {
   final GroupRepository? groupRepository;
@@ -64,7 +64,6 @@ class GroupViewModel extends ChangeNotifier {
   List<AssetsAudioPlayer> _players = [];
   List<AssetsAudioPlayer> get players => _players;
 
-
   //---------------------------------------------------------------------------- Audio methods
 
   void resetPlays() {
@@ -79,14 +78,13 @@ class GroupViewModel extends ChangeNotifier {
     return result;
   }
 
-
   Future<void> playAudio(int index) async {
     var player = _players[0];
 
     _plays.add(0);
 
     //open the player only for the 1st time
-    if (_plays.length == 1){
+    if (_plays.length == 1) {
       _openPlayer();
       _addPlayerListener();
     } else {
@@ -95,20 +93,19 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
-    if(_currentIndex == index){
+    if (_currentIndex == index) {
       //resume audio
       player.play();
     } else {
       _currentIndex = index;
-      player.playlistPlayAtIndex(
-          _currentIndex);
+      player.playlistPlayAtIndex(_currentIndex);
     }
 
     _isPlayings[_currentIndex] = true;
     notifyListeners();
   }
 
-  void _openPlayer(){
+  void _openPlayer() {
     var player = _players[0];
 
     List<Audio> audios = [];
@@ -117,9 +114,7 @@ class GroupViewModel extends ChangeNotifier {
     });
 
     player.open(
-        Playlist(
-            audios: audios
-        ),
+      Playlist(audios: audios),
     );
   }
 
@@ -128,14 +123,13 @@ class GroupViewModel extends ChangeNotifier {
 
     //listen everytime the current audio is finished, except for the last one
     player.playlistAudioFinished.listen((event) {
-
       _isPlayings[_currentIndex] = false;
 
       //next audio
       _currentIndex = event.index + 1;
       _isPlayings[_currentIndex] = true;
 
-      if(posts[_currentIndex].userId != currentUser!.userId){
+      if (posts[_currentIndex].userId != currentUser!.userId) {
         deleteNotification(postId: _posts[_currentIndex].postId);
         insertListener(posts[_currentIndex]);
       }
@@ -145,10 +139,10 @@ class GroupViewModel extends ChangeNotifier {
 
     //listen even when the playlist is yet to be complete
     player.playlistFinished.listen((isFinished) {
-      if(isFinished){
+      if (isFinished) {
         _isPlayings[_currentIndex] = false;
 
-        if(posts[_currentIndex].userId != currentUser!.userId){
+        if (posts[_currentIndex].userId != currentUser!.userId) {
           deleteNotification(postId: _posts[_currentIndex].postId);
           insertListener(posts[_currentIndex]);
         }
@@ -162,13 +156,12 @@ class GroupViewModel extends ChangeNotifier {
 
     var player = _players[0];
 
-    if(_plays.length == 1){
+    if (_plays.length == 1) {
       player.currentPosition.listen((event) {
         //prevent carrying out the process when event is updated after resuming the audio
-        if(!_isPlayings[_currentIndex]){
-
+        if (!_isPlayings[_currentIndex]) {
           //prevent pausing audio before starting audio
-          if(event.inMilliseconds > 0){
+          if (event.inMilliseconds > 0) {
             player.pause();
           }
         }
@@ -181,29 +174,25 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> getGroupPosts(Group group) async {
     await postRepository!.getPostsByGroup(group.groupId);
-
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
-
     //to avoid being called everytime deleteNotification() is called
-    if(_plays.length == 0) {
+    if (_plays.length == 0) {
       _posts = postRepository.posts;
       _isProcessing = postRepository.isProcessing;
 
       //call after posts are retrieved
-      if(_posts.length != 0){
+      if (_posts.length != 0) {
         _addAudioUrls(_posts);
         _addIsPlayings(_posts.length);
       }
     }
 
-
     notifyListeners();
   }
 
   void _addAudioUrls(List<Post> posts) {
-
     _audioUrls.clear();
     _posts.forEach((element) {
       _audioUrls.add(element.audioUrl);
@@ -211,34 +200,24 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   void _addIsPlayings(int length) {
+    _isPlayings.clear();
 
-      _isPlayings.clear();
-
-      for (var i = 0; i < length; i ++){
-        _isPlayings.add(false);
-      }
-
+    for (var i = 0; i < length; i++) {
+      _isPlayings.add(false);
+    }
   }
 
   Future<void> deletePost(Post post) async {
-    await postRepository!.deletePost(post.postId);
-    await userRepository!.deleteNotification(
-        notificationDeleteType: NotificationDeleteType.DELETE_POST,
-        postId: post.postId);
+    await postRepository!.deletePost(post);
   }
 
   Future<void> insertListener(Post post) async {
     await postRepository!.insertListener(post, currentUser!);
   }
 
-
-
-
-
   //---------------------------------------------------------------------------- GroupRepository
   Future<void> getGroupInfo(String? groupId) async {
     await groupRepository!.getGroupInfo(groupId);
-
   }
 
   onGroupInfoObtained(GroupRepository groupRepository) {
@@ -252,17 +231,17 @@ class GroupViewModel extends ChangeNotifier {
     _autoExitDays = intDays;
 
     notifyListeners();
-
   }
 
   Future<void> updateGroupInfo(String? groupId) async {
-    await groupRepository!.updateGroupInfo(
-        group!.copyWith(groupName: groupName, description: description, autoExitDays: autoExitDays));
+    await groupRepository!.updateGroupInfo(group!.copyWith(
+        groupName: groupName,
+        description: description,
+        autoExitDays: autoExitDays));
 
     //for opening the screen next time
     _group = await groupRepository!.returnGroupInfo(groupId);
     _autoExitDays = _group!.autoExitDays;
-
   }
 
   onGroupInfoUpdated(GroupRepository groupRepository) {
@@ -287,45 +266,33 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Group> returnGroupInfo(String? groupId) async{
+  Future<Group> returnGroupInfo(String? groupId) async {
     return await groupRepository!.returnGroupInfo(groupId);
-
   }
 
-  Future<void> deleteGroup(Group group) async{
+  Future<void> deleteGroup(Group group) async {
     await groupRepository!.deleteGroup(group, currentUser!);
     await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.DELETE_GROUP,
         groupId: group.groupId);
-
   }
 
   //---------------------------------------------------------------------------- UserRepository
-  Future<void> getNotifications() async{
+  Future<void> getNotifications() async {
     await userRepository!.getNotifications();
   }
 
   onNotificationsFetched(UserRepository userRepository) {
     _notifications = userRepository.notifications;
     _isProcessing = userRepository.isProcessing;
-    if(_isPlayings.length != 0){
-    }
+    if (_isPlayings.length != 0) {}
 
     notifyListeners();
   }
 
-  Future<void> deleteNotification({String? postId}) async{
+  Future<void> deleteNotification({String? postId}) async {
     await userRepository!.deleteNotification(
         notificationDeleteType: NotificationDeleteType.OPEN_POST,
         postId: postId);
   }
-
-
-
-
-
-
-
-
-
 }

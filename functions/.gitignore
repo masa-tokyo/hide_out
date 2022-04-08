@@ -1,1 +1,3 @@
 node_modules/
+# key for cloud function's local emulator to access to Firebase API(e.g. Authentication)
+voiceput-e9f38-1fb83cf460d4.json

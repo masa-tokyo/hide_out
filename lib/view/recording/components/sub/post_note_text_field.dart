@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 class PostNoteTextField extends StatefulWidget {
-  final String noteText;
-  PostNoteTextField({required this.noteText});
+  final String? noteText;
+  PostNoteTextField({this.noteText});
 
   @override
   _PostNoteTextFieldState createState() => _PostNoteTextFieldState();
@@ -14,8 +14,7 @@ class _PostNoteTextFieldState extends State<PostNoteTextField> {
   TextEditingController _controller = TextEditingController();
   @override
   void initState() {
-    _controller.text = widget.noteText;
-
+    if(widget.noteText != null) _controller.text = widget.noteText!;
     super.initState();
   }
 

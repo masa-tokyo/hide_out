@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/models/repositories/user_repository.dart';
-import 'package:voice_put/utils/constants.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final UserRepository? userRepository;
@@ -17,22 +19,52 @@ class LoginViewModel extends ChangeNotifier {
   LoginScreenStatus _loginScreenStatus = LoginScreenStatus.FAILED;
   LoginScreenStatus get loginScreenStatus => _loginScreenStatus;
 
-  Future<bool> isSignIn() async{
+  File? _imageFile;
+  File? get imageFile => _imageFile;
+
+  Future<bool> isSignIn() async {
     return await userRepository!.isSignIn();
   }
 
-  Future<void> signInOrSignUp() async{
+  Future<void> signInOrSignUpWithGoogle() async {
     _isProcessing = true;
     notifyListeners();
 
-    _loginScreenStatus = await userRepository!.signInOrSignUp();
+    _loginScreenStatus = await userRepository!.signInOrSignUpWithGoogle();
 
     _isProcessing = false;
     notifyListeners();
 
   }
 
+  Future<void> signInOrSignUpWithApple() async {
+    _isProcessing = true;
+    notifyListeners();
+
+    _loginScreenStatus = await userRepository!.signInOrSignUpWithApple();
+
+    _isProcessing = false;
+    notifyListeners();
+
+  }
+
+  Future<void> updateProfilePicture() async {
+
+    await userRepository!.updateProfilePicture();
+  }
+
+  onUserInfoUpdated(UserRepository userRepository) {
+    _imageFile = userRepository.imageFile;
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    await userRepository!.signOut();
+  }
 
 
+  Future<void> deleteAccount() async{
+    await userRepository!.deleteAccount();
+  }
 
 }

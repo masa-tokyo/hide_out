@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>VoicePut</string>
+	<string>HideOut</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.289406628812-kba2qnnqdq9ud5mik5tk2uvmhcom2voo</string>
+				<string>com.googleusercontent.apps.289406628812-6utrpq058tisermt49qjq0a1gejq4tpv</string>
 			</array>
 		</dict>
 	</array>
@@ -42,13 +42,17 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app does not use the information for calendar.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app does not use the camera.</string>
+	<string>This app uses the camera for updating the profile image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app uses the photo library for updating the profile image.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app does not use the information for contacts.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app uses the microphone to record your speech.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This app does not use the information for motion.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app uses the photo library for updating the profile image.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app does not use the information for speech recognition.</string>
 	<key>UILaunchStoryboardName</key>

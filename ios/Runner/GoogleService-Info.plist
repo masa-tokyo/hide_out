@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>289406628812-kba2qnnqdq9ud5mik5tk2uvmhcom2voo.apps.googleusercontent.com</string>
+	<string>289406628812-6utrpq058tisermt49qjq0a1gejq4tpv.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.289406628812-kba2qnnqdq9ud5mik5tk2uvmhcom2voo</string>
+	<string>com.googleusercontent.apps.289406628812-6utrpq058tisermt49qjq0a1gejq4tpv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>289406628812-si5mv2nfgn1qaj07depk6jsgcfn3rvsn.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCCSUStowziF2XoFryon80aIqzJmhkXEKU</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>io.flycricket.voiceput</string>
+	<string>io.flycricket.voicePut</string>
 	<key>PROJECT_ID</key>
 	<string>voiceput-e9f38</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:289406628812:ios:be27450fdc0b79e72e6369</string>
+	<string>1:289406628812:ios:b3176b36524c3aa92e6369</string>
 </dict>
 </plist>

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/uploading_page.dart';
-import 'package:voice_put/view/recording/components/sub/recording_buttons.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/uploading_page.dart';
+import 'package:hide_out/view/recording/components/sub/recording_buttons.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 
 class SelfIntroRecordingScreen extends StatelessWidget {
   final ProfileEditScreensOpenMode from;

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/user.dart';
+import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
+import 'package:hide_out/view/home/home_screen.dart';
+import 'package:hide_out/view/profile/profile_screen.dart';
+import 'package:hide_out/view_models/join_group_view_model.dart';
+import 'package:hide_out/view_models/recording_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/%20data_models/group.dart';
-import 'package:voice_put/%20data_models/user.dart';
-import 'package:voice_put/utils/constants.dart';
-import 'package:voice_put/view/common/items/dialog/help_dialog.dart';
-import 'package:voice_put/view/home/home_screen.dart';
-import 'package:voice_put/view/profile/profile_screen.dart';
-import 'package:voice_put/view_models/join_group_view_model.dart';
-import 'package:voice_put/view_models/recording_view_model.dart';
 
 import '../../utils/style.dart';
 
@@ -33,9 +33,9 @@ class GroupDetailScreen extends StatelessWidget {
         child: Consumer<JoinGroupViewModel>(
           builder: (context, model, child) {
             return model.isProcessing
-                ? Container(
-                height: deviceData.size.height - 200.0,
-                child: Center(child: CircularProgressIndicator()))
+                ? SizedBox(
+                    height: 0.7 * deviceData.size.height,
+                    child: Center(child: CircularProgressIndicator()))
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -95,11 +95,10 @@ class GroupDetailScreen extends StatelessWidget {
           model.groupMembers.isEmpty
               ? Text(
                   "-No Member-",
-                  style: groupDetailMemberNameTextStyle,
                 )
               : Container(
                   decoration: BoxDecoration(
-                    color: textFieldFillColor,
+                    color: listTileColor,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: ListView.builder(
@@ -111,8 +110,7 @@ class GroupDetailScreen extends StatelessWidget {
                           onTap: () =>
                               _openProfileScreen(context, member, model),
                           title: Text(
-                            member.inAppUserName!,
-                            style: groupDetailMemberNameTextStyle,
+                            member.inAppUserName,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios_rounded,
@@ -132,8 +130,9 @@ class GroupDetailScreen extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (_) => ProfileScreen(
-                  isCurrentUser: model.currentUser == member ? true : false,
-                  user: member,
+                  memberName:
+                      model.currentUser == member ? null : member.inAppUserName,
+                  memberId: model.currentUser == member ? null : member.userId,
                 )));
   }
 
@@ -152,19 +151,13 @@ class GroupDetailScreen extends StatelessWidget {
               _helpIcon(context),
             ],
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: textFieldFillColor,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                group.autoExitDays != null
-                    ? "${group.autoExitDays} Days"
-                    : "No requirement",
-                style: groupDetailDescriptionTextStyle,
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              group.autoExitDays != null
+                  ? "${group.autoExitDays} Days"
+                  : "No requirement",
+              style: groupDetailDescriptionTextStyle,
             ),
           )
         ],
@@ -201,20 +194,11 @@ class GroupDetailScreen extends StatelessWidget {
           height: 8.0,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: textFieldFillColor,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  group.description!,
-                  style: groupDetailDescriptionTextStyle,
-                ),
-              )),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+          child: Text(
+            group.description!,
+            style: groupDetailDescriptionTextStyle,
+          ),
         ),
       ],
     );
@@ -254,12 +238,11 @@ class GroupDetailScreen extends StatelessWidget {
 
     switch (from) {
       case GroupDetailScreenOpenMode.SIGN_UP:
-
         final recordingViewModel =
-        Provider.of<RecordingViewModel>(context, listen: false);
+            Provider.of<RecordingViewModel>(context, listen: false);
         //change RecordingButtonStatus from AFTER to BEFORE
-        await recordingViewModel
-            .updateRecordingButtonStatus(RecordingButtonStatus.BEFORE_RECORDING);
+        await recordingViewModel.updateRecordingButtonStatus(
+            RecordingButtonStatus.BEFORE_RECORDING);
 
         Navigator.pop(context);
         Navigator.pop(context);

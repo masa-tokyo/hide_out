@@ -16,6 +16,12 @@
     <!-- assets_audio_player -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- image_picker -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:usesCleartextTraffic="true"

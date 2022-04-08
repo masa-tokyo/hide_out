@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_put/view/start_group/components/about_group_part.dart';
-import 'package:voice_put/view/common/components/auto_exit_period_part.dart';
-import 'package:voice_put/view/start_group/components/group_name_part.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view_models/start_group_view_model.dart';
+import 'package:hide_out/view/start_group/components/about_group_part.dart';
+import 'package:hide_out/view/common/components/auto_exit_period_part.dart';
+import 'package:hide_out/view/start_group/components/group_name_part.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view_models/start_group_view_model.dart';
 
 class StartGroupScreen extends StatelessWidget {
   @override

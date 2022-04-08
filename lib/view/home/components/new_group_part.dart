@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voice_put/utils/style.dart';
-import 'package:voice_put/view/common/items/rounded_raised_button.dart';
-import 'package:voice_put/view/join_group/join_group_screen.dart';
-import 'package:voice_put/view/start_group/start_group_screen.dart';
+import 'package:hide_out/utils/style.dart';
+import 'package:hide_out/view/common/items/rounded_raised_button.dart';
+import 'package:hide_out/view/join_group/join_group_screen.dart';
+import 'package:hide_out/view/start_group/start_group_screen.dart';
 
 class NewGroupPart extends StatelessWidget {
   @override
@@ -16,7 +16,7 @@ class NewGroupPart extends StatelessWidget {
         RoundedRaisedButton(
           onPressed: () => _openJoinGroupScreen(context),
           label: "Join Group",
-          color: startOrJoinGroupButtonColor,
+          color: darkBackgroundButtonColor,
         ),
         SizedBox(
           height: 12.0,
@@ -24,7 +24,7 @@ class NewGroupPart extends StatelessWidget {
         RoundedRaisedButton(
           label: "Start New Group",
           onPressed: () => _openStartGroupScreen(context),
-          color: startOrJoinGroupButtonColor,
+          color: darkBackgroundButtonColor,
         ),
       ],
     );
@@ -35,13 +35,8 @@ class NewGroupPart extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => StartGroupScreen(),
-
       ),
     );
-
-
-
-
   }
 
   _openJoinGroupScreen(BuildContext context) {

@@ -1,4 +1,4 @@
-name: voice_put
+name: hide_out
 description: A new Flutter application.
 
 # The following line prevents the package from being accidentally published to
@@ -60,8 +60,14 @@ dependencies:
   tutorial: ^1.0.8
   collection: ^1.15.0-nullsafety.4
 
-  #for Android
   http: ^0.13.3
+  image_picker: ^0.8.4+1
+  intl: ^0.17.0
+  cached_network_image: ^3.1.0
+  sign_in_with_apple: ^3.2.0
+  firebase_remote_config: ^2.0.0
+  package_info: ^2.0.2
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
