@@ -64,7 +64,7 @@ class GroupRepository extends ChangeNotifier {
 
   Future<void> joinGroup(List<Group> chosenGroups, User currentUser) async {
     chosenGroups.forEach((element) async {
-      await dbManager!.joinGroup(element.groupId, currentUser);
+      await dbManager!.joinGroup(element, currentUser);
     });
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen

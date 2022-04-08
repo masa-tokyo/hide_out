@@ -4,16 +4,16 @@ const uuid = require("uuid");
 const {updateLastActivityAt} = require("./functions/update_last_activity_at");
 const {insertNotification} = require("./functions/insert_notification");
 const {deleteUserAccount} = require("./functions/delete_user_account");
-
-const _db = admin.firestore();
-
+const {fetchGroupMemberIds} = require("./functions/read");
 
 exports.onPostCreated = functions.firestore.document('posts/{postId}').onCreate(
     async (snap) => {
 
         const groupsPromise = updateLastActivityAt(snap);
 
-        const userIds = await fetchGroupMemberIds(snap.data().groupId, snap.data().userId);
+        const userIds = await fetchGroupMemberIds({
+            groupId: snap.data().groupId,
+            userId: snap.data().userId});
         const notificationsPromises = userIds.map((userId) => {
             return insertNotification(
                 {
@@ -27,28 +27,13 @@ exports.onPostCreated = functions.firestore.document('posts/{postId}').onCreate(
 
         await Promise.all([groupsPromise, notificationsPromises]);
 
-        async function fetchGroupMemberIds(groupId, userId) {
-            let memberIds = [];
-
-            await _db.collection(`groups/${groupId}/members`).get().then(
-                (membersSnap) => {
-                    membersSnap.docs.map((member) => {
-                        //add members' ids only
-                        if(member.id !== userId){
-                            memberIds.push(member.id);
-                        }
-                    });
-                }
-            );
-            return memberIds;
-        }
     }
 );
 
 
 exports.onDeleteAccountTriggered = functions.firestore.document('triggers/{userId}/delete_account/{docId}')
     .onCreate(async (snap) => {
-        await deleteUserAccount(snap);
+            await deleteUserAccount(snap);
 
         }
     );

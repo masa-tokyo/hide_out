@@ -21,7 +21,8 @@ service cloud.firestore {
         match /groups/{groupId} {
             allow read: if isSignedIn();
             allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.ownerId);
-            allow update, delete: if isSignedIn() && isUserAuthenticated(resource.data.ownerId);
+            allow update, delete: if isSignedIn() && (isUserAuthenticated(resource.data.ownerId) ||
+                                                     (resource.data.ownerId == null && isUserAuthenticated(request.resource.data.ownerId)));
         }
         match /groups/{groupId}/members/{userId} {
             allow read: if isSignedIn();

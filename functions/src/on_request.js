@@ -6,12 +6,9 @@ const _db = admin.firestore();
 const _storage = admin.storage();
 
 
-
 exports.testFunction = functions.https.onRequest(async (req, res) => {
 
     const userId = req.query.userId;
-
-
 
 
 });
@@ -23,40 +20,31 @@ exports.modifyDb = functions.https.onRequest(async (req, res) => {
 // STEP3: Call the function by copying and pasting the url in a browser
 
 
-    // --- delete docs at notifications ---
-    // const notifications = await _db.collection("notifications").get();
-    // if (notifications.docs.length === 0) return;
-    //
-    //
-    // for (const notification of notifications.docs) {
-    //
-    //     if(notification.data().notificationType === "ALERT_AUTO_EXIT"){
-    //
-    //         await notification.ref.delete();
-    //     }
-    // }
+    // --- insert 'photoUrl' and 'name' field to document on members sub-collection ---
+    //make all the members
+    //fetch user data of each member
+    //add that info on member
+    await _db.collection('groups').get().then((groupsSnap) => {
+        groupsSnap.forEach((group) => {
+            _db.collection(`groups/${group.id}/members`).get().then((membersSnap) => {
+                membersSnap.forEach((member) => {
+                    //fetch user info of each member
+                    _db.doc(`users/${member.id}`).get().then((user) => {
+                        const photoUrl = user.data().photoUrl;
+                        const name = user.data().inAppUserName;
+                        if (photoUrl != null && name != null) {
+                            member.ref.update({
+                                'photoUrl': photoUrl,
+                                'name': name,
+                            });
+                        }
+                    });
 
+                });
+            });
 
-    // --- insert "createdAt" field to document on members sub-collection ---
-    // await _db.collection(`groups`).get().then(
-    //     (groups) => {
-    //         groups.docs.forEach(async (group) =>
-    //         {
-    //             await _db.collection(`groups/${group.data().groupId}/members`).get().then(
-    //                 (members) => {
-    //                     members.docs.forEach(
-    //                         async (member) => {
-    //                             await _db.doc(`groups/${group.data().groupId}/members/${member.data().userId}`)
-    //                                 .update({"createdAt": Date.now()}
-    //                             )
-    //                         }
-    //                     )
-    //                 }
-    //             )
-    //         })
-    //     }
-    //
-    // )
+        });
+    });
 
 
     res.send(`data is modified!!!`);

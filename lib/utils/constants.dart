@@ -1,5 +1,4 @@
-
-String userIconUrl () {
+String userIconUrl() {
   return "https://firebasestorage.googleapis.com/v0/b/voiceput-e9f38.appspot.com/o/icon%2Fuser.png?alt=media&token=f9840490-3249-4292-9f3b-af0859945463";
 }
 
@@ -33,7 +32,7 @@ enum ProfileEditScreensOpenMode {
   PROFILE,
 }
 
-enum GroupDetailScreenOpenMode{
+enum GroupDetailScreenOpenMode {
   SIGN_UP,
   JOIN,
   GROUP,
@@ -56,7 +55,8 @@ enum NotificationType {
 enum NotificationDeleteType {
   NOTIFICATION_ID,
   OPEN_POST,
-  DELETE_POST,
-  LEAVE_GROUP,
-  DELETE_GROUP,
+  // followings are done from cloud functions:
+  // DELETE_POST,
+  // LEAVE_GROUP,
+  // DELETE_GROUP,
 }

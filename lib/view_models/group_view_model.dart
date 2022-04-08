@@ -251,9 +251,6 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> leaveGroup(Group group) async {
     await groupRepository!.leaveGroup(group, currentUser!);
-    await userRepository!.deleteNotification(
-        notificationDeleteType: NotificationDeleteType.LEAVE_GROUP,
-        groupId: group.groupId);
   }
 
   Future<void> getMemberInfo(Group group) async {
@@ -272,9 +269,6 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> deleteGroup(Group group) async {
     await groupRepository!.deleteGroup(group, currentUser!);
-    await userRepository!.deleteNotification(
-        notificationDeleteType: NotificationDeleteType.DELETE_GROUP,
-        groupId: group.groupId);
   }
 
   //---------------------------------------------------------------------------- UserRepository

@@ -269,22 +269,6 @@ class UserRepository extends ChangeNotifier {
             postId: postId, userId: currentUser!.userId);
         _notifications.removeWhere((element) => element.postId == postId);
         break;
-
-      case NotificationDeleteType.LEAVE_GROUP:
-        await dbManager!.deleteNotificationByGroupIdAndUserId(
-            groupId: groupId, userId: currentUser!.userId);
-        _notifications.removeWhere((element) => element.groupId == groupId);
-        break;
-
-      //this is no longer used
-      case NotificationDeleteType.DELETE_POST:
-        await dbManager!.deleteNotificationByPostId(postId: postId);
-        break;
-
-      case NotificationDeleteType.DELETE_GROUP:
-        await dbManager!.deleteNotificationByGroupId(groupId: groupId);
-        _notifications.removeWhere((element) => element.groupId == groupId);
-        break;
     }
 
     _isUpdating = false;

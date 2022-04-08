@@ -91,64 +91,8 @@ exports.deleteUserAccount = async (snap) => {
     }
 
     async function deleteMember(groupId) {
-        // *since assigning a new owner is important, async is used quite often
-
-        const ownerId = await _db.doc(`groups/${groupId}`).get().then(
-            (value) => {
-                return value.data().ownerId;
-            }
-        );
-
         //delete @members collection
         await _db.doc(`groups/${groupId}/members/${userId}`).delete();
-
-        //assign the oldest user to the owner, if the deleted user was the owner
-        if (userId === ownerId) {
-
-            await _db.collection(`groups/${groupId}/members`).get().then(
-                async (value) => {
-                    let theOldest;
-                    for (let i = 0; i < value.docs.length; i++) {
-                        if (value.docs.length > 1) {
-                            //repeat until the last member(located at i+1) is compared
-                            if (i + 1 < value.docs.length) {
-                                if (value.docs[i].data().createdAt <= value.docs[i + 1].data().createdAt) {
-                                    theOldest = value.docs[i].data();
-                                } else {
-                                    theOldest = value.docs[i + 1].data();
-                                }
-                            }
-                        } else {
-                            // only one member
-                            theOldest = value.docs[i].data();
-                        }
-                    }
-
-                    const groupRef = _db.doc(`groups/${groupId}`);
-                    await groupRef.update(
-                        {"ownerId": theOldest.userId}
-                    );
-
-                    //insert notification to the new owner
-                    const groupName = await groupRef.get().then(
-                        (value) => {
-                            return value.data().groupName;
-                        }
-                    );
-                    await insertNotification(
-                        {
-                            type: 'NEW_OWNER',
-                            userId: theOldest.userId,
-                            groupId: groupId,
-                            postId: '',
-                            content: groupName,
-                        }
-                    );
-                }
-            );
-
-        }
-
 
     }
 
