@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
     return FloatingActionButton(
         child: const FaIcon(FontAwesomeIcons.solidCommentDots),
         onPressed: () {
-          Navigator.of(context).push(createRouteFromBottom(
+          Navigator.of(context).push(createRoute(
               context,
               RecordingScreen(
                   from: RecordingButtonOpenMode.POST_FROM_HOME, group: null)));

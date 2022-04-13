@@ -1,6 +1,7 @@
 const functions = require('firebase-functions').region('asia-northeast1');
 const admin = require('firebase-admin');
 const uuid = require("uuid");
+const {fetchGroupIdsByUser} = require("./functions/read");
 
 const _db = admin.firestore();
 const _storage = admin.storage();

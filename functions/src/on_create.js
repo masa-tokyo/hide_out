@@ -1,10 +1,10 @@
 const functions = require('firebase-functions').region('asia-northeast1');
 const admin = require('firebase-admin');
-const uuid = require("uuid");
 const {updateLastActivityAt} = require("./functions/update_last_activity_at");
 const {insertNotification} = require("./functions/insert_notification");
 const {deleteUserAccount} = require("./functions/delete_user_account");
 const {fetchGroupMemberIds} = require("./functions/read");
+
 
 exports.onPostCreated = functions.firestore.document('posts/{postId}').onCreate(
     async (snap) => {

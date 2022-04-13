@@ -45,4 +45,11 @@ class ProfileViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> createImageFile() async{
+    if (_imageFile == null) {
+      // set from remote if the photo in the local device is deleted
+      await userRepository!.createImageFile();
+    }
+  }
 }

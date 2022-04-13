@@ -276,35 +276,38 @@ class UserRepository extends ChangeNotifier {
   }
 
   Future<void> updateProfilePicture() async {
-    final ImagePicker picker = ImagePicker();
+    try {
+      final ImagePicker picker = ImagePicker();
 
-    final XFile? pickedImage =
-        await picker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedImage =
+      await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedImage != null) {
-      // draw the image right away, then create the file from url again later
-      _imageFile = File(pickedImage.path);
-      notifyListeners();
+      if (pickedImage != null) {
+        // draw the image right away, then create the file from url again later
+        _imageFile = File(pickedImage.path);
+        notifyListeners();
 
-      final storageId = Uuid().v1();
-      final storagePath = "users/$storageId";
-      final photoUrl =
-          await dbManager!.uploadPhotoToStorage(_imageFile!, storagePath);
+        final storageId = Uuid().v1();
+        final storagePath = "users/$storageId";
+        final photoUrl =
+        await dbManager!.uploadPhotoToStorage(_imageFile!, storagePath);
 
-      final previousStoragePath = currentUser!.photoStoragePath;
+        final previousStoragePath = currentUser!.photoStoragePath;
 
-      currentUser = currentUser!.copyWith(
-        photoUrl: photoUrl,
-        photoStoragePath: storageId,
-      );
+        currentUser = currentUser!.copyWith(
+          photoUrl: photoUrl,
+          photoStoragePath: storagePath,
+        );
 
-      await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
-      if (previousStoragePath != "") {
-        await dbManager!.deleteFileOnStorage(previousStoragePath!);
-      }
+        await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
+        if (previousStoragePath != "") {
+          await dbManager!.deleteFileOnStorage(previousStoragePath!);
+        }
+    }
 
-      // set from remote in case that the photo in the local device is deleted
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
+    } catch(e) {
+      // an error is caught when file type is unknown
+      print('error: $e');
     }
   }
 

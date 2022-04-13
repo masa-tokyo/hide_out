@@ -20,3 +20,17 @@ exports.fetchGroupMemberIds = async ({groupId, userId}) => {
     );
     return memberIds;
 }
+
+exports.fetchGroupIdsByUser = async ({userId}) => {
+    let groupIds = [];
+    await _db.collection(`users/${userId}/groups`).get().then(
+      (groupsSnap) => {
+          groupsSnap.docs.map((group) => {
+                  groupIds.push(group.id);
+          });
+      }
+    );
+    return groupIds;
+}
+
+

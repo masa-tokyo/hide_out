@@ -428,64 +428,6 @@ class DatabaseManager {
   Future<void> updateUserInfo(User user,
       {bool isNameUpdated = false, bool isPhotoUpdated = false}) async {
     await _db.collection("users").doc(user.userId).update(user.toMap());
-
-    if (isPhotoUpdated) {
-      //update photoUrl on members
-      final groupIds = await getGroupIds(user.userId);
-      groupIds.forEach((groupId) {
-        if (groupId == null) {
-          return;
-        }
-        updateMemberInfo(
-            groupId: groupId, userId: user.userId, photoUrl: user.photoUrl);
-      });
-    }
-
-    if (isNameUpdated) {
-      //update name on members
-      final groupIds = await getGroupIds(user.userId);
-      groupIds.forEach((groupId) {
-        if (groupId == null) {
-          return;
-        }
-        updateMemberInfo(
-            groupId: groupId, userId: user.userId, name: user.inAppUserName);
-      });
-
-      //update userName on posts
-      _db
-          .collection("posts")
-          .where("userId", isEqualTo: user.userId)
-          .get()
-          .then((posts) {
-        posts.docs.forEach((post) {
-          post.reference.update({"userName": user.inAppUserName});
-        });
-      });
-
-      //update userName on listeners
-      groupIds.forEach((groupId) {
-        _db
-            .collection("posts")
-            .where("groupId", isEqualTo: groupId)
-            .get()
-            .then((posts) {
-          posts.docs.forEach((post) {
-            _db
-                .collection("posts")
-                .doc(post.id)
-                .collection("listeners")
-                .where("userId", isEqualTo: user.userId)
-                .get()
-                .then((listeners) {
-              listeners.docs.forEach((listener) {
-                listener.reference.update({"userName": user.inAppUserName});
-              });
-            });
-          });
-        });
-      });
-    }
   }
 
   Future<void> updateMemberInfo({

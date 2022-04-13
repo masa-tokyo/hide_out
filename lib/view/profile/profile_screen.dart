@@ -39,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: 24.0,
                     ),
-                    _profilePicture(context),
+                    _profilePicture(context, isCurrentUser),
                     SizedBox(
                       height: 24.0,
                     ),
@@ -58,10 +58,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _profilePicture(BuildContext context) {
+  Widget _profilePicture(BuildContext context, bool isCurrentUser) {
     return Consumer<ProfileViewModel>(
       builder: (_, model, __) {
-        return GestureDetector(
+        return isCurrentUser ?
+        GestureDetector(
           onTap: () async {
             final profileViewModel = context.read<ProfileViewModel>();
             await profileViewModel.updateProfilePicture();
@@ -71,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
             children: [
               UserAvatar(
                 url: model.currentUser!.photoUrl,
-                file: model.imageFile ?? null,
+                file: model.imageFile,
               ),
               Container(
                 width: 32.0,
@@ -88,6 +89,9 @@ class ProfileScreen extends StatelessWidget {
               ),
             ],
           ),
+        )
+        : UserAvatar(
+          url: model.member!.photoUrl,
         );
       },
     );
