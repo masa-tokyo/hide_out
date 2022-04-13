@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
- //---bottom to top---
-Route<Object> createRouteFromBottom(BuildContext context, Widget screen) {
-
+Route<Object> createRoute(BuildContext context, Widget screen) {
+  // bottom to top
     return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => screen,
         transitionsBuilder: (context, animation, secondaryAnimation, child){
-          // if Right to Left, Offset(1.0, 0.0)
-          var begin = Offset(0.0, 1.0); //
+          var begin = Offset(0.0, 1.0); // Right to Left is Offset(1.0, 0.0)
           var end = Offset.zero;
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));

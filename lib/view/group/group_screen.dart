@@ -89,7 +89,7 @@ class GroupScreen extends StatelessWidget {
 
     Navigator.push(
       context,
-      createRouteFromBottom(
+      createRoute(
         context,
         RecordingScreen(
             from: RecordingButtonOpenMode.POST_FROM_GROUP, group: group),
@@ -162,7 +162,7 @@ class GroupScreen extends StatelessWidget {
       case GroupEditMenu.EDIT:
         Navigator.push(
             context,
-            createRouteFromBottom(
+            createRoute(
                 context,
                 GroupDetailEditScreen(
                   group: model.group,
