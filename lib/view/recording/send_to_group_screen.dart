@@ -82,7 +82,7 @@ class SendToGroupScreen extends StatelessWidget {
                 color: listTileColor,
                 elevation: 2.0,
                 child: ListTile(
-                  title: Text(group.groupName!),
+                  title: Text(group.groupName),
                   trailing: ChooseGroupButton(
                     /*isChooseGroupButtonPressed: isChooseGroupButtonPressed,*/
                     groupId: group.groupId,

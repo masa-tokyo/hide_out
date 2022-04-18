@@ -31,9 +31,6 @@ class GroupViewModel extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
-  List<User> _groupMembers = [];
-  List<User> get groupMembers => _groupMembers;
-
   List<d.Notification> _notifications = [];
   List<d.Notification> get notifications => _notifications;
 
@@ -63,6 +60,12 @@ class GroupViewModel extends ChangeNotifier {
 
   List<AssetsAudioPlayer> _players = [];
   List<AssetsAudioPlayer> get players => _players;
+
+  void updateDescription(String text) {
+    description = text;
+    notifyListeners();
+  }
+
 
   //---------------------------------------------------------------------------- Audio methods
 
@@ -239,13 +242,17 @@ class GroupViewModel extends ChangeNotifier {
         description: description,
         autoExitDays: autoExitDays));
 
-    //for opening the screen next time
-    _group = await groupRepository!.returnGroupInfo(groupId);
-    _autoExitDays = _group!.autoExitDays;
   }
 
   onGroupInfoUpdated(GroupRepository groupRepository) {
     _group = groupRepository.group;
+    //after updating from GroupDetailEditScreen
+    if(_group != null) {
+      _autoExitDays = _group!.autoExitDays;
+      groupName = _group!.groupName;
+      description = _group!.description;
+    }
+
     notifyListeners();
   }
 
@@ -253,15 +260,8 @@ class GroupViewModel extends ChangeNotifier {
     await groupRepository!.leaveGroup(group, currentUser!);
   }
 
-  Future<void> getMemberInfo(Group group) async {
-    await userRepository!.getUsersByGroupId(group);
-  }
 
-  onGroupMemberInfoObtained(UserRepository userRepository) {
-    _isProcessing = userRepository.isProcessing;
-    _groupMembers = userRepository.groupMembers;
-    notifyListeners();
-  }
+
 
   Future<Group> returnGroupInfo(String? groupId) async {
     return await groupRepository!.returnGroupInfo(groupId);
@@ -289,4 +289,5 @@ class GroupViewModel extends ChangeNotifier {
         notificationDeleteType: NotificationDeleteType.OPEN_POST,
         postId: postId);
   }
+
 }

@@ -27,8 +27,9 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
 
   @override
   Widget build(BuildContext context) {
+
     return AudioWidget.network(
-      url: widget.audioUrl ?? '',
+      url: widget.audioUrl ?? 'audio is not played if null',
       play: _isPlaying,
       loopMode: LoopMode.single,
       child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),
@@ -66,7 +67,14 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   }
 
   _onNotPlayingButtonPressed() {
-    if (widget.audioUrl != "") {
+    if(widget.audioUrl == null){
+      showHelpDialog(
+          context: context,
+          contentString: "No Recording yet!",
+          okayString: "Okay",
+          onConfirmed: null);
+      return;
+    }
       final groupViewModel =
           Provider.of<GroupViewModel>(context, listen: false);
       if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
@@ -77,13 +85,6 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
       setState(() {
         _isPlaying = !_isPlaying;
       });
-    } else {
-      showHelpDialog(
-          context: context,
-          contentString: "No Recording yet!",
-          okayString: "Okay",
-          onConfirmed: null);
-    }
   }
 
   //-------------------------------------------------------------------------------------------------DURING_PLAYING

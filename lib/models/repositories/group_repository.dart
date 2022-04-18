@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/group.dart';
+import 'package:hide_out/%20data_models/member.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
 
@@ -17,6 +18,9 @@ class GroupRepository extends ChangeNotifier {
   Group? _group;
   Group? get group => _group;
 
+  Member? _member;
+  Member? get member => _member;
+
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
@@ -32,7 +36,6 @@ class GroupRepository extends ChangeNotifier {
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
     _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
-
     _isProcessing = false;
     notifyListeners();
   }
@@ -74,6 +77,8 @@ class GroupRepository extends ChangeNotifier {
 
   Future<void> updateGroupInfo(Group updatedGroup) async {
     await dbManager!.updateGroupInfo(updatedGroup);
+    _group = updatedGroup;
+    notifyListeners();
   }
 
   Future<void> getGroupInfo(String? groupId) async {
@@ -110,5 +115,15 @@ class GroupRepository extends ChangeNotifier {
   Future<void> updateIsAlerted(String groupId, String userId) async {
     await dbManager!
         .updateMemberInfo(groupId: groupId, userId: userId, isAlerted: true);
+  }
+
+  Future<void> fetchMember(String groupId, String memberId) async {
+    _isProcessing = true;
+    notifyListeners();
+
+    _member = await dbManager!.fetchMember(groupId, memberId);
+    _isProcessing = false;
+
+    notifyListeners();
   }
 }

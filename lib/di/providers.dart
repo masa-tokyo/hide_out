@@ -47,13 +47,15 @@ List<SingleChildWidget> viewModels = [
           ),
       update: (context, userRepository, viewModel) =>
           viewModel!..onUserInfoUpdated(userRepository)),
-  ChangeNotifierProxyProvider<UserRepository, ProfileViewModel>(
+  ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
+      ProfileViewModel>(
     create: (context) => ProfileViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
+      groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, viewModel) => viewModel!
+    update: (context, userRepository, groupRepository, viewModel) => viewModel!
       ..onUserInfoUpdated(userRepository)
-      ..onMemberFetched(userRepository),
+      ..onMemberFetched(groupRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       StartGroupViewModel>(
@@ -82,7 +84,6 @@ List<SingleChildWidget> viewModels = [
     ),
     update: (context, userRepository, groupRepository, viewModel) => viewModel!
       ..onGroupsExceptForMineObtained(groupRepository)
-      ..onGroupMemberInfoObtained(userRepository),
   ),
   ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository,
       RecordingViewModel>(
@@ -110,7 +111,6 @@ List<SingleChildWidget> viewModels = [
             viewModel!
               ..onGroupPostsObtained(postRepository)
               ..onGroupInfoObtained(groupRepository)
-              ..onGroupMemberInfoObtained(userRepository)
               ..onGroupInfoUpdated(groupRepository)
               ..onNotificationsFetched(userRepository),
   ),

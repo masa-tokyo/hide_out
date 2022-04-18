@@ -217,7 +217,7 @@ class MyGroupPart extends StatelessWidget {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18.0),
                       child: Text(
-                        group.groupName!,
+                        group.groupName,
                         style: darkBackgroundListTileTextStyle,
                       ),
                     ),

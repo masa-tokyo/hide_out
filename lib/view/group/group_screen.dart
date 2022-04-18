@@ -34,7 +34,6 @@ class GroupScreen extends StatelessWidget {
     Future(() => groupViewModel
         .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
     Future(() => groupViewModel.getNotifications());
-    Future(() => groupViewModel.getMemberInfo(group));
 
     return Theme(
       data: lightTheme,
@@ -53,7 +52,7 @@ class GroupScreen extends StatelessWidget {
               future: groupViewModel.returnGroupInfo(group.groupId),
               builder: (context, AsyncSnapshot<Group> snapshot) {
                 return snapshot.hasData
-                    ? Text(snapshot.data!.groupName!)
+                    ? Text(snapshot.data!.groupName)
                     : Text(""); //for updating after editing
               }),
           actions: [_groupEditButton(context)],
@@ -165,7 +164,7 @@ class GroupScreen extends StatelessWidget {
             createRoute(
                 context,
                 GroupDetailEditScreen(
-                  group: model.group,
+                  group: model.group!,
                 )));
         break;
 
@@ -394,7 +393,7 @@ class GroupScreen extends StatelessWidget {
               flex: 1,
               child: UserAvatar(
                 radius: 20.0,
-                url: _getPhotoUrl(model, post),
+                url: _getPhotoUrl(group, post),
               )),
           Expanded(
             flex: 6,
@@ -474,14 +473,13 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  String _getPhotoUrl(GroupViewModel model, Post post) {
-    if (model.groupMembers.any((member) => member.userId == post.userId)) {
-      return model.groupMembers
-          .where((member) => member.userId == post.userId)
-          .first
+  String? _getPhotoUrl(Group group, Post post) {
+    if (group.members.any((member) => member.userId == post.userId)) {
+      return group.members
+          .firstWhere((member) => member.userId == post.userId)
           .photoUrl;
     } else {
-      return userIconUrl();
+      return userIconUrl;
     }
   }
 }

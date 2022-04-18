@@ -49,9 +49,9 @@ class JoinGroupScreen extends StatelessWidget {
                       child: ListTile(
                         leading: UserAvatar(
                             radius: 26.0,
-                            url: group.ownerPhotoUrl ?? userIconUrl()),
-                        title: Text(group.groupName!),
-                        subtitle: Text(group.description!, maxLines: 1, overflow: TextOverflow
+                            url: group.ownerPhotoUrl ?? userIconUrl),
+                        title: Text(group.groupName),
+                        subtitle: Text(group.description, maxLines: 1, overflow: TextOverflow
                             .ellipsis,),
                         trailing: Icon(Icons.arrow_forward_ios_rounded),
                       ),

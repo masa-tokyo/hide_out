@@ -27,7 +27,7 @@ class DatabaseManager {
         .collection("members")
         .doc(currentUser.userId)
         .set(Member(
-                createdAt: DateTime.now(),
+                createdAt: DateTime.now().millisecondsSinceEpoch,
                 isAlerted: false,
                 lastPostDateTime: DateTime.now(),
                 timeZoneOffsetInMinutes:
@@ -60,7 +60,7 @@ class DatabaseManager {
     final groupRef = _db.collection('groups').doc(group.groupId);
 
     await groupRef.collection("members").doc(user.userId).set(Member(
-            createdAt: DateTime.now(),
+            createdAt: DateTime.now().millisecondsSinceEpoch,
             isAlerted: false,
             lastPostDateTime: DateTime.now(),
             timeZoneOffsetInMinutes: DateTime.now().timeZoneOffset.inMinutes,
@@ -225,25 +225,8 @@ class DatabaseManager {
         results.add(Group.fromMap(element.data()));
         //remove the groups that currentUser already belongs to
         results.removeWhere((element) => groupIds.contains(element.groupId));
-        //remove some groups that are not necessary for now
-        results = _removeTopicGroups(results);
       });
     });
-
-    return results;
-  }
-
-  List<Group> _removeTopicGroups(List<Group> results) {
-    final topicGroupIds = [
-      "00cfff40-7673-11eb-80dc-7138d5ef930f",
-      "26581cd0-8734-11eb-8bc9-5145735be640",
-      "3bd37d30-7671-11eb-8292-fbe39462078a",
-      "538ce750-7670-11eb-b220-6978360019b1",
-      "8cf727a0-766e-11eb-bdaa-7bed10e9b80d",
-      "b3d1fbf0-7670-11eb-b29f-0f73c644dd79",
-    ];
-
-    results.removeWhere((element) => topicGroupIds.contains(element.groupId));
 
     return results;
   }
@@ -257,14 +240,15 @@ class DatabaseManager {
     if (query.docs.isEmpty) {
       //in case when members choose a group which is already deleted by the owner
       final Group group = Group(
-          groupId: groupId,
+          groupId: "groupId",
           groupName: "No Group",
-          description: null,
+          description: "null",
           ownerId: null,
           ownerPhotoUrl: null,
-          autoExitDays: null,
-          createdAt: null,
-          lastActivityAt: null);
+          autoExitDays: 0,
+          createdAt: 0,
+          lastActivityAt: 0,
+          members: []);
 
       return group;
     }
@@ -319,34 +303,8 @@ class DatabaseManager {
     return false;
   }
 
-  Future<List<User>> getUsersByGroupId(String? groupId) async {
-    //get userIds at members of groups
-    var userIds = await getUserIdsByGroupId(groupId);
 
-    //get List of User at users
-    var groupMembers = <User>[];
 
-    await Future.forEach(userIds, (dynamic userId) async {
-      final user = await getUserInfoFromDbById(userId);
-      groupMembers.add(user);
-    });
-
-    return groupMembers;
-  }
-
-  Future<List<String?>> getUserIdsByGroupId(String? groupId) async {
-    final query =
-        await _db.collection("groups").doc(groupId).collection("members").get();
-    if (query.docs.isEmpty) return <String>[];
-
-    var userIds = <String?>[];
-
-    query.docs.forEach((element) {
-      userIds.add(element.data()["userId"]);
-    });
-
-    return userIds;
-  }
 
   Future<List<String?>> getClosedGroupNames(String userId) async {
     final query = await _db
@@ -394,26 +352,18 @@ class DatabaseManager {
     }
   }
 
-  Future<User> fetchUser(String memberId) async {
-    final user =
-        await _db.collection('users').doc(memberId).get().then((value) {
-      if (value.data() == null) {
-        return User(
-            userId: '',
-            displayName: '',
-            inAppUserName: 'Unknown User',
-            photoUrl: '',
-            photoStoragePath: '',
-            audioUrl: '',
-            audioStoragePath: '',
-            email: '',
-            createdAt: 0);
-      }
-      print('not null');
-      return User.fromMap(value.data()!);
-    });
-
-    return user;
+  Future<Member> fetchMember(String groupId, String userId) async {
+    try {
+      final snap = await _db
+          .collection('groups')
+          .doc(groupId)
+          .collection('members')
+          .doc(userId)
+          .get();
+      return Member.fromMap(snap.data()!);
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
   }
 
   //-----------------------------------------------------------------------------Update
@@ -511,7 +461,6 @@ class DatabaseManager {
   }
 
   Future<void> deleteGroup(Group group, String? userId) async {
-    //delete group doc itself as well as members sub-collection
     await _db.collection("groups").doc(group.groupId).delete();
   }
 

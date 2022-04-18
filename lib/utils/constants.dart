@@ -1,4 +1,4 @@
-String userIconUrl() {
+String get userIconUrl {
   return "https://firebasestorage.googleapis.com/v0/b/voiceput-e9f38.appspot.com/o/icon%2Fuser.png?alt=media&token=f9840490-3249-4292-9f3b-af0859945463";
 }
 

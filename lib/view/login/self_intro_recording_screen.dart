@@ -37,7 +37,7 @@ class SelfIntroRecordingScreen extends StatelessWidget {
                 ],
               ),
             ),
-            isUploading ? UploadingPage() : Container(),
+            isUploading ? UploadingPage() : const SizedBox(),
           ]),
         );
       },

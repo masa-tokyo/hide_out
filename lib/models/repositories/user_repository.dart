@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
@@ -29,10 +28,6 @@ class UserRepository extends ChangeNotifier {
 
   bool get isUploading => _isUploading;
 
-  List<User> _groupMembers = [];
-
-  List<User> get groupMembers => _groupMembers;
-
   List<d.Notification> _notifications = [];
 
   List<d.Notification> get notifications => _notifications;
@@ -45,8 +40,6 @@ class UserRepository extends ChangeNotifier {
 
   File? get imageFile => _imageFile;
 
-  User? _member;
-  User? get member => _member;
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -171,10 +164,10 @@ class UserRepository extends ChangeNotifier {
       displayName: firebaseUser.displayName ?? '',
       inAppUserName: firebaseUser.displayName ?? '',
       photoUrl: _getRandomPhotoUrl(),
-      photoStoragePath: "",
+      photoStoragePath: null,
       email: firebaseUser.email ?? "",
-      audioStoragePath: "",
-      audioUrl: "",
+      audioStoragePath: null,
+      audioUrl: null,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
@@ -203,15 +196,7 @@ class UserRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUsersByGroupId(Group group) async {
-    _isProcessing = true;
-    notifyListeners();
 
-    _groupMembers = await dbManager!.getUsersByGroupId(group.groupId);
-
-    _isProcessing = false;
-    notifyListeners();
-  }
 
   Future<void> uploadSelfIntro(String path) async {
     _isUploading = true;
@@ -300,8 +285,8 @@ class UserRepository extends ChangeNotifier {
         );
 
         await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
-        if (previousStoragePath != "") {
-          await dbManager!.deleteFileOnStorage(previousStoragePath!);
+        if (previousStoragePath != null) {
+          await dbManager!.deleteFileOnStorage(previousStoragePath);
         }
     }
 
@@ -324,13 +309,5 @@ class UserRepository extends ChangeNotifier {
     await signOut();
   }
 
-  Future<void> fetchUser(String memberId) async {
-    _isProcessing = true;
-    notifyListeners();
 
-    _member = await dbManager!.fetchUser(memberId);
-    _isProcessing = false;
-
-    notifyListeners();
-  }
 }

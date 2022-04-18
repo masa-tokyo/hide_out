@@ -21,10 +21,6 @@ class JoinGroupViewModel extends ChangeNotifier {
   List<Group> _chosenGroups = <Group>[];
   List<Group> get chosenGroups => _chosenGroups;
 
-  List<User> _groupMembers = [];
-  List<User> get groupMembers => _groupMembers;
-
-
 
   Future<void> getGroupsExceptForMine() async{
     await groupRepository!.getGroupsExceptForMine(currentUser!);
@@ -54,16 +50,9 @@ class JoinGroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getMemberInfo(Group group) async{
-    await userRepository!.getUsersByGroupId(group);
-  }
 
-  onGroupMemberInfoObtained(UserRepository userRepository) {
-    _isProcessing = userRepository.isProcessing;
-    _groupMembers = userRepository.groupMembers;
-    notifyListeners();
 
-  }
+
 
 
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hide_out/%20data_models/group.dart';
-import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/view/common/components/members_list.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view/home/home_screen.dart';
-import 'package:hide_out/view/profile/profile_screen.dart';
 import 'package:hide_out/view_models/join_group_view_model.dart';
 import 'package:hide_out/view_models/recording_view_model.dart';
 import 'package:provider/provider.dart';
@@ -21,13 +20,10 @@ class GroupDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceData = MediaQuery.of(context);
-    final joinGroupViewModel =
-        Provider.of<JoinGroupViewModel>(context, listen: false);
-    Future(() => joinGroupViewModel.getMemberInfo(group));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(group.groupName!),
+        title: Text(group.groupName),
       ),
       body: SingleChildScrollView(
         child: Consumer<JoinGroupViewModel>(
@@ -42,7 +38,9 @@ class GroupDetailScreen extends StatelessWidget {
                       SizedBox(
                         height: 36.0,
                       ),
-                      _memberPart(context, model),
+                      MembersList(
+                          currentUserId: model.currentUser!.userId,
+                          group: group),
                       SizedBox(
                         height: 12.0,
                       ),
@@ -56,7 +54,7 @@ class GroupDetailScreen extends StatelessWidget {
                       ),
                       from == GroupDetailScreenOpenMode.SIGN_UP ||
                               from == GroupDetailScreenOpenMode.JOIN
-                          ? model.groupMembers.length < 5
+                          ? group.members.length < 5
                               ? _joinButton(context)
                               : _unAvailableButton(context)
                           : Container()
@@ -66,74 +64,6 @@ class GroupDetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _memberPart(BuildContext context, JoinGroupViewModel model) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                "Member",
-                style: groupDetailLabelTextStyle,
-              ),
-              SizedBox(
-                width: 8.0,
-              ),
-              Text(
-                "(${model.groupMembers.length} / 5)",
-                style: groupDetailLabelTextStyle,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          model.groupMembers.isEmpty
-              ? Text(
-                  "-No Member-",
-                )
-              : Container(
-                  decoration: BoxDecoration(
-                    color: listTileColor,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: ListView.builder(
-                      itemCount: model.groupMembers.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, int index) {
-                        final member = model.groupMembers[index];
-                        return ListTile(
-                          onTap: () =>
-                              _openProfileScreen(context, member, model),
-                          title: Text(
-                            member.inAppUserName,
-                          ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 20.0,
-                          ),
-                        );
-                      }),
-                ),
-        ],
-      ),
-    );
-  }
-
-  _openProfileScreen(
-      BuildContext context, User member, JoinGroupViewModel model) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => ProfileScreen(
-                  memberName:
-                      model.currentUser == member ? null : member.inAppUserName,
-                  memberId: model.currentUser == member ? null : member.userId,
-                )));
   }
 
   Widget _periodPart(BuildContext context) {
@@ -196,7 +126,7 @@ class GroupDetailScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
           child: Text(
-            group.description!,
+            group.description,
             style: groupDetailDescriptionTextStyle,
           ),
         ),
