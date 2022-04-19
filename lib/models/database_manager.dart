@@ -128,9 +128,6 @@ class DatabaseManager {
       "userId": user.userId,
       "userName": user.inAppUserName,
     });
-
-    //update isListened
-    await _db.collection("posts").doc(post.postId).update(post.toMap());
   }
 
   Future<void> createDeleteAccountTrigger(User user) async {

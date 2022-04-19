@@ -143,7 +143,6 @@ class MyGroupPart extends StatelessWidget {
               size: 28.0,
             ),
             onConfirmed: () {
-              print('pushed');
               homeScreenViewModel.deleteNotification(element.notificationId);
             }));
       });

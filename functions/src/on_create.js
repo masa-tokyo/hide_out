@@ -54,6 +54,16 @@ exports.onMemberCreated = functions.firestore
     });
   });
 
+exports.onListenerCreated = functions.firestore
+  .document('posts/{postId}/listeners/{userId}').onCreate(
+    async (snap, context) => {
+      const postId = context.params.postId;
+        _db.doc(`posts/${postId}`).update({
+          'isListened': true
+        });
+
+    });
+
 
 exports.onDeleteAccountTriggered = functions.firestore.document('triggers/{userId}/delete_account/{docId}')
   .onCreate(async (snap) => {
