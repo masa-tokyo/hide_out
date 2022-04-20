@@ -321,7 +321,6 @@ class GroupScreen extends StatelessWidget {
                     child: PostAudioPlayButton(
                       color: lightThemeBackgroundColor!,
                       index: index,
-                      audioUrl: post.audioUrl,
                       audioPlayType: AudioPlayType.POST_MINE,
                     ),
                   ),
@@ -420,7 +419,6 @@ class GroupScreen extends StatelessWidget {
                             child: PostAudioPlayButton(
                               color: lightThemeBackgroundColor!,
                               index: index,
-                              audioUrl: post.audioUrl,
                               audioPlayType: AudioPlayType.POST_OTHERS,
                               post: post,
                             ),
