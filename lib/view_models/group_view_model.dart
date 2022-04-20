@@ -10,62 +10,80 @@ import 'package:hide_out/models/repositories/user_repository.dart';
 import 'package:hide_out/utils/constants.dart';
 
 class GroupViewModel extends ChangeNotifier {
-  final GroupRepository? groupRepository;
-  final PostRepository? postRepository;
-  final UserRepository? userRepository;
+  final GroupRepository groupRepository;
+  final PostRepository postRepository;
+  final UserRepository userRepository;
 
   GroupViewModel(
-      {this.groupRepository, this.postRepository, this.userRepository});
+      {required this.groupRepository,
+      required this.postRepository,
+      required this.userRepository});
 
   User? get currentUser => UserRepository.currentUser;
+
+  List<Post> _posts = <Post>[];
+
+  List<Post> get posts => _posts;
+
+  Group? _group;
+
+  Group? get group => _group;
 
   String groupName = "";
   String description = "";
 
-  List<Post> _posts = <Post>[];
-  List<Post> get posts => _posts;
+  int? _autoExitDays = 4;
 
-  Group? _group;
-  Group? get group => _group;
+  int? get autoExitDays => _autoExitDays;
 
   bool _isProcessing = false;
+
   bool get isProcessing => _isProcessing;
 
   List<d.Notification> _notifications = [];
+
   List<d.Notification> get notifications => _notifications;
 
   bool _isAudioFinished = false;
+
   bool get isAudioFinished => _isAudioFinished;
 
   bool _isAnotherAudioPlaying = false;
+
   bool get isAnotherAudioPlaying => _isAnotherAudioPlaying;
 
   bool _isPlaying = false;
+
   bool get isPlaying => _isPlaying;
 
-  int? _autoExitDays = 4;
-  int? get autoExitDays => _autoExitDays;
-
   List<bool> _isPlayings = [];
+
   List<bool> get isPlayings => _isPlayings;
 
   int _currentIndex = 0;
+
   int get currentIndex => _currentIndex;
 
   List<String?> _audioUrls = [];
+
   List<String?> get audioUrls => _audioUrls;
 
-  List<int> _plays = [];
-  List<int> get plays => _plays;
-
   List<AssetsAudioPlayer> _players = [];
-  List<AssetsAudioPlayer> get players => _players;
+
+  List<AssetsAudioPlayer> get players => _players; //exists only one
+
+  List<int> _plays = []; //how many times audios in the playlist are played in total
+  List<int> get plays => _plays;
 
   void updateDescription(String text) {
     description = text;
     notifyListeners();
   }
 
+  void updateGroupName(String text) {
+    groupName = text;
+    notifyListeners();
+  }
 
   //---------------------------------------------------------------------------- Audio methods
 
@@ -82,8 +100,6 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> playAudio(int index) async {
-    var player = _players[0];
-
     _plays.add(0);
 
     //open the player only for the 1st time
@@ -96,6 +112,7 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
+    var player = _players[0];
     if (_currentIndex == index) {
       //resume audio
       player.play();
@@ -124,7 +141,7 @@ class GroupViewModel extends ChangeNotifier {
   void _addPlayerListener() {
     var player = _players[0];
 
-    //listen everytime the current audio is finished, except for the last one
+    //check everytime the current audio is finished, except for the last one
     player.playlistAudioFinished.listen((event) {
       _isPlayings[_currentIndex] = false;
 
@@ -140,8 +157,9 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     });
 
-    //listen even when the playlist is yet to be complete
+    //check when the playlist finishes
     player.playlistFinished.listen((isFinished) {
+      //listen even when the playlist is yet to be complete
       if (isFinished) {
         _isPlayings[_currentIndex] = false;
 
@@ -155,7 +173,7 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> pauseAudio() async {
-    if (_isPlayings.length != 0){
+    if (_isPlayings.length != 0) {
       _isPlayings[_currentIndex] = false;
 
       var player = _players[0];
@@ -178,7 +196,7 @@ class GroupViewModel extends ChangeNotifier {
   //---------------------------------------------------------------------------- PostRepository
 
   Future<void> getGroupPosts(Group group) async {
-    await postRepository!.getPostsByGroup(group.groupId);
+    await postRepository.getPostsByGroup(group.groupId);
   }
 
   onGroupPostsObtained(PostRepository postRepository) {
@@ -213,16 +231,16 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> deletePost(Post post) async {
-    await postRepository!.deletePost(post);
+    await postRepository.deletePost(post);
   }
 
   Future<void> insertListener(Post post) async {
-    await postRepository!.insertListener(post, currentUser!);
+    await postRepository.insertListener(post, currentUser!);
   }
 
   //---------------------------------------------------------------------------- GroupRepository
   Future<void> getGroupInfo(String? groupId) async {
-    await groupRepository!.getGroupInfo(groupId);
+    await groupRepository.getGroupInfo(groupId);
   }
 
   onGroupInfoObtained(GroupRepository groupRepository) {
@@ -239,17 +257,16 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> updateGroupInfo(String? groupId) async {
-    await groupRepository!.updateGroupInfo(group!.copyWith(
+    await groupRepository.updateGroupInfo(group!.copyWith(
         groupName: groupName,
         description: description,
         autoExitDays: autoExitDays));
-
   }
 
   onGroupInfoUpdated(GroupRepository groupRepository) {
     _group = groupRepository.group;
     //after updating from GroupDetailEditScreen
-    if(_group != null) {
+    if (_group != null) {
       _autoExitDays = _group!.autoExitDays;
       groupName = _group!.groupName;
       description = _group!.description;
@@ -259,23 +276,20 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> leaveGroup(Group group) async {
-    await groupRepository!.leaveGroup(group, currentUser!);
+    await groupRepository.leaveGroup(group, currentUser!);
   }
 
-
-
-
   Future<Group> returnGroupInfo(String? groupId) async {
-    return await groupRepository!.returnGroupInfo(groupId);
+    return await groupRepository.returnGroupInfo(groupId);
   }
 
   Future<void> deleteGroup(Group group) async {
-    await groupRepository!.deleteGroup(group, currentUser!);
+    await groupRepository.deleteGroup(group, currentUser!);
   }
 
   //---------------------------------------------------------------------------- UserRepository
   Future<void> getNotifications() async {
-    await userRepository!.getNotifications();
+    await userRepository.getNotifications();
   }
 
   onNotificationsFetched(UserRepository userRepository) {
@@ -287,9 +301,8 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteNotification({String? postId}) async {
-    await userRepository!.deleteNotification(
+    await userRepository.deleteNotification(
         notificationDeleteType: NotificationDeleteType.OPEN_POST,
         postId: postId);
   }
-
 }

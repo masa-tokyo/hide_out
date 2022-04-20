@@ -129,8 +129,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
 
   void _onGroupNameUpdated() {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
-    groupViewModel.groupName = _groupNameController.text;
-    setState(() {});
+    groupViewModel.updateGroupName(_groupNameController.text);
   }
 
   Widget _descriptionTextInput() {
@@ -150,9 +149,7 @@ class _GroupDetailEditScreenState extends State<GroupDetailEditScreen> {
 
   void _onDescriptionUpdated() {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
-    // groupViewModel.description = _descriptionController.text;
     groupViewModel.updateDescription(_descriptionController.text);
-    // setState(() {});
   }
 
   Widget _updateButton(GroupViewModel model) {
