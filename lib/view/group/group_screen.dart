@@ -75,7 +75,7 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  //---------------------------------------------------------------------------------------------- FloatingActionButton
+  //------------------------------------------------------------------------------- FloatingActionButton
   _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
         child: const FaIcon(FontAwesomeIcons.solidCommentDots),
@@ -282,7 +282,7 @@ class GroupScreen extends StatelessWidget {
       if (postDateTime.year == newerPostDateTime.year &&
           postDateTime.month == newerPostDateTime.month &&
           postDateTime.day == newerPostDateTime.day) {
-        return Container();
+        return const SizedBox.shrink();
       }
     }
 
@@ -315,7 +315,7 @@ class GroupScreen extends StatelessWidget {
                 actionExtentRatio: 0.25,
                 child: ListTile(
                   onLongPress: () => _onDeleteTapped(context, post),
-                  trailing: Container(
+                  trailing: SizedBox(
                     width: 50,
                     height: 50,
                     child: PostAudioPlayButton(
@@ -350,7 +350,7 @@ class GroupScreen extends StatelessWidget {
                 "Listened",
                 style: listenedDescriptionTextStyle,
               )
-            : Container(),
+            : const SizedBox.shrink(),
         SizedBox(
           height: 8.0,
         )

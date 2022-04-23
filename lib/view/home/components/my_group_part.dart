@@ -240,7 +240,7 @@ class MyGroupPart extends StatelessWidget {
                             "${notifications.where((element) => element.notificationType == NotificationType.NEW_POST && element.groupId == group.groupId).length}"),
                       ),
                     )
-                  : Container(),
+                  : const SizedBox.shrink(),
             ]),
           );
         });

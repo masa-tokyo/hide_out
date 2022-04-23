@@ -211,7 +211,6 @@ class GroupViewModel extends ChangeNotifier {
         _addIsPlayings(_posts.length);
       }
     }
-
     notifyListeners();
   }
 

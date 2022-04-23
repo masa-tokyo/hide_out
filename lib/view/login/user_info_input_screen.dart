@@ -54,7 +54,7 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
           ),
           widget.from == ProfileEditScreensOpenMode.SIGN_UP
               ? _profilePicture()
-              : Container(),
+              : const SizedBox.shrink(),
           SizedBox(
             height: 32.0,
           ),

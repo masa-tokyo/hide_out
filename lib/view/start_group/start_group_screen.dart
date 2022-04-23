@@ -36,35 +36,34 @@ class StartGroupScreen extends StatelessWidget {
   Widget _doneButton(BuildContext context) {
     return Consumer<StartGroupViewModel>(
       builder: (context, model, child) {
-        return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: model.groupName != ""
-                      && model.description != ""
-                      && model.isFirstTap
-                      ? MaterialStateProperty.all<Color>(buttonEnabledColor)
-                      : MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                  ),
-                ),
-                onPressed: (model.groupName != ""
-                    && model.description != ""
-                    && model.isFirstTap
-                )
-                    ? () => _registerGroup(context)
-                    : null,
-                child: Text(
-                  "Done",
-                  style: enabledButtonTextStyle,
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: model.groupName != ""
+                  && model.description != ""
+                  && model.isFirstTap
+                  ? MaterialStateProperty.all<Color>(buttonEnabledColor)
+                  : MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
               ),
-            ));
+            ),
+            onPressed: (model.groupName != ""
+                && model.description != ""
+                && model.isFirstTap
+            )
+                ? () => _registerGroup(context)
+                : null,
+            child: Text(
+              "Done",
+              style: enabledButtonTextStyle,
+            ),
+          ),
+        );
       },
     );
   }

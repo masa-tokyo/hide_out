@@ -131,7 +131,8 @@ class SendToGroupScreen extends StatelessWidget {
   _onDoneButtonPressed(BuildContext context) async {
     final recordingViewModel =
         Provider.of<RecordingViewModel>(context, listen: false);
-    await recordingViewModel.postRecording(path, audioDuration);
+    await recordingViewModel.postRecording(
+        path: path, audioDuration: audioDuration);
 
     Navigator.pop(context);
     Navigator.pop(context);

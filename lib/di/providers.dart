@@ -57,14 +57,12 @@ List<SingleChildWidget> viewModels = [
       ..onUserInfoUpdated(userRepository)
       ..onMemberFetched(groupRepository),
   ),
-  ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
+  ChangeNotifierProvider<
       StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, viewModel) =>
-        viewModel!..onGroupRegistered(groupRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       HomeScreenViewModel>(

@@ -6,10 +6,11 @@ import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
 
 class StartGroupViewModel extends ChangeNotifier {
-  final UserRepository? userRepository;
-  final GroupRepository? groupRepository;
+  final UserRepository userRepository;
+  final GroupRepository groupRepository;
 
-  StartGroupViewModel({this.userRepository, this.groupRepository});
+  StartGroupViewModel(
+      {required this.userRepository, required this.groupRepository});
 
   User? get currentUser => UserRepository.currentUser;
 
@@ -60,17 +61,11 @@ class StartGroupViewModel extends ChangeNotifier {
               photoUrl: currentUser!.photoUrl)
         ]);
 
-    await groupRepository!.registerGroup(group, currentUser!);
+    await groupRepository.registerGroup(group, currentUser!);
   }
 
   void updateIsFirstTap() {
     _isFirstTap = !_isFirstTap;
-    notifyListeners();
-  }
-
-  onGroupRegistered(GroupRepository groupRepository) {
-    //todo delete this method if not necessary
-    _isProcessing = groupRepository.isProcessing;
     notifyListeners();
   }
 }

@@ -306,6 +306,7 @@ class UserRepository extends ChangeNotifier {
   Future<void> deleteAccount() async {
     // carry out the deletion from cloud functions
     await dbManager!.createDeleteAccountTrigger(currentUser!);
+    _imageFile = null;
     await signOut();
   }
 

@@ -28,14 +28,10 @@ class GroupRepository extends ChangeNotifier {
     _isProcessing = true;
     notifyListeners();
 
-    //users collection
-    await dbManager!.registerGroupIdOnUsers(group.groupId, currentUser.userId);
-
-    //groups collection
     await dbManager!.registerGroup(group, currentUser);
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
-    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
+    _myGroups.add(group);
     _isProcessing = false;
     notifyListeners();
   }
@@ -68,11 +64,11 @@ class GroupRepository extends ChangeNotifier {
   Future<void> joinGroup(List<Group> chosenGroups, User currentUser) async {
     chosenGroups.forEach((element) async {
       await dbManager!.joinGroup(element, currentUser);
+      //update group information for MyGroup@HomeScreen & SendToGroupScreen
+      _myGroups.add(element);
+      notifyListeners();
     });
 
-    //update group information for MyGroup@HomeScreen & SendToGroupScreen
-    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
-    notifyListeners();
   }
 
   Future<void> updateGroupInfo(Group updatedGroup) async {
@@ -107,7 +103,7 @@ class GroupRepository extends ChangeNotifier {
     await dbManager!.deleteGroup(group, currentUser.userId);
 
     //update group information for MyGroup@HomeScreen
-    _myGroups = await dbManager!.getGroupsByUserId(currentUser.userId);
+    _myGroups.remove(group);
 
     notifyListeners();
   }

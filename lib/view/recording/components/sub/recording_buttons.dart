@@ -95,7 +95,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       children: [
         _recordingButtonStatus == RecordingButtonStatus.DURING_RECORDING
             ? _timeDisplay()
-            : Container(),
+            : const SizedBox.shrink(),
         SizedBox(
           height: 8.0,
         ),

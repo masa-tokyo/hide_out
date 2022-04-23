@@ -36,15 +36,12 @@ class DatabaseManager {
                 name: currentUser.inAppUserName,
                 photoUrl: currentUser.photoUrl)
             .toMap());
-  }
-
-  Future<void> registerGroupIdOnUsers(String? groupId, String? userId) async {
     await _db
         .collection("users")
-        .doc(userId)
+        .doc(currentUser.userId)
         .collection("groups")
-        .doc(groupId)
-        .set({"groupId": groupId});
+        .doc(group.groupId)
+        .set({"groupId": group.groupId});
   }
 
   Future<void> joinGroup(Group group, User user) async {
