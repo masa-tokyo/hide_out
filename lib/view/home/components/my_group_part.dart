@@ -28,7 +28,7 @@ class MyGroupPart extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
           child: Text(
-            "My Group",
+            "My Groups",
             key: globalKey,
             style: homeScreenLabelTextStyle,
           ),

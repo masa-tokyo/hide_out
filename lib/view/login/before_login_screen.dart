@@ -10,7 +10,7 @@ class BeforeLoginScreen extends StatelessWidget {
     return Scaffold(
       body: IntroSlider(
         slides: _createSlides(),
-        renderSkipBtn: Container(),
+        renderSkipBtn: const SizedBox.shrink(),
 
         //next button
         renderNextBtn: _nextButton(),
@@ -38,14 +38,13 @@ class BeforeLoginScreen extends StatelessWidget {
           backgroundColor: Colors.orange[300],
           title: "Output what you learn",
           description:
-              "You can talk about whatever that happened to your daily lives."
-              "There are always someone who have the same interests and listen to you.",
+              "You can talk about interesting or learnable things that happened in your daily lives.",
           styleDescription: slideDescriptionTextStyle))
       ..add(Slide(
           pathImage: "assets/images/slides/deadline.png",
           backgroundColor: Colors.deepOrangeAccent[100],
           title: "Work together",
-          description: "All the members share the same goal: Auto-Exit Period. "
+          description: "All the members have the same goal: Auto-Exit Period. "
               "Let's record audio before the deadline!",
           styleDescription: slideDescriptionTextStyle));
 
@@ -53,7 +52,7 @@ class BeforeLoginScreen extends StatelessWidget {
   }
 
   Widget _nextButton() {
-    return Icon(
+    return const Icon(
       Icons.arrow_forward,
       size: 26.0,
       color: Colors.white,
@@ -61,7 +60,7 @@ class BeforeLoginScreen extends StatelessWidget {
   }
 
   Widget _doneButton() {
-    return Text("START", style: slideDoneButtonTextStyle);
+    return const Text("START", style: slideDoneButtonTextStyle);
   }
 
   _onDonePressed(BuildContext context) {

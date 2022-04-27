@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 28.0),
                     child: Text(
-                      "New Group",
+                      "New Groups",
                       style: homeScreenLabelTextStyle,
                     ),
                   ),

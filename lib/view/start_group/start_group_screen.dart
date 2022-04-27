@@ -12,7 +12,7 @@ class StartGroupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Start New Group"),
+        title: Text("Start a Group"),
       ),
       body: SingleChildScrollView(
         child: Column(
