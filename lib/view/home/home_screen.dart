@@ -41,12 +41,12 @@ class HomeScreen extends StatelessWidget {
               width: 0.4 * deviceData.size.width,
             ),
           ),
-          body: SingleChildScrollView(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await homeScreenViewModel.getMyGroup();
-                await homeScreenViewModel.getNotifications();
-              },
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await homeScreenViewModel.getMyGroup();
+              await homeScreenViewModel.getNotifications();
+            },
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -67,8 +67,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   NewGroupPart(),
+                  //so that this screen can be scrolled
                   SizedBox(
-                    height: 28.0,
+                    height: MediaQuery.of(context).size.height - 240,
                   ),
                 ],
               ),

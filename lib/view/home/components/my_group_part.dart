@@ -81,7 +81,7 @@ class MyGroupPart extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: Text(
-              "*Join/Start Group below",
+              "Join or start a group below!",
               style: newGroupIntroTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -198,6 +198,7 @@ class MyGroupPart extends StatelessWidget {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: groups.length,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, int index) {
           final group = groups[index];
           return Padding(
