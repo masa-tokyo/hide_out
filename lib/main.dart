@@ -4,13 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_out/di/providers.dart';
-import 'package:hide_out/models/repositories/user_repository.dart';
 import 'package:hide_out/utils/functions.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view/home/home_screen.dart';
 import 'package:hide_out/view/login/before_login_screen.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
+import 'package:hide_out/view_models/profile_view_model.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -88,9 +88,8 @@ class _SetUpState extends State<SetUp> {
   }
 
   Future<void> _setUp() async {
-    final userRepository = context.read<UserRepository>();
     Future.wait([
-      userRepository.createImageFile(),
+      context.read<ProfileViewModel>().createImageFile(),
       _checkBuildNumber(),
     ]);
   }
