@@ -30,3 +30,9 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# changes based on FLAVOR
+/Flutter/DartDefines.xcconfig
+/GoogleService-Info.plist
+/dev/GoogleService-Info.plist
+/prod/GoogleService-Info.plist
