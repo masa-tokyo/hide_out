@@ -1,4 +1,4 @@
-package io.flycricket.voiceput
+package com.masakisato.hideout
 
 import io.flutter.embedding.android.FlutterActivity
 
