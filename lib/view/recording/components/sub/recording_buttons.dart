@@ -142,6 +142,9 @@ class _RecordingButtonsState extends State<RecordingButtons> {
           height: 12.0,
         ),
         const Text('Start'),
+        const SizedBox(
+          height: 16.0,
+        ),
       ],
     );
   }
@@ -184,6 +187,23 @@ class _RecordingButtonsState extends State<RecordingButtons> {
           height: 12.0,
         ),
         const Text('Stop'),
+        const SizedBox(
+          height: 12.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.report_problem_rounded,
+              color: Colors.yellow[700],
+              size: 20,
+            ),
+            const SizedBox(
+              width: 4.0,
+            ),
+            Text('''Don't close the app while recording'''),
+          ],
+        )
       ],
     );
   }
