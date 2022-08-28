@@ -7,7 +7,7 @@ class UploadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  ColoredBox(
       color: uploadingBodyColor,
       child: Center(
         child: Column(

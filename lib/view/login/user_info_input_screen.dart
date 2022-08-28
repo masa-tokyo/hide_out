@@ -148,7 +148,7 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
     profileViewModel.updateUserName(_controller.text);
 
     if (widget.from == ProfileEditScreensOpenMode.SIGN_UP) {
-      //go to JoinGroupScreen
+      //go to SelfIntroRecordingScreen
       Navigator.push(
           context,
           MaterialPageRoute(
