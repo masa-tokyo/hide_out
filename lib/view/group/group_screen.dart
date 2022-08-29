@@ -296,6 +296,8 @@ class GroupScreen extends StatelessWidget {
   }
 
   Widget _currentUserPost(BuildContext context, int index, Post post) {
+    final scale = MediaQuery.of(context).textScaleFactor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -326,14 +328,23 @@ class GroupScreen extends StatelessWidget {
                   ),
                   title: RichText(
                       text: TextSpan(
-                          style: DefaultTextStyle.of(context).style,
+                        // RichText does not consider the font size set on user preferences
+                          style: scaledFontTextStyle(
+                              DefaultTextStyle.of(context).style,
+                              textScale: scale),
                           children: [
-                        TextSpan(text: post.title, style: postTitleTextStyle),
-                        TextSpan(text: "  "),
-                        TextSpan(
-                            text: "(${post.audioDuration})",
-                            style: postAudioDurationTextStyle),
-                      ])),
+                            TextSpan(
+                                text: post.title,
+                                style: scaledFontTextStyle(
+                                    postTitleTextStyle,
+                                    textScale: scale)),
+                            TextSpan(text: "  "),
+                            TextSpan(
+                                text: "(${post.audioDuration})",
+                                style: scaledFontTextStyle(
+                                    postAudioDurationTextStyle,
+                                    textScale: scale)),
+                          ])),
                 ),
                 secondaryActions: [
                   IconSlideAction(
@@ -383,6 +394,8 @@ class GroupScreen extends StatelessWidget {
 
   Widget _memberPost(
       BuildContext context, int index, GroupViewModel model, Post post) {
+    final scale = MediaQuery.of(context).textScaleFactor;
+
     return Padding(
       padding: const EdgeInsets.only(right: 12.0, bottom: 12.0),
       child: Row(
@@ -425,15 +438,22 @@ class GroupScreen extends StatelessWidget {
                           ),
                           title: RichText(
                               text: TextSpan(
-                                  style: DefaultTextStyle.of(context).style,
+                                // RichText does not consider the font size set on user preferences
+                                  style: scaledFontTextStyle(
+                                      DefaultTextStyle.of(context).style,
+                                      textScale: scale),
                                   children: [
                                 TextSpan(
                                     text: post.title,
-                                    style: postTitleTextStyle),
+                                    style: scaledFontTextStyle(
+                                        postTitleTextStyle,
+                                        textScale: scale)),
                                 TextSpan(text: "  "),
                                 TextSpan(
                                     text: "(${post.audioDuration})",
-                                    style: postAudioDurationTextStyle),
+                                    style: scaledFontTextStyle(
+                                        postAudioDurationTextStyle,
+                                        textScale: scale)),
                               ])),
                         ),
                       ),
