@@ -18,59 +18,57 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceData = MediaQuery.of(context);
 
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: Consumer<LoginViewModel>(
-            builder: (context, model, child) {
-              return model.isProcessing
-                  ? CircularProgressIndicator()
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/logo.png",
-                          fit: BoxFit.cover,
-                          width: 0.8 * deviceData.size.width,
+    return Scaffold(
+      body: Center(
+        child: Consumer<LoginViewModel>(
+          builder: (context, model, child) {
+            return model.isProcessing
+                ? CircularProgressIndicator()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/logo.png",
+                        fit: BoxFit.cover,
+                        width: 0.8 * deviceData.size.width,
+                      ),
+                      SizedBox(
+                        height: 200.0,
+                      ),
+                      ButtonWithImage(
+                        onPressed: () =>
+                            _signInOrSignUp(context, model, true),
+                        color: googleIconButtonColor,
+                        isBordered: true,
+                        imagePath: "assets/images/google_logo.png",
+                        label: Text(
+                          "Continue with Google",
+                          style: buttonBlackTextStyle,
                         ),
-                        SizedBox(
-                          height: 200.0,
+                        height: 26.0,
+                        width: 26.0,
+                      ),
+                      SizedBox(
+                        height: 24.0,
+                      ),
+                      ButtonWithIcon(
+                        onPressed: () =>
+                            _signInOrSignUp(context, model, false),
+                        isBordered: false,
+                        label: Text(
+                          "Continue with Apple",
+                          style: buttonWhiteTextStyle,
                         ),
-                        ButtonWithImage(
-                          onPressed: () =>
-                              _signInOrSignUp(context, model, true),
-                          color: googleIconButtonColor,
-                          isBordered: true,
-                          imagePath: "assets/images/google_logo.png",
-                          label: Text(
-                            "Continue with Google",
-                            style: buttonBlackTextStyle,
-                          ),
-                          height: 26.0,
-                          width: 26.0,
+                        color: Colors.black,
+                        icon: Icon(
+                          FontAwesomeIcons.apple,
+                          size: 26.0,
+                          color: Colors.white,
                         ),
-                        SizedBox(
-                          height: 24.0,
-                        ),
-                        ButtonWithIcon(
-                          onPressed: () =>
-                              _signInOrSignUp(context, model, false),
-                          isBordered: false,
-                          label: Text(
-                            "Continue with Apple",
-                            style: buttonWhiteTextStyle,
-                          ),
-                          color: Colors.black,
-                          icon: Icon(
-                            FontAwesomeIcons.apple,
-                            size: 26.0,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    );
-            },
-          ),
+                      )
+                    ],
+                  );
+          },
         ),
       ),
     );

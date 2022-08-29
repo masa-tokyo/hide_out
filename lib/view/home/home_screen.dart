@@ -30,49 +30,47 @@ class HomeScreen extends StatelessWidget {
     return SetUpHomeScreen(
       globalKey: globalKey,
       isSignedUp: isSignedUp,
-      child: SafeArea(
-        child: Scaffold(
-          floatingActionButton: _floatingActionButton(context),
-          drawer: _drawer(context),
-          appBar: AppBar(
-            leading: _settingsButton(context),
-            title: Image.asset(
-              "assets/images/logo.png",
-              width: 0.4 * deviceData.size.width,
-            ),
+      child: Scaffold(
+        floatingActionButton: _floatingActionButton(context),
+        drawer: _drawer(context),
+        appBar: AppBar(
+          leading: _settingsButton(context),
+          title: Image.asset(
+            "assets/images/logo.png",
+            width: 0.4 * deviceData.size.width,
           ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              await homeScreenViewModel.getMyGroup();
-              await homeScreenViewModel.getNotifications();
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 26.0,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await homeScreenViewModel.getMyGroup();
+            await homeScreenViewModel.getNotifications();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 26.0,
+                ),
+                MyGroupPart(
+                  globalKey: globalKey,
+                ),
+                SizedBox(
+                  height: 28.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 28.0),
+                  child: Text(
+                    "New Groups",
+                    style: homeScreenLabelTextStyle,
                   ),
-                  MyGroupPart(
-                    globalKey: globalKey,
-                  ),
-                  SizedBox(
-                    height: 28.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28.0),
-                    child: Text(
-                      "New Groups",
-                      style: homeScreenLabelTextStyle,
-                    ),
-                  ),
-                  NewGroupPart(),
-                  //so that this screen can be scrolled
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height - 240,
-                  ),
-                ],
-              ),
+                ),
+                NewGroupPart(),
+                //so that this screen can be scrolled
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 240,
+                ),
+              ],
             ),
           ),
         ),

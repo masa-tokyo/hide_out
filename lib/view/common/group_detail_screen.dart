@@ -174,17 +174,14 @@ class GroupDetailScreen extends StatelessWidget {
         await recordingViewModel.updateRecordingButtonStatus(
             RecordingButtonStatus.BEFORE_RECORDING);
 
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
-
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
             context,
             _createRoute(
                 context,
                 HomeScreen(
                   isSignedUp: true,
-                )));
+                ),),
+            (_) => false);
         break;
       case GroupDetailScreenOpenMode.JOIN:
         Navigator.pop(context);
