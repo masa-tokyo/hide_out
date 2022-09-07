@@ -110,8 +110,9 @@ class Post {
       audioUrl: map['audioUrl'] as String?,
       audioStoragePath: map['audioStoragePath'] as String?,
       audioDuration: map['audioDuration'] as String?,
+      // String(UTC) to DateTime(local)
       postDateTime: map['postDateTime'] == null
-    ? null : DateTime.parse(map['postDateTime'] as String),
+    ? null : DateTime.parse(map['postDateTime'] as String).toLocal(),
       isListened: map['isListened'] == null
       ? false : map['isListened'] as bool?,
     );

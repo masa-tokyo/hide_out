@@ -270,26 +270,6 @@ class DatabaseManager {
     return results;
   }
 
-  Future<List<Post>> getPostsByUserIdAndGroupId(String? userId, groupId) async {
-    final query = await _db.collection("posts").get();
-    if (query.docs.isEmpty) return [];
-
-    var posts = <Post>[];
-
-    await _db
-        .collection("posts")
-        .where("userId", isEqualTo: userId)
-        .where("groupId", isEqualTo: groupId)
-        .get()
-        .then((value) {
-      value.docs.forEach((doc) {
-        posts.add(Post.fromMap(doc.data()));
-      });
-    });
-
-    return posts;
-  }
-
   Future<bool> isNewGroupAvailable(String? userId) async {
     final query =
         await _db.collection("users").doc(userId).collection("groups").get();
