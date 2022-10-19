@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/member.dart';
 import 'package:hide_out/%20data_models/user.dart';
@@ -22,9 +20,9 @@ class ProfileViewModel extends ChangeNotifier {
 
   bool get isProcessing => _isProcessing;
 
-  File? _imageFile;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-  File? get imageFile => _imageFile;
 
   Future<void> updateUserName(String userName) async {
     await userRepository.updateUserInfo(
@@ -33,12 +31,13 @@ class ProfileViewModel extends ChangeNotifier {
   }
 
   onUserInfoUpdated(UserRepository userRepository) {
-    _imageFile = userRepository.imageFile;
+    _isLoading = userRepository.isLoading;
     notifyListeners();
   }
 
   Future<void> updateProfilePicture() async {
     await userRepository.updateProfilePicture();
+
   }
 
   Future<void> fetchMember(String groupId, String memberId) async {
@@ -52,10 +51,4 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createImageFile() async {
-    if (_imageFile == null) {
-      // set from remote if the photo in the local device is deleted
-      await userRepository.createImageFile();
-    }
-  }
 }

@@ -79,7 +79,6 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
             children: [
               UserAvatar(
                 url: model.currentUser!.photoUrl,
-                file: model.imageFile ?? null,
               ),
               Container(
                 width: 32.0,

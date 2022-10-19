@@ -46,7 +46,7 @@ List<SingleChildWidget> viewModels = [
             userRepository: Provider.of<UserRepository>(context, listen: false),
           ),
       update: (context, userRepository, viewModel) =>
-          viewModel!..onUserInfoUpdated(userRepository)),
+          viewModel!),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       ProfileViewModel>(
     create: (context) => ProfileViewModel(
@@ -55,10 +55,10 @@ List<SingleChildWidget> viewModels = [
     ),
     update: (context, userRepository, groupRepository, viewModel) => viewModel!
       ..onUserInfoUpdated(userRepository)
-      ..onMemberFetched(groupRepository),
+      ..onMemberFetched(groupRepository)
+      ,
   ),
-  ChangeNotifierProvider<
-      StartGroupViewModel>(
+  ChangeNotifierProvider<StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
@@ -75,14 +75,14 @@ List<SingleChildWidget> viewModels = [
       ..onNotificationsFetched(userRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
-      JoinGroupViewModel>(
-    create: (context) => JoinGroupViewModel(
-      userRepository: Provider.of<UserRepository>(context, listen: false),
-      groupRepository: Provider.of<GroupRepository>(context, listen: false),
-    ),
-    update: (context, userRepository, groupRepository, viewModel) => viewModel!
-      ..onGroupsExceptForMineObtained(groupRepository)
-  ),
+          JoinGroupViewModel>(
+      create: (context) => JoinGroupViewModel(
+            userRepository: Provider.of<UserRepository>(context, listen: false),
+            groupRepository:
+                Provider.of<GroupRepository>(context, listen: false),
+          ),
+      update: (context, userRepository, groupRepository, viewModel) =>
+          viewModel!..onGroupsExceptForMineObtained(groupRepository)),
   ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository,
       RecordingViewModel>(
     create: (context) => RecordingViewModel(

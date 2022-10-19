@@ -1,9 +1,5 @@
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
 Route<Object> createRoute(BuildContext context, Widget screen) {
   // bottom to top
@@ -21,17 +17,6 @@ Route<Object> createRoute(BuildContext context, Widget screen) {
           child: child,
         );
       });
-}
-
-Future<File> createFileFromUrl(String strUrl) async {
-  final http.Response responseData = await http.get(Uri.parse(strUrl));
-  final unit8list = responseData.bodyBytes;
-  final buffer = unit8list.buffer;
-  ByteData byteData = ByteData.view(buffer);
-  final tempDir = await getTemporaryDirectory();
-  File file = await File("${tempDir.path}/img").writeAsBytes(
-      buffer.asInt8List(byteData.offsetInBytes, byteData.lengthInBytes));
-  return file;
 }
 
 unFocusKeyboard({required BuildContext context, Function? onUnFocused}) {

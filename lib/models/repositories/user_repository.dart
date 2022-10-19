@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -8,7 +9,6 @@ import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
 import 'package:hide_out/utils/constants.dart';
-import 'package:hide_out/utils/functions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
@@ -24,6 +24,9 @@ class UserRepository extends ChangeNotifier {
 
   bool get isProcessing => _isProcessing;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   bool _isUploading = false;
 
   bool get isUploading => _isUploading;
@@ -35,10 +38,6 @@ class UserRepository extends ChangeNotifier {
   bool _isUpdating = false;
 
   bool get isUpdating => _isUpdating;
-
-  File? _imageFile;
-
-  File? get imageFile => _imageFile;
 
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
@@ -82,8 +81,6 @@ class UserRepository extends ChangeNotifier {
         await dbManager!.insertUser(_convertToUser(firebaseUser));
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
-
         return LoginScreenStatus.SIGNED_UP;
       } else {
         //Sign in
@@ -97,7 +94,6 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
 
         return LoginScreenStatus.SIGNED_IN;
       }
@@ -133,7 +129,6 @@ class UserRepository extends ChangeNotifier {
         await dbManager!.insertUser(_convertToUser(firebaseUser));
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
 
         return LoginScreenStatus.SIGNED_UP;
       } else {
@@ -148,7 +143,6 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
 
         return LoginScreenStatus.SIGNED_IN;
       }
@@ -220,9 +214,9 @@ class UserRepository extends ChangeNotifier {
     await _googleSignIn.signOut();
     await _auth.signOut();
     currentUser = null;
-    _imageFile = null;
     notifyListeners();
   }
+
 
   Future<void> getNotifications() async {
     _isProcessing = true;
@@ -262,20 +256,22 @@ class UserRepository extends ChangeNotifier {
 
   Future<void> updateProfilePicture() async {
     try {
+      // differentiate from GroupRepository.isProgressing on ProfileViewModel
+      _isLoading = true;
+      notifyListeners();
+
       final ImagePicker picker = ImagePicker();
 
       final XFile? pickedImage =
       await picker.pickImage(source: ImageSource.gallery);
 
       if (pickedImage != null) {
-        // draw the image right away, then create the file from url again later
-        _imageFile = File(pickedImage.path);
-        notifyListeners();
+        final imageFile = File(pickedImage.path);
 
         final storageId = Uuid().v1();
         final storagePath = "users/$storageId";
         final photoUrl =
-        await dbManager!.uploadPhotoToStorage(_imageFile!, storagePath);
+        await dbManager!.uploadPhotoToStorage(imageFile, storagePath);
 
         final previousStoragePath = currentUser!.photoStoragePath;
 
@@ -289,24 +285,18 @@ class UserRepository extends ChangeNotifier {
           await dbManager!.deleteFileOnStorage(previousStoragePath);
         }
     }
+      _isLoading = false;
+      notifyListeners();
 
     } catch(e) {
-      // an error is caught when file type is unknown
-      print('error: $e');
+      log('error: $e');
     }
   }
 
-  Future<void> createImageFile() async {
-    if (currentUser != null) {
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
-      notifyListeners();
-    }
-  }
 
   Future<void> deleteAccount() async {
     // carry out the deletion from cloud functions
     await dbManager!.createDeleteAccountTrigger(currentUser!);
-    _imageFile = null;
     await signOut();
   }
 

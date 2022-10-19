@@ -74,8 +74,9 @@ class ProfileScreen extends StatelessWidget {
                   alignment: Alignment.bottomRight,
                   children: [
                     UserAvatar(
-                      url: model.currentUser!.photoUrl,
-                      file: model.imageFile,
+                      url: model.isLoading
+                          ? userIconUrl
+                          : model.currentUser!.photoUrl,
                     ),
                     Container(
                       width: 32.0,
