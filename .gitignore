@@ -52,3 +52,6 @@ ios/GoogleService-Info.plist
 ios/Runner/GoogleService-Info.plist
 ios/dev/GoogleService-Info.plist
 ios/prod/GoogleService-Info.plist
+
+#fvm
+.fvm/flutter_sdk
