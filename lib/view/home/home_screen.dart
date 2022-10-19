@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
     final deviceData = MediaQuery.of(context);
     final globalKey = GlobalKey();
 
-    return SetUpHomeScreen(
+    return _SetUpHomeScreen(
       globalKey: globalKey,
       isSignedUp: isSignedUp,
       child: Scaffold(
@@ -229,8 +229,8 @@ class HomeScreen extends StatelessWidget {
 
 //------------------------------------------------------------------------------SetUpHomeScreen
 
-class SetUpHomeScreen extends StatefulWidget {
-  const SetUpHomeScreen(
+class _SetUpHomeScreen extends StatefulWidget {
+  const _SetUpHomeScreen(
       {Key? key,
       required this.child,
       required this.isSignedUp,
@@ -245,7 +245,7 @@ class SetUpHomeScreen extends StatefulWidget {
   _SetUpHomeScreenState createState() => _SetUpHomeScreenState();
 }
 
-class _SetUpHomeScreenState extends State<SetUpHomeScreen> {
+class _SetUpHomeScreenState extends State<_SetUpHomeScreen> {
   @override
   void initState() {
     if (widget.isSignedUp) {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/post.dart';
@@ -28,13 +30,20 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   @override
   Widget build(BuildContext context) {
 
-    return AudioWidget.network(
-      url: widget.audioUrl ?? 'audio is not played if null',
-      play: _isPlaying,
-      loopMode: LoopMode.single,
-      child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),
-      onFinished: () => _onAudioFinished(),
-    );
+    try {
+      return AudioWidget.network(
+        url: widget.audioUrl ?? 'audio is not played if null',
+        play: _isPlaying,
+        loopMode: LoopMode.single,
+        child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),
+        onFinished: () => _onAudioFinished(),
+      );
+    } catch (e) {
+      // inappropriate audio url throws an error
+      log('error caught: $e');
+      rethrow;
+    }
+
   }
 
   _onAudioFinished() {

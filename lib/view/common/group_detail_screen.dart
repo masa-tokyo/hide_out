@@ -84,9 +84,7 @@ class GroupDetailScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              group.autoExitDays != null
-                  ? "${group.autoExitDays} Days"
-                  : "No requirement",
+              "${group.autoExitDays} Days",
               style: groupDetailDescriptionTextStyle,
             ),
           )
@@ -177,10 +175,11 @@ class GroupDetailScreen extends StatelessWidget {
         Navigator.pushAndRemoveUntil(
             context,
             _createRoute(
-                context,
-                HomeScreen(
-                  isSignedUp: true,
-                ),),
+              context,
+              HomeScreen(
+                isSignedUp: true,
+              ),
+            ),
             (_) => false);
         break;
       case GroupDetailScreenOpenMode.JOIN:
