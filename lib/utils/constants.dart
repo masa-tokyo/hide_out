@@ -60,3 +60,13 @@ enum NotificationDeleteType {
   // LEAVE_GROUP,
   // DELETE_GROUP,
 }
+
+enum EventType {
+  FIRST_POST_TALK,
+  POST_TALK,
+  PLAY_TALK,
+  SIGN_UP,
+  JOIN_GROUP,
+  CREATE_GROUP,
+
+}

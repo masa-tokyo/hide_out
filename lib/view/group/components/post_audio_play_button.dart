@@ -69,7 +69,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
         groupViewModel.deleteNotification(postId: widget.post!.postId);
       }
 
-      groupViewModel.playAudio(widget.index);
+      groupViewModel.playAudio(widget.index, widget.audioPlayType);
 
 
   }

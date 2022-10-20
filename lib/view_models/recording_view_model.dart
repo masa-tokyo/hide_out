@@ -7,6 +7,7 @@ import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/post_repository.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/models/tracking.dart';
 import 'package:hide_out/utils/constants.dart';
 
 class RecordingViewModel extends ChangeNotifier {
@@ -69,6 +70,18 @@ class RecordingViewModel extends ChangeNotifier {
         audioDuration: audioDuration,
         groupId: currentGroupId,
         groupIds: groupIds != [] ? groupIds : null);
+
+    final totalPosts = await postRepository.getPostsByUser(currentUser!.userId);
+
+      Tracking().logEvent(EventType.POST_TALK, eventParams: {
+        'post_type': currentGroupId != null ? 'single' : 'multiple',
+        'total_posts': totalPosts.length,
+      });
+
+      if(totalPosts.length == 1) {
+        Tracking().logEvent(EventType.FIRST_POST_TALK, eventParams: {
+        });
+      }
 
     _groupIds.clear();
 

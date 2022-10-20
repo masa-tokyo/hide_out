@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hide_out/models/tracking.dart';
+import 'package:hide_out/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/user.dart';
@@ -44,7 +46,7 @@ class StartGroupViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> registerGroup() async {
+  Future<void> createGroup() async {
     group = Group(
         groupId: Uuid().v1(),
         groupName: groupName,
@@ -61,7 +63,9 @@ class StartGroupViewModel extends ChangeNotifier {
               photoUrl: currentUser!.photoUrl)
         ]);
 
-    await groupRepository.registerGroup(group, currentUser!);
+    await groupRepository.createGroup(group, currentUser!);
+    Tracking().logEvent(EventType.CREATE_GROUP);
+
   }
 
   void updateIsFirstTap() {

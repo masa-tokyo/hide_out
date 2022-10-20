@@ -56,7 +56,7 @@ class StartGroupScreen extends StatelessWidget {
                 && model.description != ""
                 && model.isFirstTap
             )
-                ? () => _registerGroup(context)
+                ? () => _createGroup(context)
                 : null,
             child: Text(
               "Done",
@@ -68,11 +68,11 @@ class StartGroupScreen extends StatelessWidget {
     );
   }
 
-  _registerGroup(BuildContext context) async {
+  _createGroup(BuildContext context) async {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
     startGroupViewModel.updateIsFirstTap();
 
-    await startGroupViewModel.registerGroup();
+    await startGroupViewModel.createGroup();
 
     Navigator.pop(context);
 

@@ -605,12 +605,12 @@ packages:
     source: hosted
     version: "3.0.1"
   recase:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: recase
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.1.0"
   rxdart:
     dependency: transitive
     description:

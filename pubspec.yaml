@@ -68,6 +68,7 @@ dependencies:
   package_info: ^2.0.2
   url_launcher: ^6.0.20
   loading_animation_widget: ^1.1.0+3
+  recase: ^4.1.0
 
 dev_dependencies:
   flutter_test:

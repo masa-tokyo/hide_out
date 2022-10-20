@@ -109,4 +109,8 @@ class PostRepository extends ChangeNotifier {
 
     await dbManager!.insertListener(updatedPost, user);
   }
+
+  Future<List<Post>> getPostsByUser(String userId) async{
+    return await dbManager!.getPostsByUser(userId);
+  }
 }

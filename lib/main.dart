@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_out/di/providers.dart';
+import 'package:hide_out/models/tracking.dart';
 import 'package:hide_out/utils/functions.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.dark,
+        navigatorObservers: [
+          Tracking().getPageViewObserver(),
+        ],
         home: FutureBuilder(
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {

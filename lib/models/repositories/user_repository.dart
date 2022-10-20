@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
+import 'package:hide_out/models/tracking.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -81,6 +82,12 @@ class UserRepository extends ChangeNotifier {
         await dbManager!.insertUser(_convertToUser(firebaseUser));
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
+        Tracking().logEvent(EventType.SIGN_UP, eventParams: {
+          'platform': Platform.isIOS ? 'iOS' : 'Android',
+          'sign_up_method': 'apple',
+        });
+
+
         return LoginScreenStatus.SIGNED_UP;
       } else {
         //Sign in
@@ -94,6 +101,8 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
+
+        await Tracking().setUserId(currentUser!.userId);
 
         return LoginScreenStatus.SIGNED_IN;
       }
@@ -130,6 +139,11 @@ class UserRepository extends ChangeNotifier {
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
 
+        Tracking().logEvent(EventType.SIGN_UP, eventParams: {
+          'platform': Platform.isIOS ? 'iOS' : 'Android',
+          'sign_up_method': 'google',
+        });
+
         return LoginScreenStatus.SIGNED_UP;
       } else {
         //Sign in
@@ -143,6 +157,8 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
+
+        await Tracking().setUserId(currentUser!.userId);
 
         return LoginScreenStatus.SIGNED_IN;
       }

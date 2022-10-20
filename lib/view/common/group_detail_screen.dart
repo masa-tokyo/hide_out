@@ -57,7 +57,7 @@ class GroupDetailScreen extends StatelessWidget {
                           ? group.members.length < 5
                               ? _joinButton(context)
                               : _unAvailableButton(context)
-                          : Container()
+                          : const SizedBox.shrink()
                     ],
                   );
           },

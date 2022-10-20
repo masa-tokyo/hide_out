@@ -7,6 +7,7 @@ import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/post_repository.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/models/tracking.dart';
 import 'package:hide_out/utils/constants.dart';
 
 class GroupViewModel extends ChangeNotifier {
@@ -99,7 +100,7 @@ class GroupViewModel extends ChangeNotifier {
     return result;
   }
 
-  Future<void> playAudio(int index) async {
+  Future<void> playAudio(int index, AudioPlayType playType) async {
     _plays.add(0);
 
     //open the player only for the 1st time
@@ -122,6 +123,14 @@ class GroupViewModel extends ChangeNotifier {
     }
 
     _isPlayings[_currentIndex] = true;
+
+    // for analysis
+    assert(playType == AudioPlayType.POST_MINE ||
+        playType == AudioPlayType.POST_OTHERS);
+    Tracking().logEvent(EventType.PLAY_TALK, eventParams: {
+      'play_type': playType == AudioPlayType.POST_MINE ? 'mine' : 'others',
+    });
+
     notifyListeners();
   }
 

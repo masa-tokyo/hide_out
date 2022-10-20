@@ -24,11 +24,11 @@ class GroupRepository extends ChangeNotifier {
   bool _isProcessing = false;
   bool get isProcessing => _isProcessing;
 
-  Future<void> registerGroup(Group group, User currentUser) async {
+  Future<void> createGroup(Group group, User currentUser) async {
     _isProcessing = true;
     notifyListeners();
 
-    await dbManager!.registerGroup(group, currentUser);
+    await dbManager!.createGroup(group, currentUser);
 
     //update group information for MyGroup@HomeScreen & SendToGroupScreen
     _myGroups.add(group);

@@ -3,6 +3,8 @@ import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/repositories/group_repository.dart';
 import 'package:hide_out/models/repositories/user_repository.dart';
+import 'package:hide_out/models/tracking.dart';
+import 'package:hide_out/utils/constants.dart';
 
 class JoinGroupViewModel extends ChangeNotifier {
   final UserRepository? userRepository;
@@ -30,6 +32,7 @@ class JoinGroupViewModel extends ChangeNotifier {
 
   Future<void> joinGroup() async{
    await groupRepository!.joinGroup(chosenGroups, currentUser!);
+   Tracking().logEvent(EventType.JOIN_GROUP);
 
    _chosenGroups = [];
 

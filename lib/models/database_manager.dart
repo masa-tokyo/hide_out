@@ -17,7 +17,7 @@ class DatabaseManager {
     await _db.collection("users").doc(user.userId).set(user.toMap());
   }
 
-  Future<void> registerGroup(Group group, User currentUser) async {
+  Future<void> createGroup(Group group, User currentUser) async {
     await _db.collection('groups').doc(group.groupId).set(group.toMap());
 
     //set data on sub-collection
@@ -270,15 +270,27 @@ class DatabaseManager {
     return results;
   }
 
+  Future<List<Post>> getPostsByUser(String userId) async {
+    var results = <Post>[];
+
+    await _db
+        .collection('posts')
+        .where('userId', isEqualTo: userId)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        results.add(Post.fromMap(element.data()));
+      });
+    });
+    return results;
+  }
+
   Future<bool> isNewGroupAvailable(String? userId) async {
     final query =
         await _db.collection("users").doc(userId).collection("groups").get();
     if (query.docs.length <= 10) return true;
     return false;
   }
-
-
-
 
   Future<List<String?>> getClosedGroupNames(String userId) async {
     final query = await _db
