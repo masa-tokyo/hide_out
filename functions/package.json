@@ -2,12 +2,13 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase emulators:start --only functions --inspect-functions",
+    "serve": "firebase emulators:start --inspect-functions --import seed",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "rules": "firebase deploy --only firestore:rules",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "dump": "firebase emulators:export seed"
   },
   "engines": {
     "node": "14"
