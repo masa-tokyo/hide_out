@@ -125,7 +125,8 @@ exports.onMemberDeleted = functions.firestore.document('groups/{groupId}/members
       (member) => member.userId === userId);
     // if the target user is not found(this shouldn't happen, though), do nothing
     if(targetIndex !== -1){
-      members.splice(targetIndex);
+      // delete the target member
+      members.splice(targetIndex, 1);
       groupSnap.ref.update(
         {'members': members}
       );
