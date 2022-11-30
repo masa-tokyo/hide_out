@@ -79,6 +79,11 @@ flutter_icons:
   ios: true
   image_path: "assets/images/app_icon.png"
 
+# prevent transitive dependencies from causing errors
+# cf. https://stackoverflow.com/questions/70363918/error-member-not-found-packageroot-how-to-solve-ignore-deprecated-member-u
+dependency_overrides:
+  platform: ^3.1.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
