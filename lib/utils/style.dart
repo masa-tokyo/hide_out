@@ -153,6 +153,10 @@ const selfIntroDescriptionTextStyle = TextStyle(
 final skipButtonTextStyle = TextStyle(
   color: Colors.grey[500],
 );
+final underlineTextStyle = TextStyle(
+  fontSize: 14.0,
+  decoration: TextDecoration.underline,
+);
 
 //Profile
 const profileLabelTextStyle = TextStyle(fontSize: 14.0);
