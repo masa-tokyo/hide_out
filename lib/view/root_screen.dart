@@ -10,7 +10,6 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class RootScreen extends StatelessWidget {
   const RootScreen({Key? key}) : super(key: key);
   static const routeName = '/';
@@ -19,19 +18,19 @@ class RootScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
 
-    return FutureBuilder(
-      future: loginViewModel.isSignIn(),
-      builder: (context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData && snapshot.data!) {
-          return SetUp(child: HomeScreen(isSignedUp: false));
-        } else if (snapshot.hasData && !snapshot.data!) {
-          return BeforeLoginScreen();
-        } else {
-          return Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-      },
+    return SetUp(
+      child: FutureBuilder(
+        future: loginViewModel.isSignIn(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData && snapshot.data!) {
+            return HomeScreen(isSignedUp: false);
+          } else if (snapshot.hasData && !snapshot.data!) {
+            return BeforeLoginScreen();
+          } else {
+            return SplashScreen();
+          }
+        },
+      ),
     );
   }
 }
@@ -64,7 +63,7 @@ class _SetUpState extends State<SetUp> {
   }
 
   Future<void> _setUp() async {
-    Future.wait([
+    await Future.wait([
       _checkBuildNumber(),
     ]);
   }
@@ -85,14 +84,15 @@ class _SetUpState extends State<SetUp> {
       });
       await showHelpDialog(
           context: context,
-          contentString: 'The latest version is available now. Please update.',
+          contentString:
+              'The latest version is available now. \nPlease update.',
           okayString: 'Update',
           onConfirmed: () async {
-            //todo add urls
             if (Platform.isIOS) {
-              await launch('');
+              await launch('https://apps.apple.com/app/id1632561765');
             } else {
-              await launch('');
+              await launch(
+                  'https://play.google.com/store/apps/details?id=com.masakisato.hideout');
             }
           });
     }
