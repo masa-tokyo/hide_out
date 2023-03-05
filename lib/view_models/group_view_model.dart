@@ -73,7 +73,8 @@ class GroupViewModel extends ChangeNotifier {
 
   List<AssetsAudioPlayer> get players => _players; //exists only one
 
-  List<int> _plays = []; //how many times audios in the playlist are played in total
+  List<int> _plays =
+      []; //how many times audios in the playlist are played in total
   List<int> get plays => _plays;
 
   void updateDescription(String text) {
@@ -103,11 +104,7 @@ class GroupViewModel extends ChangeNotifier {
   Future<void> playAudio(int index, AudioPlayType playType) async {
     _plays.add(0);
 
-    //open the player only for the 1st time
-    if (_plays.length == 1) {
-      _openPlayer();
-      _addPlayerListener();
-    } else {
+    if (_plays.length > 1) {
       //update the button of previous audio, if any is played before
       _isPlayings[_currentIndex] = false;
       notifyListeners();
@@ -134,7 +131,7 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _openPlayer() {
+  Future<void> _openPlayer() async {
     var player = _players[0];
 
     List<Audio> audios = [];
@@ -142,8 +139,11 @@ class GroupViewModel extends ChangeNotifier {
       audios.add(Audio.network(element!));
     });
 
-    player.open(
+    await player.open(
       Playlist(audios: audios),
+      // Since the player should start playing right after opening the screen,
+      // turn off the autoStart property
+      autoStart: false,
     );
   }
 
@@ -208,7 +208,7 @@ class GroupViewModel extends ChangeNotifier {
     await postRepository.getPostsByGroup(group.groupId);
   }
 
-  onGroupPostsObtained(PostRepository postRepository) {
+  onGroupPostsObtained(PostRepository postRepository) async {
     //to avoid being called everytime deleteNotification() is called
     if (_plays.length == 0) {
       _posts = postRepository.posts;
@@ -218,6 +218,8 @@ class GroupViewModel extends ChangeNotifier {
       if (_posts.length != 0) {
         _addAudioUrls(_posts);
         _addIsPlayings(_posts.length);
+        await _openPlayer();
+        _addPlayerListener();
       }
     }
     notifyListeners();
