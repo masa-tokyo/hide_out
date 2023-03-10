@@ -28,7 +28,7 @@ class GroupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
-    Future(() => groupViewModel.resetPlays());
+    Future(() => groupViewModel.resetPlayer());
     Future(() => groupViewModel.getGroupPosts(group));
 
     Future(() => groupViewModel
@@ -59,7 +59,7 @@ class GroupScreen extends StatelessWidget {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            groupViewModel.resetPlays();
+            groupViewModel.resetPlayer();
             await groupViewModel.getGroupPosts(group);
             //in order to update the group name after the owner edit it
             await groupViewModel.getGroupInfo(group.groupId);
@@ -328,23 +328,22 @@ class GroupScreen extends StatelessWidget {
                   ),
                   title: RichText(
                       text: TextSpan(
-                        // RichText does not consider the font size set on user preferences
+                          // RichText does not consider the font size set on user preferences
                           style: scaledFontTextStyle(
                               DefaultTextStyle.of(context).style,
                               textScale: scale),
                           children: [
-                            TextSpan(
-                                text: post.title,
-                                style: scaledFontTextStyle(
-                                    postTitleTextStyle,
-                                    textScale: scale)),
-                            TextSpan(text: "  "),
-                            TextSpan(
-                                text: "(${post.audioDuration})",
-                                style: scaledFontTextStyle(
-                                    postAudioDurationTextStyle,
-                                    textScale: scale)),
-                          ])),
+                        TextSpan(
+                            text: post.title,
+                            style: scaledFontTextStyle(postTitleTextStyle,
+                                textScale: scale)),
+                        TextSpan(text: "  "),
+                        TextSpan(
+                            text: "(${post.audioDuration})",
+                            style: scaledFontTextStyle(
+                                postAudioDurationTextStyle,
+                                textScale: scale)),
+                      ])),
                 ),
                 secondaryActions: [
                   IconSlideAction(
@@ -438,7 +437,7 @@ class GroupScreen extends StatelessWidget {
                           ),
                           title: RichText(
                               text: TextSpan(
-                                // RichText does not consider the font size set on user preferences
+                                  // RichText does not consider the font size set on user preferences
                                   style: scaledFontTextStyle(
                                       DefaultTextStyle.of(context).style,
                                       textScale: scale),

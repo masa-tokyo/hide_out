@@ -45,37 +45,20 @@ class GroupViewModel extends ChangeNotifier {
 
   List<d.Notification> get notifications => _notifications;
 
-  bool _isAudioFinished = false;
-
-  bool get isAudioFinished => _isAudioFinished;
-
-  bool _isAnotherAudioPlaying = false;
-
-  bool get isAnotherAudioPlaying => _isAnotherAudioPlaying;
-
-  bool _isPlaying = false;
-
-  bool get isPlaying => _isPlaying;
-
   List<bool> _isPlayings = [];
-
-  List<bool> get isPlayings => _isPlayings;
 
   int _currentIndex = 0;
 
-  int get currentIndex => _currentIndex;
-
   List<String?> _audioUrls = [];
-
-  List<String?> get audioUrls => _audioUrls;
 
   List<AssetsAudioPlayer> _players = [];
 
   List<AssetsAudioPlayer> get players => _players; //exists only one
 
-  List<int> _plays =
-      []; //how many times audios in the playlist are played in total
-  List<int> get plays => _plays;
+  AssetsAudioPlayer _player = AssetsAudioPlayer();
+
+  //how many times audios in the playlist are played in total
+  List<int> _plays = [];
 
   void updateDescription(String text) {
     description = text;
@@ -89,11 +72,14 @@ class GroupViewModel extends ChangeNotifier {
 
   //---------------------------------------------------------------------------- Audio methods
 
-  void resetPlays() {
-    _plays.clear();
+  // reset properties that are not connected to repositories and not reset automatically
+  void resetPlayer() {
+    _player = AssetsAudioPlayer();
+    _currentIndex = 0;
 
-    _players.clear();
-    _players.add(AssetsAudioPlayer());
+    _plays.clear();
+    _isPlayings.clear();
+    _audioUrls.clear();
   }
 
   Future<bool> returnIsPlaying(int index) async {
@@ -110,13 +96,12 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
-    var player = _players[0];
     if (_currentIndex == index) {
       //resume audio
-      player.play();
+      _player.play();
     } else {
       _currentIndex = index;
-      player.playlistPlayAtIndex(_currentIndex);
+      _player.playlistPlayAtIndex(_currentIndex);
     }
 
     _isPlayings[_currentIndex] = true;
@@ -132,14 +117,12 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> _openPlayer() async {
-    var player = _players[0];
-
     List<Audio> audios = [];
     _audioUrls.forEach((element) {
       audios.add(Audio.network(element!));
     });
 
-    await player.open(
+    await _player.open(
       Playlist(audios: audios),
       // Since the player should start playing right after opening the screen,
       // turn off the autoStart property
@@ -148,10 +131,8 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   void _addPlayerListener() {
-    var player = _players[0];
-
     //check everytime the current audio is finished, except for the last one
-    player.playlistAudioFinished.listen((event) {
+    _player.playlistAudioFinished.listen((event) {
       _isPlayings[_currentIndex] = false;
 
       //next audio
@@ -167,7 +148,7 @@ class GroupViewModel extends ChangeNotifier {
     });
 
     //check when the playlist finishes
-    player.playlistFinished.listen((isFinished) {
+    _player.playlistFinished.listen((isFinished) {
       //listen even when the playlist is yet to be complete
       if (isFinished) {
         _isPlayings[_currentIndex] = false;
@@ -185,15 +166,13 @@ class GroupViewModel extends ChangeNotifier {
     if (_isPlayings.length != 0) {
       _isPlayings[_currentIndex] = false;
 
-      var player = _players[0];
-
       if (_plays.length == 1) {
-        player.currentPosition.listen((event) {
+        _player.currentPosition.listen((event) {
           //prevent carrying out the process when event is updated after resuming the audio
           if (!_isPlayings[_currentIndex]) {
             //prevent pausing audio before starting audio
             if (event.inMilliseconds > 0) {
-              player.pause();
+              _player.pause();
             }
           }
         });
@@ -226,15 +205,12 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   void _addAudioUrls(List<Post> posts) {
-    _audioUrls.clear();
     _posts.forEach((element) {
       _audioUrls.add(element.audioUrl);
     });
   }
 
   void _addIsPlayings(int length) {
-    _isPlayings.clear();
-
     for (var i = 0; i < length; i++) {
       _isPlayings.add(false);
     }
