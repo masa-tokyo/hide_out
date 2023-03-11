@@ -37,38 +37,46 @@ class GroupScreen extends StatelessWidget {
 
     return Theme(
       data: lightTheme,
-      child: Scaffold(
-        floatingActionButton: _floatingActionButton(context),
-        appBar: AppBar(
-          leading: IconButton(
-            icon:
-                Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-            onPressed: () {
-              groupViewModel.pauseAudio();
-              Navigator.pop(context);
-            },
+      child: WillPopScope(
+        onWillPop: () async {
+          // stop audio when the user closes the screen
+          // * with this, iOS users cannot close the screen by swiping
+          groupViewModel.pauseAudio();
+          return true;
+        },
+        child: Scaffold(
+          floatingActionButton: _floatingActionButton(context),
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                  Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+              onPressed: () {
+                groupViewModel.pauseAudio();
+                Navigator.pop(context);
+              },
+            ),
+            title: FutureBuilder(
+                future: groupViewModel.returnGroupInfo(group.groupId),
+                builder: (context, AsyncSnapshot<Group> snapshot) {
+                  return snapshot.hasData
+                      ? Text(snapshot.data!.groupName)
+                      : Text(""); //for updating after editing
+                }),
+            actions: [_groupEditButton(context)],
           ),
-          title: FutureBuilder(
-              future: groupViewModel.returnGroupInfo(group.groupId),
-              builder: (context, AsyncSnapshot<Group> snapshot) {
-                return snapshot.hasData
-                    ? Text(snapshot.data!.groupName)
-                    : Text(""); //for updating after editing
-              }),
-          actions: [_groupEditButton(context)],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            groupViewModel.resetPlayer();
-            await groupViewModel.getGroupPosts(group);
-            //in order to update the group name after the owner edit it
-            await groupViewModel.getGroupInfo(group.groupId);
-            await groupViewModel.getNotifications();
-          },
-          child: Column(
-            children: [
-              _postListView(context),
-            ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              groupViewModel.resetPlayer();
+              await groupViewModel.getGroupPosts(group);
+              //in order to update the group name after the owner edit it
+              await groupViewModel.getGroupInfo(group.groupId);
+              await groupViewModel.getNotifications();
+            },
+            child: Column(
+              children: [
+                _postListView(context),
+              ],
+            ),
           ),
         ),
       ),
