@@ -65,12 +65,14 @@ android {
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        // The following code should be commented out when generating aab file on Android Studio
-        if (dartEnvironmentVariables.FLAVOR != 'prod') {
+        // Check if FLAVOR exists and is not set to 'prod'
+        if (dartEnvironmentVariables.FLAVOR != null && dartEnvironmentVariables.FLAVOR != 'prod') {
             applicationIdSuffix ".${dartEnvironmentVariables.FLAVOR}"
+            resValue "string", "app_name", "HideOut.${dartEnvironmentVariables.FLAVOR}"
+        } else {
+            // prod env or when making aab file and FLAVOR is not set
+            resValue "string", "app_name", "HideOut"
         }
-        resValue "string", "app_name", "HideOut" +
-                (dartEnvironmentVariables.FLAVOR == 'prod' ? '' : ".${dartEnvironmentVariables.FLAVOR}")
     }
 
     buildTypes {
