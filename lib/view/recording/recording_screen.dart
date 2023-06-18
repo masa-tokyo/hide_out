@@ -46,7 +46,7 @@ class RecordingScreen extends StatelessWidget {
                       },
                       child: Icon(Icons.keyboard_arrow_down),
                     )
-                  : Container();
+                  : const SizedBox.shrink();
             }),
           ],
         ),

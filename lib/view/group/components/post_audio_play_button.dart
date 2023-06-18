@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/utils/constants.dart';
-import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view_models/group_view_model.dart';
 import 'package:provider/provider.dart';
 
 class PostAudioPlayButton extends StatefulWidget {
   final int index;
-  final String? audioUrl;
   final AudioPlayType audioPlayType;
   final Post? post;
   final Color color;
 
   PostAudioPlayButton({
-    required this.audioUrl,
     required this.audioPlayType,
     this.post,
     required this.index,
@@ -36,7 +33,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
 
             return !_isPlaying ? _notPlayingButton() : _duringPlayingButton();
           } else {
-            return Container();
+            return const SizedBox.shrink();
           }
         });
   }
@@ -44,7 +41,7 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
   //---------------------------------------------------------------------------- NOT_PLAYING
 
   Widget _notPlayingButton() {
-    return InkWell(
+    return GestureDetector(
       onTap: () => _onNotPlayingButtonPressed(),
       child: Card(
         color: widget.color,
@@ -65,7 +62,6 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
   }
 
   _onNotPlayingButtonPressed() {
-    if (widget.audioUrl != "") {
       final groupViewModel =
           Provider.of<GroupViewModel>(context, listen: false);
       if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
@@ -73,21 +69,15 @@ class _PostAudioPlayButtonState extends State<PostAudioPlayButton> {
         groupViewModel.deleteNotification(postId: widget.post!.postId);
       }
 
-      groupViewModel.playAudio(widget.index);
-    } else {
-      showHelpDialog(
-          context: context,
-          title: Text("Error"),
-          contentString: "Failed to play the audio",
-          okayString: "Okay",
-          onConfirmed: null);
-    }
+      groupViewModel.playAudio(widget.index, widget.audioPlayType);
+
+
   }
 
   //----------------------------------------------------------------------------DURING_PLAYING
 
   Widget _duringPlayingButton() {
-    return InkWell(
+    return GestureDetector(
       onTap: () => _onDuringPlayingButtonPressed(),
       child: Card(
         color: widget.color,

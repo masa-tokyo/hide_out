@@ -7,9 +7,6 @@ service cloud.firestore {
         function isUserAuthenticated(userId) {
             return request.auth.uid == userId;
         }
-        function doc(collection, docId) {
-            return get(/databases/$(database)/documents/$(collection)/$(docId));
-        }
         match /users/{userId} {
             allow read: if isSignedIn();
             allow write: if isSignedIn() && isUserAuthenticated(userId);
@@ -21,7 +18,8 @@ service cloud.firestore {
         match /groups/{groupId} {
             allow read: if isSignedIn();
             allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.ownerId);
-            allow update, delete: if isSignedIn() && isUserAuthenticated(resource.data.ownerId);
+            allow update, delete: if isSignedIn() && (isUserAuthenticated(resource.data.ownerId) ||
+                                                      (resource.data.ownerId == null && isUserAuthenticated(request.resource.data.ownerId)));
         }
         match /groups/{groupId}/members/{userId} {
             allow read: if isSignedIn();
@@ -35,7 +33,8 @@ service cloud.firestore {
         match /posts/{postId}/listeners/{document=**} {
             allow read: if isSignedIn();
             allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.userId);
-            allow update, delete: if isSignedIn() && (isUserAuthenticated(resource.data.userId) || isUserAuthenticated(doc(posts, postId).data.userId));
+            allow update, delete: if isSignedIn() && (isUserAuthenticated(resource.data.userId)
+                                                      || isUserAuthenticated(get(/databases/$(database)/documents/posts/$(postId)).data.userId));
         }
         match /notifications/{notificationId} {
             allow read, update, delete: if isSignedIn() && isUserAuthenticated(resource.data.userId);

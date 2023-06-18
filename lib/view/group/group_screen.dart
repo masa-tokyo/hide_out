@@ -28,55 +28,62 @@ class GroupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
-    Future(() => groupViewModel.resetPlays());
+    Future(() => groupViewModel.resetPlayer());
     Future(() => groupViewModel.getGroupPosts(group));
 
     Future(() => groupViewModel
         .getGroupInfo(group.groupId)); //for updating autoExitDays after editing
     Future(() => groupViewModel.getNotifications());
-    Future(() => groupViewModel.getMemberInfo(group));
 
     return Theme(
       data: lightTheme,
-      child: Scaffold(
-        floatingActionButton: _floatingActionButton(context),
-        appBar: AppBar(
-          leading: IconButton(
-            icon:
-                Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-            onPressed: () {
-              groupViewModel.pauseAudio();
-              Navigator.pop(context);
-            },
+      child: WillPopScope(
+        onWillPop: () async {
+          // stop audio when the user closes the screen
+          // * with this, iOS users cannot close the screen by swiping
+          groupViewModel.pauseAudio();
+          return true;
+        },
+        child: Scaffold(
+          floatingActionButton: _floatingActionButton(context),
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                  Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+              onPressed: () {
+                groupViewModel.pauseAudio();
+                Navigator.pop(context);
+              },
+            ),
+            title: FutureBuilder(
+                future: groupViewModel.returnGroupInfo(group.groupId),
+                builder: (context, AsyncSnapshot<Group> snapshot) {
+                  return snapshot.hasData
+                      ? Text(snapshot.data!.groupName)
+                      : Text(""); //for updating after editing
+                }),
+            actions: [_groupEditButton(context)],
           ),
-          title: FutureBuilder(
-              future: groupViewModel.returnGroupInfo(group.groupId),
-              builder: (context, AsyncSnapshot<Group> snapshot) {
-                return snapshot.hasData
-                    ? Text(snapshot.data!.groupName!)
-                    : Text(""); //for updating after editing
-              }),
-          actions: [_groupEditButton(context)],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            groupViewModel.resetPlays();
-            await groupViewModel.getGroupPosts(group);
-            //in order to update the group name after the owner edit it
-            await groupViewModel.getGroupInfo(group.groupId);
-            await groupViewModel.getNotifications();
-          },
-          child: Column(
-            children: [
-              _postListView(context),
-            ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              groupViewModel.resetPlayer();
+              await groupViewModel.getGroupPosts(group);
+              //in order to update the group name after the owner edit it
+              await groupViewModel.getGroupInfo(group.groupId);
+              await groupViewModel.getNotifications();
+            },
+            child: Column(
+              children: [
+                _postListView(context),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  //---------------------------------------------------------------------------------------------- FloatingActionButton
+  //------------------------------------------------------------------------------- FloatingActionButton
   _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
         child: const FaIcon(FontAwesomeIcons.solidCommentDots),
@@ -89,7 +96,7 @@ class GroupScreen extends StatelessWidget {
 
     Navigator.push(
       context,
-      createRouteFromBottom(
+      createRoute(
         context,
         RecordingScreen(
             from: RecordingButtonOpenMode.POST_FROM_GROUP, group: group),
@@ -162,10 +169,10 @@ class GroupScreen extends StatelessWidget {
       case GroupEditMenu.EDIT:
         Navigator.push(
             context,
-            createRouteFromBottom(
+            createRoute(
                 context,
                 GroupDetailEditScreen(
-                  group: model.group,
+                  group: model.group!,
                 )));
         break;
 
@@ -283,7 +290,7 @@ class GroupScreen extends StatelessWidget {
       if (postDateTime.year == newerPostDateTime.year &&
           postDateTime.month == newerPostDateTime.month &&
           postDateTime.day == newerPostDateTime.day) {
-        return Container();
+        return const SizedBox.shrink();
       }
     }
 
@@ -297,6 +304,8 @@ class GroupScreen extends StatelessWidget {
   }
 
   Widget _currentUserPost(BuildContext context, int index, Post post) {
+    final scale = MediaQuery.of(context).textScaleFactor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -316,25 +325,32 @@ class GroupScreen extends StatelessWidget {
                 actionExtentRatio: 0.25,
                 child: ListTile(
                   onLongPress: () => _onDeleteTapped(context, post),
-                  trailing: Container(
+                  trailing: SizedBox(
                     width: 50,
                     height: 50,
                     child: PostAudioPlayButton(
                       color: lightThemeBackgroundColor!,
                       index: index,
-                      audioUrl: post.audioUrl,
                       audioPlayType: AudioPlayType.POST_MINE,
                     ),
                   ),
                   title: RichText(
                       text: TextSpan(
-                          style: DefaultTextStyle.of(context).style,
+                          // RichText does not consider the font size set on user preferences
+                          style: scaledFontTextStyle(
+                              DefaultTextStyle.of(context).style,
+                              textScale: scale),
                           children: [
-                        TextSpan(text: post.title, style: postTitleTextStyle),
+                        TextSpan(
+                            text: post.title,
+                            style: scaledFontTextStyle(postTitleTextStyle,
+                                textScale: scale)),
                         TextSpan(text: "  "),
                         TextSpan(
                             text: "(${post.audioDuration})",
-                            style: postAudioDurationTextStyle),
+                            style: scaledFontTextStyle(
+                                postAudioDurationTextStyle,
+                                textScale: scale)),
                       ])),
                 ),
                 secondaryActions: [
@@ -352,7 +368,7 @@ class GroupScreen extends StatelessWidget {
                 "Listened",
                 style: listenedDescriptionTextStyle,
               )
-            : Container(),
+            : const SizedBox.shrink(),
         SizedBox(
           height: 8.0,
         )
@@ -385,6 +401,8 @@ class GroupScreen extends StatelessWidget {
 
   Widget _memberPost(
       BuildContext context, int index, GroupViewModel model, Post post) {
+    final scale = MediaQuery.of(context).textScaleFactor;
+
     return Padding(
       padding: const EdgeInsets.only(right: 12.0, bottom: 12.0),
       child: Row(
@@ -394,7 +412,7 @@ class GroupScreen extends StatelessWidget {
               flex: 1,
               child: UserAvatar(
                 radius: 20.0,
-                url: _getPhotoUrl(model, post),
+                url: _getPhotoUrl(group, post),
               )),
           Expanded(
             flex: 6,
@@ -421,22 +439,28 @@ class GroupScreen extends StatelessWidget {
                             child: PostAudioPlayButton(
                               color: lightThemeBackgroundColor!,
                               index: index,
-                              audioUrl: post.audioUrl,
                               audioPlayType: AudioPlayType.POST_OTHERS,
                               post: post,
                             ),
                           ),
                           title: RichText(
                               text: TextSpan(
-                                  style: DefaultTextStyle.of(context).style,
+                                  // RichText does not consider the font size set on user preferences
+                                  style: scaledFontTextStyle(
+                                      DefaultTextStyle.of(context).style,
+                                      textScale: scale),
                                   children: [
                                 TextSpan(
                                     text: post.title,
-                                    style: postTitleTextStyle),
+                                    style: scaledFontTextStyle(
+                                        postTitleTextStyle,
+                                        textScale: scale)),
                                 TextSpan(text: "  "),
                                 TextSpan(
                                     text: "(${post.audioDuration})",
-                                    style: postAudioDurationTextStyle),
+                                    style: scaledFontTextStyle(
+                                        postAudioDurationTextStyle,
+                                        textScale: scale)),
                               ])),
                         ),
                       ),
@@ -474,14 +498,13 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  String _getPhotoUrl(GroupViewModel model, Post post) {
-    if (model.groupMembers.any((member) => member.userId == post.userId)) {
-      return model.groupMembers
-          .where((member) => member.userId == post.userId)
-          .first
+  String? _getPhotoUrl(Group group, Post post) {
+    if (group.members.any((member) => member.userId == post.userId)) {
+      return group.members
+          .firstWhere((member) => member.userId == post.userId)
           .photoUrl;
     } else {
-      return userIconUrl();
+      return userIconUrl;
     }
   }
 }

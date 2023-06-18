@@ -1,66 +1,29 @@
-
 class Group {
-  final String? groupId;
-  final String? groupName;
-  final String? description;
-  final String? ownerId;
+  final String groupId;
+  final String groupName;
+  final String description;
+  final String? ownerId; //nullable after the last user leaves the group
   final String? ownerPhotoUrl;
-  final int? autoExitDays;
-  final int? createdAt;
-  final int? lastActivityAt;
+  final int autoExitDays;
+  final int createdAt;
+  final int lastActivityAt;
+  final List<GroupMember> members;
 
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
+  ///modified: fromMap and toMap
+
+//<editor-fold desc="Data Methods">
 
   const Group({
     required this.groupId,
     required this.groupName,
     required this.description,
-    required this.ownerId,
-    required this.ownerPhotoUrl,
+    this.ownerId,
+    this.ownerPhotoUrl,
     required this.autoExitDays,
     required this.createdAt,
     required this.lastActivityAt,
+    required this.members,
   });
-
-  Group copyWith({
-    String? groupId,
-    String? groupName,
-    String? description,
-    String? ownerId,
-    String? ownerPhotoUrl,
-    int? autoExitDays,
-    int? createdAt,
-    int? lastActivityAt,
-  }) {
-    if ((groupId == null || identical(groupId, this.groupId)) &&
-        (groupName == null || identical(groupName, this.groupName)) &&
-        (description == null || identical(description, this.description)) &&
-        (ownerId == null || identical(ownerId, this.ownerId)) &&
-        (ownerPhotoUrl == null ||
-            identical(ownerPhotoUrl, this.ownerPhotoUrl)) &&
-        (autoExitDays == null || identical(autoExitDays, this.autoExitDays)) &&
-        (createdAt == null || identical(createdAt, this.createdAt)) &&
-        (lastActivityAt == null ||
-            identical(lastActivityAt, this.lastActivityAt))) {
-      return this;
-    }
-
-    return new Group(
-      groupId: groupId ?? this.groupId,
-      groupName: groupName ?? this.groupName,
-      description: description ?? this.description,
-      ownerId: ownerId ?? this.ownerId,
-      ownerPhotoUrl: ownerPhotoUrl ?? this.ownerPhotoUrl,
-      autoExitDays: autoExitDays ?? this.autoExitDays,
-      createdAt: createdAt ?? this.createdAt,
-      lastActivityAt: lastActivityAt ?? this.lastActivityAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Group{groupId: $groupId, groupName: $groupName, description: $description, ownerId: $ownerId, ownerPhotoUrl: $ownerPhotoUrl, autoExitDays: $autoExitDays, createdAt: $createdAt, lastActivityAt: $lastActivityAt}';
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -74,7 +37,8 @@ class Group {
           ownerPhotoUrl == other.ownerPhotoUrl &&
           autoExitDays == other.autoExitDays &&
           createdAt == other.createdAt &&
-          lastActivityAt == other.lastActivityAt);
+          lastActivityAt == other.lastActivityAt &&
+          members == other.members);
 
   @override
   int get hashCode =>
@@ -85,27 +49,49 @@ class Group {
       ownerPhotoUrl.hashCode ^
       autoExitDays.hashCode ^
       createdAt.hashCode ^
-      lastActivityAt.hashCode;
+      lastActivityAt.hashCode ^
+      members.hashCode;
 
+  @override
+  String toString() {
+    return 'Group{' +
+        ' groupId: $groupId,' +
+        ' groupName: $groupName,' +
+        ' description: $description,' +
+        ' ownerId: $ownerId,' +
+        ' ownerPhotoUrl: $ownerPhotoUrl,' +
+        ' autoExitDays: $autoExitDays,' +
+        ' createdAt: $createdAt,' +
+        ' lastActivityAt: $lastActivityAt,' +
+        ' memberNames: $members,' +
+        '}';
+  }
 
-  factory Group.fromMap(Map<String, dynamic> map) {
-    return new Group(
-      groupId: map['groupId'] as String?,
-      groupName: map['groupName'] as String?,
-      description: map['description'] as String?,
-      ownerId: map['ownerId'] as String?,
-      ownerPhotoUrl: map['ownerPhotoUrl'] as String?,
-      autoExitDays: map['autoExitDays'] as int?,
-      createdAt: map['createdAt'] == null
-          ? null: map['createdAt'] as int?,
-      lastActivityAt: map['lastActivityAt'] == null
-          ? null : map['lastActivityAt'] as int?,
+  Group copyWith({
+    String? groupId,
+    String? groupName,
+    String? description,
+    String? ownerId,
+    String? ownerPhotoUrl,
+    int? autoExitDays,
+    int? createdAt,
+    int? lastActivityAt,
+    List<GroupMember>? memberNames,
+  }) {
+    return Group(
+      groupId: groupId ?? this.groupId,
+      groupName: groupName ?? this.groupName,
+      description: description ?? this.description,
+      ownerId: ownerId ?? this.ownerId,
+      ownerPhotoUrl: ownerPhotoUrl ?? this.ownerPhotoUrl,
+      autoExitDays: autoExitDays ?? this.autoExitDays,
+      createdAt: createdAt ?? this.createdAt,
+      lastActivityAt: lastActivityAt ?? this.lastActivityAt,
+      members: memberNames ?? this.members,
     );
   }
 
-
   Map<String, dynamic> toMap() {
-    // ignore: unnecessary_cast
     return {
       'groupId': this.groupId,
       'groupName': this.groupName,
@@ -115,9 +101,96 @@ class Group {
       'autoExitDays': this.autoExitDays,
       'createdAt': this.createdAt,
       'lastActivityAt': this.lastActivityAt,
-    } as Map<String, dynamic>;
+      'members': this.members.map((member) {
+        return {
+          'userId': member.userId,
+          'name': member.name,
+          'photoUrl': member.photoUrl,
+
+        };
+      }).toList(),
+    };
+  }
+
+  factory Group.fromMap(Map<String, dynamic> map) {
+    return Group(
+        groupId: map['groupId'] as String,
+        groupName: map['groupName'] as String,
+        description: map['description'] as String,
+        ownerId: map['ownerId'] as String?,
+        ownerPhotoUrl: map['ownerPhotoUrl'] as String?,
+        autoExitDays: map['autoExitDays'] as int,
+        createdAt: map['createdAt'] as int,
+        lastActivityAt: map['lastActivityAt'] as int,
+        members: [...map['members']]
+            .map((e) => GroupMember.fromMap(e))
+            .toList());
+  }
+//</editor-fold>
+}
+
+class GroupMember {
+  final String userId;
+  final String name;
+  final String photoUrl;
+
+  ///not modified
+//<editor-fold desc="Data Methods">
+
+  const GroupMember({
+    required this.userId,
+    required this.name,
+    required this.photoUrl,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GroupMember &&
+          runtimeType == other.runtimeType &&
+          userId == other.userId &&
+          name == other.name &&
+          photoUrl == other.photoUrl);
+
+  @override
+  int get hashCode => userId.hashCode ^ name.hashCode ^ photoUrl.hashCode;
+
+  @override
+  String toString() {
+    return 'GroupMember{' +
+        ' userId: $userId,' +
+        ' name: $name,' +
+        ' photoUrl: $photoUrl,' +
+        '}';
+  }
+
+  GroupMember copyWith({
+    String? userId,
+    String? name,
+    String? photoUrl,
+  }) {
+    return GroupMember(
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      photoUrl: photoUrl ?? this.photoUrl,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': this.userId,
+      'name': this.name,
+      'photoUrl': this.photoUrl,
+    };
+  }
+
+  factory GroupMember.fromMap(Map<String, dynamic> map) {
+    return GroupMember(
+      userId: map['userId'] as String,
+      name: map['name'] as String,
+      photoUrl: map['photoUrl'] as String,
+    );
   }
 
 //</editor-fold>
-
 }

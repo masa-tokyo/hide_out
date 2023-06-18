@@ -15,14 +15,14 @@ class NewGroupPart extends StatelessWidget {
         ),
         RoundedRaisedButton(
           onPressed: () => _openJoinGroupScreen(context),
-          label: "Join Group",
+          label: "Join a group",
           color: darkBackgroundButtonColor,
         ),
         SizedBox(
           height: 12.0,
         ),
         RoundedRaisedButton(
-          label: "Start New Group",
+          label: "Start a Group",
           onPressed: () => _openStartGroupScreen(context),
           color: darkBackgroundButtonColor,
         ),

@@ -46,23 +46,23 @@ List<SingleChildWidget> viewModels = [
             userRepository: Provider.of<UserRepository>(context, listen: false),
           ),
       update: (context, userRepository, viewModel) =>
-          viewModel!..onUserInfoUpdated(userRepository)),
-  ChangeNotifierProxyProvider<UserRepository, ProfileViewModel>(
+          viewModel!),
+  ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
+      ProfileViewModel>(
     create: (context) => ProfileViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
+      groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, viewModel) => viewModel!
+    update: (context, userRepository, groupRepository, viewModel) => viewModel!
       ..onUserInfoUpdated(userRepository)
-      ..onMemberFetched(userRepository),
+      ..onMemberFetched(groupRepository)
+      ,
   ),
-  ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
-      StartGroupViewModel>(
+  ChangeNotifierProvider<StartGroupViewModel>(
     create: (context) => StartGroupViewModel(
       userRepository: Provider.of<UserRepository>(context, listen: false),
       groupRepository: Provider.of<GroupRepository>(context, listen: false),
     ),
-    update: (context, userRepository, groupRepository, viewModel) =>
-        viewModel!..onGroupRegistered(groupRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
       HomeScreenViewModel>(
@@ -75,15 +75,14 @@ List<SingleChildWidget> viewModels = [
       ..onNotificationsFetched(userRepository),
   ),
   ChangeNotifierProxyProvider2<UserRepository, GroupRepository,
-      JoinGroupViewModel>(
-    create: (context) => JoinGroupViewModel(
-      userRepository: Provider.of<UserRepository>(context, listen: false),
-      groupRepository: Provider.of<GroupRepository>(context, listen: false),
-    ),
-    update: (context, userRepository, groupRepository, viewModel) => viewModel!
-      ..onGroupsExceptForMineObtained(groupRepository)
-      ..onGroupMemberInfoObtained(userRepository),
-  ),
+          JoinGroupViewModel>(
+      create: (context) => JoinGroupViewModel(
+            userRepository: Provider.of<UserRepository>(context, listen: false),
+            groupRepository:
+                Provider.of<GroupRepository>(context, listen: false),
+          ),
+      update: (context, userRepository, groupRepository, viewModel) =>
+          viewModel!..onGroupsExceptForMineObtained(groupRepository)),
   ChangeNotifierProxyProvider3<UserRepository, GroupRepository, PostRepository,
       RecordingViewModel>(
     create: (context) => RecordingViewModel(
@@ -110,7 +109,6 @@ List<SingleChildWidget> viewModels = [
             viewModel!
               ..onGroupPostsObtained(postRepository)
               ..onGroupInfoObtained(groupRepository)
-              ..onGroupMemberInfoObtained(userRepository)
               ..onGroupInfoUpdated(groupRepository)
               ..onNotificationsFetched(userRepository),
   ),

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.2.2+5
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -38,7 +38,7 @@ dependencies:
 
   google_sign_in: ^5.0.4
 
-  provider: ^5.0.0
+  provider: ^6.0.0
 
   fluttertoast: ^8.0.7
 
@@ -46,11 +46,11 @@ dependencies:
 
   font_awesome_flutter: ^9.1.0
 
-  flutter_sound: ^8.1.9
+  flutter_sound: ^8.4.2
   permission_handler: ^8.1.2
   path_provider: ^2.0.2
-  assets_audio_player: ^3.0.3+3
-
+  # needs to be 3.4.1(fix for Android 12) <= x < 3.0.5(breaking change)
+  assets_audio_player: <3.0.5
   tuple: ^2.0.0
 
   flutter_slidable: ^0.6.0
@@ -60,7 +60,6 @@ dependencies:
   tutorial: ^1.0.8
   collection: ^1.15.0-nullsafety.4
 
-  http: ^0.13.3
   image_picker: ^0.8.4+1
   intl: ^0.17.0
   cached_network_image: ^3.1.0
@@ -68,6 +67,10 @@ dependencies:
   firebase_remote_config: ^2.0.0
   package_info: ^2.0.2
   url_launcher: ^6.0.20
+  loading_animation_widget: ^1.1.0+3
+  recase: ^4.1.0
+  flutter_markdown: ^0.6.10
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +79,15 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/app_icon.png"
+  image_path_ios: "assets/images/app_icon_ios.png"
+  image_path_android: "assets/images/app_icon_android.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/images/app_icon_android.png"
+
+# prevent transitive dependencies from causing errors
+# cf. https://stackoverflow.com/questions/70363918/error-member-not-found-packageroot-how-to-solve-ignore-deprecated-member-u
+dependency_overrides:
+  platform: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

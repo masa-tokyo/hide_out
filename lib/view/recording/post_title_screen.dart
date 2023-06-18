@@ -47,7 +47,7 @@ class PostTitleScreen extends StatelessWidget {
                 ),
                 isUploading ?
                     UploadingPage()
-                    : Container(),
+                    : const SizedBox.shrink(),
               ]
           ),
         );
@@ -102,8 +102,10 @@ class PostTitleScreen extends StatelessWidget {
     } else {
 
         //post
-        recordingViewModel.addGroupId(group!.groupId);
-        await recordingViewModel.postRecording(path, audioDuration);
+        await recordingViewModel.postRecording(
+            path: path,
+            audioDuration: audioDuration,
+            currentGroupId: group!.groupId);
 
         //back to GroupScreen
         Navigator.pop(context);

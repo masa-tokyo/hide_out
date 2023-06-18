@@ -12,7 +12,7 @@ class StartGroupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Start New Group"),
+        title: Text("Start a Group"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -36,44 +36,43 @@ class StartGroupScreen extends StatelessWidget {
   Widget _doneButton(BuildContext context) {
     return Consumer<StartGroupViewModel>(
       builder: (context, model, child) {
-        return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: model.groupName != ""
-                      && model.description != ""
-                      && model.isFirstTap
-                      ? MaterialStateProperty.all<Color>(buttonEnabledColor)
-                      : MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                  ),
-                ),
-                onPressed: (model.groupName != ""
-                    && model.description != ""
-                    && model.isFirstTap
-                )
-                    ? () => _registerGroup(context)
-                    : null,
-                child: Text(
-                  "Done",
-                  style: enabledButtonTextStyle,
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: model.groupName != ""
+                  && model.description != ""
+                  && model.isFirstTap
+                  ? MaterialStateProperty.all<Color>(buttonEnabledColor)
+                  : MaterialStateProperty.all<Color?>(buttonNotEnabledColor),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
               ),
-            ));
+            ),
+            onPressed: (model.groupName != ""
+                && model.description != ""
+                && model.isFirstTap
+            )
+                ? () => _createGroup(context)
+                : null,
+            child: Text(
+              "Done",
+              style: enabledButtonTextStyle,
+            ),
+          ),
+        );
       },
     );
   }
 
-  _registerGroup(BuildContext context) async {
+  _createGroup(BuildContext context) async {
     final startGroupViewModel = Provider.of<StartGroupViewModel>(context, listen: false);
     startGroupViewModel.updateIsFirstTap();
 
-    await startGroupViewModel.registerGroup();
+    await startGroupViewModel.createGroup();
 
     Navigator.pop(context);
 

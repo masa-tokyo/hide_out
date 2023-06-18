@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>HideOut</string>
+	<string>HideOut$(APP_ID_SUFFIX)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>HideOut</string>
+	<string>HideOut$(APP_ID_SUFFIX)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,8 +27,15 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.289406628812-6utrpq058tisermt49qjq0a1gejq4tpv</string>
+				<string>com.googleusercontent.apps.289406628812-tpc8nfqdn4evr8l3le8l3mncgg5rsel9</string>
+				<string>com.googleusercontent.apps.869881966842-m1s0554sbkaak1fb8e9vprk9nhbbb6gu</string>
 			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -43,8 +50,6 @@
 	<string>This app does not use the information for calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera for updating the profile image.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app uses the photo library for updating the profile image.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app does not use the information for contacts.</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -62,13 +67,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

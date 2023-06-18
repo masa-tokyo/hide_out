@@ -76,7 +76,6 @@ const MaterialColor customSwatch = MaterialColor(
 //Color
 const primaryIconColor = Colors.black87;
 const primaryColor = customSwatch;
-final elevatedButtonBackgroundColor = Colors.grey[800];
 final textButtonForeGroundColor = Colors.black87;
 const textFieldFillColor = Color(0xFF424242); // = Colors.grey[800]
 const darkThemeTextColor = Colors.white;
@@ -99,9 +98,6 @@ final buttonNotEnabledColor = customSwatch[100];
 const buttonEnabledColor = customSwatch;
 const audioJournalButtonColor = Colors.white30;
 final listTileColor = Colors.grey[700];
-final buttonNotChosenColor = Colors.white;
-const buttonChosenColor = customSwatch;
-const notChosenButtonBorderSideColor = Colors.black54;
 const notificationBadgeColor = Colors.redAccent;
 final uploadingAppbarColor = Colors.black.withOpacity(0.3);
 final uploadingBodyColor = Colors.black.withOpacity(0.5);
@@ -152,10 +148,18 @@ const selfIntroTitleTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 const selfIntroDescriptionTextStyle = TextStyle(
-    fontSize: 16.0, fontWeight: FontWeight.bold, color: Color(0xFF616161));
+    fontSize: 16.0,
+);
+final skipButtonTextStyle = TextStyle(
+  color: Colors.grey[500],
+);
+final underlineTextStyle = TextStyle(
+  fontSize: 14.0,
+  decoration: TextDecoration.underline,
+);
 
 //Profile
-const profileLabelTextStyle = TextStyle(fontSize: 14.0); //= Colors.grey[600]
+const profileLabelTextStyle = TextStyle(fontSize: 14.0);
 const profileDescriptionTextStyle = TextStyle(
   fontSize: 18.0,
 );
@@ -176,12 +180,9 @@ const groupDetailLabelTextStyle = TextStyle(
 );
 const groupDetailDescriptionTextStyle = TextStyle(
     fontSize: 16.0,
-    color: Color(0xFFBDBDBD),
-    fontWeight: FontWeight.bold //= Colors.grey[400]
+    color: Color(0xFFBDBDBD), //= Colors.grey[400]
+    fontWeight: FontWeight.bold
     );
-const groupNameCardTextStyle = TextStyle(color: Colors.black54);
-// const groupDetailMemberNameTextStyle =
-//     TextStyle(fontSize: 16.0, color: Color(0xFF424242)); //= Colors.grey[800]
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(

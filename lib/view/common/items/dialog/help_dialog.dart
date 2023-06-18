@@ -39,7 +39,10 @@ class HelpDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         title: Center(child: title),
-        content: Text(contentString),
+        content: Text(
+          contentString,
+          textAlign: TextAlign.center,
+        ),
         actions: [
           Column(
             children: [

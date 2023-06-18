@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hide_out/view/join_group/join_group_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:hide_out/utils/style.dart';
@@ -22,6 +23,22 @@ class SelfIntroRecordingScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: isUploading ? uploadingAppbarColor : null,
             title: Text("Self-Introduction"),
+            actions: [
+              if(from == ProfileEditScreensOpenMode.SIGN_UP)
+                   TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    JoinGroupScreen(isSignedUp: true)));
+                      },
+                      child: Text(
+                        'Skip',
+                        style: skipButtonTextStyle,
+                      ))
+                  ,
+            ],
           ),
           body: Stack(children: [
             Center(
@@ -37,7 +54,7 @@ class SelfIntroRecordingScreen extends StatelessWidget {
                 ],
               ),
             ),
-            isUploading ? UploadingPage() : Container(),
+            isUploading ? UploadingPage() : const SizedBox(),
           ]),
         );
       },

@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hide_out/utils/constants.dart';
+import 'package:hide_out/utils/functions.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/common/items/button_with_icon.dart';
 import 'package:hide_out/view/common/items/button_with_image.dart';
 import 'package:hide_out/view/common/items/dialog/help_dialog.dart';
 import 'package:hide_out/view/home/home_screen.dart';
+import 'package:hide_out/view/login/privacy_policy_screen.dart';
+import 'package:hide_out/view/login/terms_and_conditions.dart';
 import 'package:hide_out/view/login/user_info_input_screen.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
@@ -18,59 +21,73 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceData = MediaQuery.of(context);
 
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: Consumer<LoginViewModel>(
-            builder: (context, model, child) {
-              return model.isProcessing
-                  ? CircularProgressIndicator()
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/logo.png",
-                          fit: BoxFit.cover,
-                          width: 0.8 * deviceData.size.width,
+    return Scaffold(
+      body: Center(
+        child: Consumer<LoginViewModel>(
+          builder: (context, model, child) {
+            return model.isProcessing
+                ? CircularProgressIndicator()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/logo.png",
+                        fit: BoxFit.cover,
+                        width: 0.8 * deviceData.size.width,
+                      ),
+                      SizedBox(
+                        height: 200.0,
+                      ),
+                      ButtonWithImage(
+                        onPressed: () => _signInOrSignUp(context, model, true),
+                        color: googleIconButtonColor,
+                        isBordered: true,
+                        imagePath: "assets/images/google_logo.png",
+                        label: Text(
+                          "Continue with Google",
+                          style: buttonBlackTextStyle,
                         ),
-                        SizedBox(
-                          height: 200.0,
+                        height: 26.0,
+                        width: 26.0,
+                      ),
+                      SizedBox(
+                        height: 24.0,
+                      ),
+                      ButtonWithIcon(
+                        onPressed: () => _signInOrSignUp(context, model, false),
+                        isBordered: false,
+                        label: Text(
+                          "Continue with Apple",
+                          style: buttonWhiteTextStyle,
                         ),
-                        ButtonWithImage(
-                          onPressed: () =>
-                              _signInOrSignUp(context, model, true),
-                          color: googleIconButtonColor,
-                          isBordered: true,
-                          imagePath: "assets/images/google_logo.png",
-                          label: Text(
-                            "Continue with Google",
-                            style: buttonBlackTextStyle,
+                        color: Colors.black,
+                        icon: Icon(
+                          FontAwesomeIcons.apple,
+                          size: 26.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 24,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            child: Text('Privacy Policy', style: underlineTextStyle),
+                            onTap: () {
+                              Navigator.push(context, createRoute(context, PrivacyPolicyScreen()));
+                            },
                           ),
-                          height: 26.0,
-                          width: 26.0,
-                        ),
-                        SizedBox(
-                          height: 24.0,
-                        ),
-                        ButtonWithIcon(
-                          onPressed: () =>
-                              _signInOrSignUp(context, model, false),
-                          isBordered: false,
-                          label: Text(
-                            "Continue with Apple",
-                            style: buttonWhiteTextStyle,
+                          GestureDetector(
+                            child: Text('Terms and Conditions', style: underlineTextStyle),
+                            onTap: () {
+                              Navigator.push(context, createRoute(context, TermsAndConditionsScreen()));
+                            },
                           ),
-                          color: Colors.black,
-                          icon: Icon(
-                            FontAwesomeIcons.apple,
-                            size: 26.0,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    );
-            },
-          ),
+                        ],
+                      )
+                    ],
+                  );
+          },
         ),
       ),
     );

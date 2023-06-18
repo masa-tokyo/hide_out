@@ -1,15 +1,15 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
+import 'package:hide_out/models/tracking.dart';
 import 'package:hide_out/utils/constants.dart';
-import 'package:hide_out/utils/functions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uuid/uuid.dart';
@@ -25,13 +25,12 @@ class UserRepository extends ChangeNotifier {
 
   bool get isProcessing => _isProcessing;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   bool _isUploading = false;
 
   bool get isUploading => _isUploading;
-
-  List<User> _groupMembers = [];
-
-  List<User> get groupMembers => _groupMembers;
 
   List<d.Notification> _notifications = [];
 
@@ -41,12 +40,6 @@ class UserRepository extends ChangeNotifier {
 
   bool get isUpdating => _isUpdating;
 
-  File? _imageFile;
-
-  File? get imageFile => _imageFile;
-
-  User? _member;
-  User? get member => _member;
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -89,7 +82,11 @@ class UserRepository extends ChangeNotifier {
         await dbManager!.insertUser(_convertToUser(firebaseUser));
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
+        Tracking().logEvent(EventType.SIGN_UP, eventParams: {
+          'platform': Platform.isIOS ? 'iOS' : 'Android',
+          'sign_up_method': 'apple',
+        });
+
 
         return LoginScreenStatus.SIGNED_UP;
       } else {
@@ -104,7 +101,8 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
+
+        await Tracking().setUserId(currentUser!.userId);
 
         return LoginScreenStatus.SIGNED_IN;
       }
@@ -140,7 +138,11 @@ class UserRepository extends ChangeNotifier {
         await dbManager!.insertUser(_convertToUser(firebaseUser));
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
+
+        Tracking().logEvent(EventType.SIGN_UP, eventParams: {
+          'platform': Platform.isIOS ? 'iOS' : 'Android',
+          'sign_up_method': 'google',
+        });
 
         return LoginScreenStatus.SIGNED_UP;
       } else {
@@ -155,7 +157,8 @@ class UserRepository extends ChangeNotifier {
 
         currentUser = await dbManager!.getUserInfoFromDbById(firebaseUser.uid);
 
-        await createImageFile();
+
+        await Tracking().setUserId(currentUser!.userId);
 
         return LoginScreenStatus.SIGNED_IN;
       }
@@ -171,10 +174,10 @@ class UserRepository extends ChangeNotifier {
       displayName: firebaseUser.displayName ?? '',
       inAppUserName: firebaseUser.displayName ?? '',
       photoUrl: _getRandomPhotoUrl(),
-      photoStoragePath: "",
+      photoStoragePath: null,
       email: firebaseUser.email ?? "",
-      audioStoragePath: "",
-      audioUrl: "",
+      audioStoragePath: null,
+      audioUrl: null,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
@@ -203,15 +206,7 @@ class UserRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUsersByGroupId(Group group) async {
-    _isProcessing = true;
-    notifyListeners();
 
-    _groupMembers = await dbManager!.getUsersByGroupId(group.groupId);
-
-    _isProcessing = false;
-    notifyListeners();
-  }
 
   Future<void> uploadSelfIntro(String path) async {
     _isUploading = true;
@@ -235,9 +230,9 @@ class UserRepository extends ChangeNotifier {
     await _googleSignIn.signOut();
     await _auth.signOut();
     currentUser = null;
-    _imageFile = null;
     notifyListeners();
   }
+
 
   Future<void> getNotifications() async {
     _isProcessing = true;
@@ -269,22 +264,6 @@ class UserRepository extends ChangeNotifier {
             postId: postId, userId: currentUser!.userId);
         _notifications.removeWhere((element) => element.postId == postId);
         break;
-
-      case NotificationDeleteType.LEAVE_GROUP:
-        await dbManager!.deleteNotificationByGroupIdAndUserId(
-            groupId: groupId, userId: currentUser!.userId);
-        _notifications.removeWhere((element) => element.groupId == groupId);
-        break;
-
-      //this is no longer used
-      case NotificationDeleteType.DELETE_POST:
-        await dbManager!.deleteNotificationByPostId(postId: postId);
-        break;
-
-      case NotificationDeleteType.DELETE_GROUP:
-        await dbManager!.deleteNotificationByGroupId(groupId: groupId);
-        _notifications.removeWhere((element) => element.groupId == groupId);
-        break;
     }
 
     _isUpdating = false;
@@ -292,44 +271,44 @@ class UserRepository extends ChangeNotifier {
   }
 
   Future<void> updateProfilePicture() async {
-    final ImagePicker picker = ImagePicker();
-
-    final XFile? pickedImage =
-        await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedImage != null) {
-      // draw the image right away, then create the file from url again later
-      _imageFile = File(pickedImage.path);
+    try {
+      // differentiate from GroupRepository.isProgressing on ProfileViewModel
+      _isLoading = true;
       notifyListeners();
 
-      final storageId = Uuid().v1();
-      final storagePath = "users/$storageId";
-      final photoUrl =
-          await dbManager!.uploadPhotoToStorage(_imageFile!, storagePath);
+      final ImagePicker picker = ImagePicker();
 
-      final previousStoragePath = currentUser!.photoStoragePath;
+      final XFile? pickedImage =
+      await picker.pickImage(source: ImageSource.gallery);
 
-      currentUser = currentUser!.copyWith(
-        photoUrl: photoUrl,
-        photoStoragePath: storageId,
-      );
+      if (pickedImage != null) {
+        final imageFile = File(pickedImage.path);
 
-      await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
-      if (previousStoragePath != "") {
-        await dbManager!.deleteFileOnStorage(previousStoragePath!);
-      }
+        final storageId = Uuid().v1();
+        final storagePath = "users/$storageId";
+        final photoUrl =
+        await dbManager!.uploadPhotoToStorage(imageFile, storagePath);
 
-      // set from remote in case that the photo in the local device is deleted
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
+        final previousStoragePath = currentUser!.photoStoragePath;
+
+        currentUser = currentUser!.copyWith(
+          photoUrl: photoUrl,
+          photoStoragePath: storagePath,
+        );
+
+        await dbManager!.updateUserInfo(currentUser!, isPhotoUpdated: true);
+        if (previousStoragePath != null) {
+          await dbManager!.deleteFileOnStorage(previousStoragePath);
+        }
+    }
+      _isLoading = false;
+      notifyListeners();
+
+    } catch(e) {
+      log('error: $e');
     }
   }
 
-  Future<void> createImageFile() async {
-    if (currentUser != null) {
-      _imageFile = await createFileFromUrl(currentUser!.photoUrl);
-      notifyListeners();
-    }
-  }
 
   Future<void> deleteAccount() async {
     // carry out the deletion from cloud functions
@@ -337,13 +316,5 @@ class UserRepository extends ChangeNotifier {
     await signOut();
   }
 
-  Future<void> fetchUser(String memberId) async {
-    _isProcessing = true;
-    notifyListeners();
 
-    _member = await dbManager!.fetchUser(memberId);
-    _isProcessing = false;
-
-    notifyListeners();
-  }
 }

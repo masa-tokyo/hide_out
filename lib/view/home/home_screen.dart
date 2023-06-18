@@ -27,51 +27,50 @@ class HomeScreen extends StatelessWidget {
     final deviceData = MediaQuery.of(context);
     final globalKey = GlobalKey();
 
-    return SetUpHomeScreen(
+    return _SetUpHomeScreen(
       globalKey: globalKey,
       isSignedUp: isSignedUp,
-      child: SafeArea(
-        child: Scaffold(
-          floatingActionButton: _floatingActionButton(context),
-          drawer: _drawer(context),
-          appBar: AppBar(
-            leading: _settingsButton(context),
-            title: Image.asset(
-              "assets/images/logo.png",
-              width: 0.4 * deviceData.size.width,
-            ),
+      child: Scaffold(
+        floatingActionButton: _floatingActionButton(context),
+        drawer: _drawer(context),
+        appBar: AppBar(
+          leading: _settingsButton(context),
+          title: Image.asset(
+            "assets/images/logo.png",
+            width: 0.4 * deviceData.size.width,
           ),
-          body: SingleChildScrollView(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await homeScreenViewModel.getMyGroup();
-                await homeScreenViewModel.getNotifications();
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 26.0,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await homeScreenViewModel.getMyGroup();
+            await homeScreenViewModel.getNotifications();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 26.0,
+                ),
+                MyGroupPart(
+                  globalKey: globalKey,
+                ),
+                SizedBox(
+                  height: 28.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 28.0),
+                  child: Text(
+                    "New Groups",
+                    style: homeScreenLabelTextStyle,
                   ),
-                  MyGroupPart(
-                    globalKey: globalKey,
-                  ),
-                  SizedBox(
-                    height: 28.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28.0),
-                    child: Text(
-                      "New Group",
-                      style: homeScreenLabelTextStyle,
-                    ),
-                  ),
-                  NewGroupPart(),
-                  SizedBox(
-                    height: 28.0,
-                  ),
-                ],
-              ),
+                ),
+                NewGroupPart(),
+                //so that this screen can be scrolled
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 240,
+                ),
+              ],
             ),
           ),
         ),
@@ -83,7 +82,7 @@ class HomeScreen extends StatelessWidget {
     return FloatingActionButton(
         child: const FaIcon(FontAwesomeIcons.solidCommentDots),
         onPressed: () {
-          Navigator.of(context).push(createRouteFromBottom(
+          Navigator.of(context).push(createRoute(
               context,
               RecordingScreen(
                   from: RecordingButtonOpenMode.POST_FROM_HOME, group: null)));
@@ -230,8 +229,8 @@ class HomeScreen extends StatelessWidget {
 
 //------------------------------------------------------------------------------SetUpHomeScreen
 
-class SetUpHomeScreen extends StatefulWidget {
-  const SetUpHomeScreen(
+class _SetUpHomeScreen extends StatefulWidget {
+  const _SetUpHomeScreen(
       {Key? key,
       required this.child,
       required this.isSignedUp,
@@ -246,7 +245,7 @@ class SetUpHomeScreen extends StatefulWidget {
   _SetUpHomeScreenState createState() => _SetUpHomeScreenState();
 }
 
-class _SetUpHomeScreenState extends State<SetUpHomeScreen> {
+class _SetUpHomeScreenState extends State<_SetUpHomeScreen> {
   @override
   void initState() {
     if (widget.isSignedUp) {

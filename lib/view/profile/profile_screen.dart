@@ -11,20 +11,22 @@ import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   final String? memberId;
-  final String? memberName;
-  bool get isCurrentUser => memberId == null && memberName == null;
+  final String? groupId;
 
-  ProfileScreen({this.memberName, this.memberId});
+  bool get isCurrentUser => memberId == null && groupId == null;
+
+  ProfileScreen({this.memberId, this.groupId})
+      : assert((memberId == null && groupId == null) ||
+            (memberId != null && groupId != null));
 
   @override
   Widget build(BuildContext context) {
     if (!isCurrentUser) {
-      Future(() => context.read<ProfileViewModel>().fetchMember(memberId!));
+      Future(() =>
+          context.read<ProfileViewModel>().fetchMember(groupId!, memberId!));
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(isCurrentUser ? "Profile" : memberName!),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Consumer<ProfileViewModel>(
           builder: (context, model, child) {
@@ -39,18 +41,19 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: 24.0,
                     ),
-                    _profilePicture(context),
+                    _profilePicture(context, isCurrentUser),
                     SizedBox(
                       height: 24.0,
                     ),
-                    isCurrentUser
-                        ? _namePart(context, model.currentUser!)
-                        : const SizedBox.shrink(),
+                    _namePart(context, isCurrentUser, model),
                     SizedBox(
                       height: 24.0,
                     ),
-                    _selfIntroPart(context,
-                        isCurrentUser ? model.currentUser : model.member),
+                    _selfIntroPart(
+                        context,
+                        isCurrentUser
+                            ? model.currentUser!.audioUrl
+                            : model.member?.audioUrl ?? null),
                   ]);
           },
         ),
@@ -58,42 +61,48 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _profilePicture(BuildContext context) {
+  Widget _profilePicture(BuildContext context, bool isCurrentUser) {
     return Consumer<ProfileViewModel>(
       builder: (_, model, __) {
-        return GestureDetector(
-          onTap: () async {
-            final profileViewModel = context.read<ProfileViewModel>();
-            await profileViewModel.updateProfilePicture();
-          },
-          child: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              UserAvatar(
-                url: model.currentUser!.photoUrl,
-                file: model.imageFile ?? null,
-              ),
-              Container(
-                width: 32.0,
-                height: 32.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.shade400),
+        return isCurrentUser
+            ? GestureDetector(
+                onTap: () async {
+                  final profileViewModel = context.read<ProfileViewModel>();
+                  await profileViewModel.updateProfilePicture();
+                },
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    UserAvatar(
+                      url: model.isLoading
+                          ? userIconUrl
+                          : model.currentUser!.photoUrl,
+                    ),
+                    Container(
+                      width: 32.0,
+                      height: 32.0,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
                 ),
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.grey[700],
-                ),
-              ),
-            ],
-          ),
-        );
+              )
+            : UserAvatar(
+                url: model.member?.photoUrl,
+              );
       },
     );
   }
 
-  Widget _namePart(BuildContext context, User user) {
+  Widget _namePart(
+      BuildContext context, bool isCurrentUser, ProfileViewModel model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,19 +118,23 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(
               width: 24.0,
             ),
-            GestureDetector(
-                onTap: () => _openUserInfoInputScreen(context, user),
-                child: Icon(
-                  Icons.edit,
-                  size: 20.0,
-                )),
+            if (isCurrentUser)
+              GestureDetector(
+                  onTap: () =>
+                      _openUserInfoInputScreen(context, model.currentUser!),
+                  child: Icon(
+                    Icons.edit,
+                    size: 20.0,
+                  )),
           ],
         ),
         SizedBox(
           height: 8.0,
         ),
         GestureDetector(
-          onTap: () => _openUserInfoInputScreen(context, user),
+          onTap: isCurrentUser
+              ? () => _openUserInfoInputScreen(context, model.currentUser!)
+              : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
@@ -133,7 +146,9 @@ class ProfileScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    user.inAppUserName,
+                    isCurrentUser
+                        ? model.currentUser!.inAppUserName
+                        : model.member?.name ?? '',
                     style: profileDescriptionTextStyle,
                   ),
                 )),
@@ -153,7 +168,7 @@ class ProfileScreen extends StatelessWidget {
                 )));
   }
 
-  Widget _selfIntroPart(BuildContext context, User? user) {
+  Widget _selfIntroPart(BuildContext context, String? audioUrl) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,18 +184,17 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(
               width: 24.0,
             ),
-            isCurrentUser
-                ? GestureDetector(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => SelfIntroRecordingScreen(
-                                from: ProfileEditScreensOpenMode.PROFILE))),
-                    child: Icon(
-                      Icons.mic,
-                      size: 20.0,
-                    ))
-                : Container(),
+            if (isCurrentUser)
+              GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SelfIntroRecordingScreen(
+                              from: ProfileEditScreensOpenMode.PROFILE))),
+                  child: Icon(
+                    Icons.edit,
+                    size: 20.0,
+                  )),
           ],
         ),
         SizedBox(
@@ -192,7 +206,7 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: AudioPlayButton(
                   color: listTileColor,
-                  audioUrl: user?.audioUrl,
+                  audioUrl: audioUrl,
                   audioPlayType: AudioPlayType.SELF_INTRO)),
         ),
       ],

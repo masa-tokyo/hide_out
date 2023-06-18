@@ -23,14 +23,15 @@ class PostRepository extends ChangeNotifier {
 
   bool get isUploading => _isUploading;
 
-  Future<void> postRecording(
-    User currentUser,
-    String groupId,
-    String title,
-    File audioFile,
-    String audioDuration,
-  ) async {
-    _isUploading = true;
+  Future<void> postRecording({
+    required User currentUser,
+    required String title,
+    required File audioFile,
+    required String audioDuration,
+    List<String?>? groupIds,
+    String? groupId,
+  }) async {
+    _isUploading = true; //for showing UploadingPage
     notifyListeners();
 
     // get audioUrl from Firebase Storage
@@ -39,21 +40,47 @@ class PostRepository extends ChangeNotifier {
     final audioUrl =
         await dbManager!.uploadAudioToStorage(audioFile, audioStoragePath);
 
-    //post on Cloud Firestore
-    final post = Post(
-        postId: Uuid().v1(),
-        userId: currentUser.userId,
-        groupId: groupId,
-        userName: currentUser.inAppUserName,
-        title: title,
-        audioUrl: audioUrl,
-        audioStoragePath: audioStoragePath,
-        audioDuration: audioDuration,
-        postDateTime: DateTime.now().toUtc(),
-        isListened: false);
+    if (groupId != null) {
+      //post from GroupScreen
+      final post = Post(
+          postId: Uuid().v1(),
+          userId: currentUser.userId,
+          groupId: groupId,
+          userName: currentUser.inAppUserName,
+          title: title,
+          audioUrl: audioUrl,
+          audioStoragePath: audioStoragePath,
+          audioDuration: audioDuration,
+          postDateTime: DateTime.now().toUtc(),
+          isListened: false);
 
-    await dbManager!.postRecording(post, currentUser.userId, groupId);
+      await dbManager!.postRecording(post, currentUser.userId, groupId);
 
+      //show the newest on GroupScreen
+      _posts
+        ..add(post)
+        ..sort((a, b) => b.postDateTime!.compareTo(a.postDateTime!));
+
+    }
+
+    if (groupIds != null) {
+      //post from HomeScreen
+      await Future.forEach(groupIds, (dynamic groupId) async {
+        final post = Post(
+            postId: Uuid().v1(),
+            userId: currentUser.userId,
+            groupId: groupId,
+            userName: currentUser.inAppUserName,
+            title: title,
+            audioUrl: audioUrl,
+            audioStoragePath: audioStoragePath,
+            audioDuration: audioDuration,
+            postDateTime: DateTime.now().toUtc(),
+            isListened: false);
+
+        await dbManager!.postRecording(post, currentUser.userId, groupId);
+      });
+    }
     _isUploading = false;
     notifyListeners();
   }
@@ -81,5 +108,9 @@ class PostRepository extends ChangeNotifier {
     var updatedPost = post.copyWith(isListened: true);
 
     await dbManager!.insertListener(updatedPost, user);
+  }
+
+  Future<List<Post>> getPostsByUser(String userId) async{
+    return await dbManager!.getPostsByUser(userId);
   }
 }

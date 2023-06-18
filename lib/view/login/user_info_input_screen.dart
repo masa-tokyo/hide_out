@@ -54,7 +54,7 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
           ),
           widget.from == ProfileEditScreensOpenMode.SIGN_UP
               ? _profilePicture()
-              : Container(),
+              : const SizedBox.shrink(),
           SizedBox(
             height: 32.0,
           ),
@@ -79,7 +79,6 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
             children: [
               UserAvatar(
                 url: model.currentUser!.photoUrl,
-                file: model.imageFile ?? null,
               ),
               Container(
                 width: 32.0,
@@ -148,7 +147,7 @@ class _UserInfoInputScreenState extends State<UserInfoInputScreen> {
     profileViewModel.updateUserName(_controller.text);
 
     if (widget.from == ProfileEditScreensOpenMode.SIGN_UP) {
-      //go to JoinGroupScreen
+      //go to SelfIntroRecordingScreen
       Navigator.push(
           context,
           MaterialPageRoute(
