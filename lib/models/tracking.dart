@@ -37,7 +37,7 @@ class Tracking {
   }
 
   Future<void> _pageView(String screenName) async {
-    await _analytics.setCurrentScreen(screenName: screenName);
+    await _analytics.logScreenView(screenName: screenName);
     //todo set a value
     // logEvent(EventType.pageView);
   }

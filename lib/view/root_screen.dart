@@ -89,10 +89,12 @@ class _SetUpState extends State<SetUp> {
           okayString: 'Update',
           onConfirmed: () async {
             if (Platform.isIOS) {
-              await launch('https://apps.apple.com/app/id1632561765');
+              await launchUrl(
+                  Uri(path: 'https://apps.apple.com/app/id1632561765'));
             } else {
-              await launch(
-                  'https://play.google.com/store/apps/details?id=com.masakisato.hideout');
+              await launchUrl(Uri(
+                  path:
+                      'https://play.google.com/store/apps/details?id=com.masakisato.hideout'));
             }
           });
     }

@@ -37,12 +37,13 @@ class GroupScreen extends StatelessWidget {
 
     return Theme(
       data: lightTheme,
-      child: WillPopScope(
-        onWillPop: () async {
+      child: PopScope(
+        onPopInvoked: (didPop) async {
           // stop audio when the user closes the screen
           // * with this, iOS users cannot close the screen by swiping
-          groupViewModel.pauseAudio();
-          return true;
+          if (didPop) {
+            groupViewModel.pauseAudio();
+          }
         },
         child: Scaffold(
           floatingActionButton: _floatingActionButton(context),
