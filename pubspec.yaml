@@ -55,7 +55,7 @@ dependencies:
 
   flutter_slidable: ^0.6.0
 
-  intro_slider: ^3.0.2
+  intro_slider: ^3.0.10
 
   tutorial: ^1.0.8
   collection: ^1.15.0-nullsafety.4
