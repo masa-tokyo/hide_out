@@ -10,7 +10,7 @@ import 'package:hide_out/view/recording/recording_screen.dart';
 import 'package:hide_out/view_models/home_screen_view_model.dart';
 import 'package:hide_out/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:tutorial/tutorial.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'components/my_group_part.dart';
 import 'components/new_group_part.dart';
@@ -255,24 +255,22 @@ class _SetUpHomeScreenState extends State<_SetUpHomeScreen> {
   }
 
   void _showTutorial() {
-    List<TutorialItens> _tutorialItems = [];
+    final List<TargetFocus> targets = [];
 
-    _tutorialItems.add(TutorialItens(
-      globalKey: widget.globalKey,
-      touchScreen: true,
-      top: 240,
-      shapeFocus: ShapeFocus.oval,
-      children: [
-        Text(
-          "Say hello to the group members!",
-          style: tutorialTextStyle,
+    targets.add(TargetFocus(
+      keyTarget: widget.globalKey,
+      contents: [
+        TargetContent(
+          child: Text(
+            "Say hello to the group members!",
+            style: tutorialTextStyle,
+          ),
         ),
       ],
-      widgetNext: const SizedBox.shrink(),
     ));
 
     Future.delayed(Duration(milliseconds: 1000)).then((value) {
-      Tutorial.showTutorial(context, _tutorialItems);
+      TutorialCoachMark(targets: targets).show(context: context);
     });
   }
 
