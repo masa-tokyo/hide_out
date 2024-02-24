@@ -305,6 +305,7 @@ class GroupScreen extends StatelessWidget {
   }
 
   Widget _currentUserPost(BuildContext context, int index, Post post) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.of(context).textScaleFactor;
 
     return Column(
@@ -402,6 +403,7 @@ class GroupScreen extends StatelessWidget {
 
   Widget _memberPost(
       BuildContext context, int index, GroupViewModel model, Post post) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.of(context).textScaleFactor;
 
     return Padding(
