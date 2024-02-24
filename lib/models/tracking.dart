@@ -1,20 +1,18 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:hide_out/utils/constants.dart';
 import 'package:recase/recase.dart';
 
 class Tracking {
   factory Tracking() => Tracking._instance ??= Tracking._internal();
 
-  Tracking._internal() : _analytics = FirebaseAnalytics();
+  Tracking._internal() : _analytics = FirebaseAnalytics.instance;
 
   static Tracking? _instance;
   final FirebaseAnalytics _analytics;
 
   void logEvent(EventType eventType, {Map<String, dynamic>? eventParams}) {
     _analytics.logEvent(
-        name: _convertToSnakeCase(eventType.name),
-        parameters: eventParams);
+        name: _convertToSnakeCase(eventType.name), parameters: eventParams);
   }
 
   String _convertToSnakeCase(String eventTypeStr) {
@@ -38,18 +36,13 @@ class Tracking {
     );
   }
 
-  Future<void> _pageView(String screenName) async{
+  Future<void> _pageView(String screenName) async {
     await _analytics.setCurrentScreen(screenName: screenName);
     //todo set a value
     // logEvent(EventType.pageView);
   }
 
-Future<void> setUserId(String id) async {
-    await _analytics.setUserId(id);
+  Future<void> setUserId(String id) async {
+    await _analytics.setUserId(id: id);
   }
-
-
-
-
-
 }
