@@ -37,6 +37,7 @@ target 'Runner' do
 end
 
 post_install do |installer|
+# fix target
   installer.generated_projects.each do |project|
     project.targets.each do |target|
       target.build_configurations.each do |config|
