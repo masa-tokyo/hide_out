@@ -67,20 +67,32 @@ class LoginScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 24,),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      const Text(
+                        'By continuing, you agree to our',
+                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            child: Text('Privacy Policy', style: underlineTextStyle),
+                            child: Text('Privacy Policy',
+                                style: underlineTextStyle),
                             onTap: () {
-                              Navigator.push(context, createRoute(context, PrivacyPolicyScreen()));
+                              Navigator.push(context,
+                                  createRoute(context, PrivacyPolicyScreen()));
                             },
                           ),
+                          const Text(' and '),
                           GestureDetector(
-                            child: Text('Terms and Conditions', style: underlineTextStyle),
+                            child: Text('Terms and Conditions',
+                                style: underlineTextStyle),
                             onTap: () {
-                              Navigator.push(context, createRoute(context, TermsAndConditionsScreen()));
+                              Navigator.push(
+                                  context,
+                                  createRoute(
+                                      context, TermsAndConditionsScreen()));
                             },
                           ),
                         ],
