@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
+final theme = ThemeData.from(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: customSwatch,
+  ),
+);
+
 //Theme Data
-final lightTheme = ThemeData(
+final lightTheme = theme.copyWith(
   textTheme: ThemeData.light().textTheme.apply(bodyColor: lightThemeTextColor),
   scaffoldBackgroundColor: lightThemeBackgroundColor,
   // for Scaffold.body
@@ -48,6 +55,7 @@ final darkTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color?>(customSwatch),
+    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
   )),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
@@ -58,20 +66,23 @@ final darkTheme = ThemeData(
 );
 
 const MaterialColor customSwatch = MaterialColor(
-  0xFF5e4037,
+  _primaryColorValue,
   <int, Color>{
     50: Color(0xFFece8e7),
     100: Color(0xFFcfc6c3),
     200: Color(0xFFafa09b),
     300: Color(0xFF8e7973),
     400: Color(0xFF765d55),
-    500: Color(0xFF5e4037), // = Colors.brown[700]
+    500: Color(_primaryColorValue),
     600: Color(0xFF563a31),
     700: Color(0xFF4c322a),
     800: Color(0xFF422a23),
     900: Color(0xFF311c16),
   },
 );
+
+// Colors.brown[700]
+const _primaryColorValue = 0xFF5e4037;
 
 //Color
 const primaryIconColor = Colors.black87;
@@ -148,7 +159,7 @@ const selfIntroTitleTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 const selfIntroDescriptionTextStyle = TextStyle(
-    fontSize: 16.0,
+  fontSize: 16.0,
 );
 final skipButtonTextStyle = TextStyle(
   color: Colors.grey[500],
@@ -181,8 +192,7 @@ const groupDetailLabelTextStyle = TextStyle(
 const groupDetailDescriptionTextStyle = TextStyle(
     fontSize: 16.0,
     color: Color(0xFFBDBDBD), //= Colors.grey[400]
-    fontWeight: FontWeight.bold
-    );
+    fontWeight: FontWeight.bold);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(
