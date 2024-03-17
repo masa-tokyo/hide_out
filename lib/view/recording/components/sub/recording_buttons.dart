@@ -269,18 +269,19 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   Widget _againButton(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 80.0,
-          height: 80.0,
-          child: ElevatedButton(
-            style: ButtonStyle(
-              elevation: MaterialStateProperty.all(3.0),
-              shape: MaterialStateProperty.all(CircleBorder()),
-            ),
-            onPressed: () => _onAgainButtonPressed(context),
-            child: FaIcon(
-              FontAwesomeIcons.undo,
-              size: 30.0,
+        ElevatedButton(
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(3.0),
+            shape: MaterialStateProperty.all(CircleBorder()),
+          ),
+          onPressed: () => _onAgainButtonPressed(context),
+          child: SizedBox.square(
+            dimension: 80.0,
+            child: Align(
+              child: FaIcon(
+                FontAwesomeIcons.undo,
+                size: 30.0,
+              ),
             ),
           ),
         ),
@@ -316,15 +317,14 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   Widget _finishButton() {
     return Column(
       children: [
-        Container(
-          width: 80.0,
-          height: 80.0,
-          child: ElevatedButton(
-            style: ButtonStyle(
-              elevation: MaterialStateProperty.all(3.0),
-              shape: MaterialStateProperty.all(CircleBorder()),
-            ),
-            onPressed: () => _onFinishButtonPressed(),
+        ElevatedButton(
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all(3.0),
+            shape: MaterialStateProperty.all(CircleBorder()),
+          ),
+          onPressed: () => _onFinishButtonPressed(),
+          child: SizedBox.square(
+            dimension: 80.0,
             child: Icon(
               Icons.done_rounded,
               size: 50.0,
