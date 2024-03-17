@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
+// todo make apply common for both themes
+final theme = ThemeData.from(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: customSwatch,
+  ),
+);
+
+// todo compare the theme with copyWith and new instance
 //Theme Data
-final lightTheme = ThemeData(
+final lightTheme = theme.copyWith(
   textTheme: ThemeData.light().textTheme.apply(bodyColor: lightThemeTextColor),
   scaffoldBackgroundColor: lightThemeBackgroundColor,
   // for Scaffold.body
@@ -24,6 +33,7 @@ final lightTheme = ThemeData(
   ),
 );
 
+// todo fix dark theme
 final darkTheme = ThemeData(
   brightness: Brightness.dark,
   // default color for texts
@@ -58,14 +68,14 @@ final darkTheme = ThemeData(
 );
 
 const MaterialColor customSwatch = MaterialColor(
-  0xFF5e4037,
+  _primaryColorValue,
   <int, Color>{
     50: Color(0xFFece8e7),
     100: Color(0xFFcfc6c3),
     200: Color(0xFFafa09b),
     300: Color(0xFF8e7973),
     400: Color(0xFF765d55),
-    500: Color(0xFF5e4037), // = Colors.brown[700]
+    500: Color(_primaryColorValue),
     600: Color(0xFF563a31),
     700: Color(0xFF4c322a),
     800: Color(0xFF422a23),
@@ -73,6 +83,10 @@ const MaterialColor customSwatch = MaterialColor(
   },
 );
 
+// Colors.brown[700]
+const _primaryColorValue = 0xFF5e4037;
+
+// todo add extension color instead of defining each
 //Color
 const primaryIconColor = Colors.black87;
 const primaryColor = customSwatch;
@@ -116,6 +130,8 @@ final sendToGroupButtonColor = customSwatch;
 //-------------------------------------------------------------------------------TextStyle
 //Common
 
+// todo define text theme instead of defining each
+
 const buttonBlackTextStyle = TextStyle(fontSize: 18.0, color: Colors.black);
 const buttonWhiteTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
 const roundedRaisedButtonTextStyle =
@@ -148,7 +164,7 @@ const selfIntroTitleTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 const selfIntroDescriptionTextStyle = TextStyle(
-    fontSize: 16.0,
+  fontSize: 16.0,
 );
 final skipButtonTextStyle = TextStyle(
   color: Colors.grey[500],
@@ -181,8 +197,7 @@ const groupDetailLabelTextStyle = TextStyle(
 const groupDetailDescriptionTextStyle = TextStyle(
     fontSize: 16.0,
     color: Color(0xFFBDBDBD), //= Colors.grey[400]
-    fontWeight: FontWeight.bold
-    );
+    fontWeight: FontWeight.bold);
 
 //Recording
 const underButtonLabelTextStyle = TextStyle(
