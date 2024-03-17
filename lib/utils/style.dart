@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// todo make apply common for both themes
 final theme = ThemeData.from(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSwatch(
@@ -8,7 +7,6 @@ final theme = ThemeData.from(
   ),
 );
 
-// todo compare the theme with copyWith and new instance
 //Theme Data
 final lightTheme = theme.copyWith(
   textTheme: ThemeData.light().textTheme.apply(bodyColor: lightThemeTextColor),
@@ -33,7 +31,6 @@ final lightTheme = theme.copyWith(
   ),
 );
 
-// todo fix dark theme
 final darkTheme = ThemeData(
   brightness: Brightness.dark,
   // default color for texts
@@ -58,6 +55,7 @@ final darkTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color?>(customSwatch),
+    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
   )),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
@@ -86,7 +84,6 @@ const MaterialColor customSwatch = MaterialColor(
 // Colors.brown[700]
 const _primaryColorValue = 0xFF5e4037;
 
-// todo add extension color instead of defining each
 //Color
 const primaryIconColor = Colors.black87;
 const primaryColor = customSwatch;
@@ -129,8 +126,6 @@ final sendToGroupButtonColor = customSwatch;
 
 //-------------------------------------------------------------------------------TextStyle
 //Common
-
-// todo define text theme instead of defining each
 
 const buttonBlackTextStyle = TextStyle(fontSize: 18.0, color: Colors.black);
 const buttonWhiteTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
