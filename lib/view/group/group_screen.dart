@@ -326,7 +326,7 @@ class GroupScreen extends StatelessWidget {
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
                 child: ListTile(
-                  onLongPress: () => _onDeleteTapped(context, post),
+                  onLongPress: () => _deleteCurrentUserPost(context, post),
                   trailing: SizedBox(
                     width: 50,
                     height: 50,
@@ -360,7 +360,7 @@ class GroupScreen extends StatelessWidget {
                     caption: "Delete",
                     icon: Icons.delete,
                     color: Colors.redAccent,
-                    onTap: () => _onDeleteTapped(context, post),
+                    onTap: () => _deleteCurrentUserPost(context, post),
                   )
                 ],
               )),
@@ -378,7 +378,7 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  _onDeleteTapped(BuildContext context, Post post) {
+  _deleteCurrentUserPost(BuildContext context, Post post) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     showConfirmDialog(
@@ -436,6 +436,7 @@ class GroupScreen extends StatelessWidget {
                           ),
                         ),
                         child: ListTile(
+                          onLongPress: () => _removeMemberPost(context, post),
                           trailing: SizedBox(
                             width: 50,
                             height: 50,
@@ -509,5 +510,29 @@ class GroupScreen extends StatelessWidget {
     } else {
       return userIconUrl;
     }
+  }
+
+  _removeMemberPost(BuildContext context, Post post) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    showConfirmDialog(
+        context: context,
+        titleString: "Remove the post?",
+        contentString: "The post will be removed only for you.",
+        onConfirmed: (isConfirmed) async {
+          if (isConfirmed) {
+            // TODO(masaki): remove member post
+            // await groupViewModel.deletePost(post);
+            Fluttertoast.showToast(
+                msg: "Post Removed", gravity: ToastGravity.CENTER);
+          }
+        },
+        yesText: Text(
+          "Remove",
+          style: showConfirmDialogYesTextStyle,
+        ),
+        noText: Text(
+          "Cancel",
+        ));
   }
 }
