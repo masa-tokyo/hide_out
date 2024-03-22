@@ -404,6 +404,17 @@ class DatabaseManager {
         .update(map);
   }
 
+  /// Updates post collection
+  ///
+  /// only `excludedUserIds` field is allowed to be modified in the current security rule.
+  Future<void> updatePost(
+      {required String currentUserId, required Post post}) async {
+    // TODO(masaki): update security rules
+    // TODO(masaki): fetch the post according to the field
+    await _db.collection("posts").doc(post.postId).update(post.copyWith(
+        excludedUserIds: [...post.excludedUserIds, currentUserId]).toMap());
+  }
+
   //----------------------------------------------------------------------------Delete
 
   Future<void> leaveGroup(String? groupId, String? userId) async {

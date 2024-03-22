@@ -105,6 +105,12 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removePost(Post post, {required String currentUserId}) async {
+    await dbManager!.updatePost(currentUserId: currentUserId, post: post);
+    _posts.removeWhere((element) => element.postId == post.postId);
+    notifyListeners();
+  }
+
   Future<void> insertListener(Post post, User user) async {
     var updatedPost = post.copyWith(isListened: true);
 
