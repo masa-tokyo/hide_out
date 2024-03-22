@@ -10,6 +10,8 @@ class Post {
   final String? audioDuration;
   final DateTime? postDateTime;
   final bool? isListened;
+
+  /// userIds who have removed the post from their GroupScreen
   final List<String> excludedUserIds;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">

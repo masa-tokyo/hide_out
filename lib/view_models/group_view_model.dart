@@ -184,7 +184,7 @@ class GroupViewModel extends ChangeNotifier {
   //---------------------------------------------------------------------------- PostRepository
 
   Future<void> getGroupPosts(Group group) async {
-    await postRepository.getPostsByGroup(group.groupId);
+    await postRepository.getPostsByGroup(group.groupId, currentUser!.userId);
   }
 
   onGroupPostsObtained(PostRepository postRepository) async {

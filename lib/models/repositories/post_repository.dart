@@ -86,14 +86,14 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPostsByGroup(String? groupId) async {
+  Future<void> getPostsByGroup(String groupId, String userId) async {
     _isProcessing = true;
     notifyListeners();
 
     //not to show the posts of the previous group
     _posts.clear();
 
-    _posts = await dbManager!.getPostsByGroup(groupId);
+    _posts = await dbManager!.getPostsByGroup(groupId, userId);
 
     _isProcessing = false;
     notifyListeners();
