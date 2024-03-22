@@ -52,7 +52,8 @@ class PostRepository extends ChangeNotifier {
           audioStoragePath: audioStoragePath,
           audioDuration: audioDuration,
           postDateTime: DateTime.now().toUtc(),
-          isListened: false);
+          isListened: false,
+          excludedUserIds: []);
 
       await dbManager!.postRecording(post, currentUser.userId, groupId);
 
@@ -60,7 +61,6 @@ class PostRepository extends ChangeNotifier {
       _posts
         ..add(post)
         ..sort((a, b) => b.postDateTime!.compareTo(a.postDateTime!));
-
     }
 
     if (groupIds != null) {
@@ -76,7 +76,8 @@ class PostRepository extends ChangeNotifier {
             audioStoragePath: audioStoragePath,
             audioDuration: audioDuration,
             postDateTime: DateTime.now().toUtc(),
-            isListened: false);
+            isListened: false,
+            excludedUserIds: []);
 
         await dbManager!.postRecording(post, currentUser.userId, groupId);
       });
@@ -110,7 +111,7 @@ class PostRepository extends ChangeNotifier {
     await dbManager!.insertListener(updatedPost, user);
   }
 
-  Future<List<Post>> getPostsByUser(String userId) async{
+  Future<List<Post>> getPostsByUser(String userId) async {
     return await dbManager!.getPostsByUser(userId);
   }
 }

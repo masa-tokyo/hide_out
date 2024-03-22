@@ -1,5 +1,3 @@
-
-
 class Post {
   final String? postId;
   final String? userId;
@@ -7,10 +5,12 @@ class Post {
   final String? userName;
   final String? title;
   final String? audioUrl; //the actual place where the audio file is stored
-  final String? audioStoragePath; //storageId to access to file data at Firebase Storage
+  final String?
+      audioStoragePath; //storageId to access to file data at Firebase Storage
   final String? audioDuration;
   final DateTime? postDateTime;
   final bool? isListened;
+  final List<String> excludedUserIds;
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -25,6 +25,7 @@ class Post {
     required this.audioDuration,
     required this.postDateTime,
     required this.isListened,
+    required this.excludedUserIds,
   });
 
   Post copyWith({
@@ -38,21 +39,9 @@ class Post {
     String? audioDuration,
     DateTime? postDateTime,
     bool? isListened,
+    List<String>? excludedUserIds,
   }) {
-    if ((postId == null || identical(postId, this.postId)) &&
-        (userId == null || identical(userId, this.userId)) &&
-        (groupId == null || identical(groupId, this.groupId)) &&
-        (userName == null || identical(userName, this.userName)) &&
-        (title == null || identical(title, this.title)) &&
-        (audioUrl == null || identical(audioUrl, this.audioUrl)) &&
-        (audioStoragePath == null || identical(audioStoragePath, this.audioStoragePath)) &&
-        (audioDuration == null || identical(audioDuration, this.audioDuration)) &&
-        (postDateTime == null || identical(postDateTime, this.postDateTime)) &&
-        (isListened == null || identical(isListened, this.isListened))) {
-      return this;
-    }
-
-    return new Post(
+    return Post(
       postId: postId ?? this.postId,
       userId: userId ?? this.userId,
       groupId: groupId ?? this.groupId,
@@ -63,12 +52,25 @@ class Post {
       audioDuration: audioDuration ?? this.audioDuration,
       postDateTime: postDateTime ?? this.postDateTime,
       isListened: isListened ?? this.isListened,
+      excludedUserIds: excludedUserIds ?? this.excludedUserIds,
     );
   }
 
   @override
   String toString() {
-    return 'Post{postId: $postId, userId: $userId, groupId: $groupId, userName: $userName, title: $title, audioUrl: $audioUrl, audioStoragePath: $audioStoragePath, audioDuration: $audioDuration, postDateTime: $postDateTime, isListened: $isListened}';
+    return 'Post{' +
+        ' postId: $postId,' +
+        ' userId: $userId,' +
+        ' groupId: $groupId,' +
+        ' userName: $userName,' +
+        ' title: $title,' +
+        ' audioUrl: $audioUrl,' +
+        ' audioStoragePath: $audioStoragePath,' +
+        ' audioDuration: $audioDuration,' +
+        ' postDateTime: $postDateTime,' +
+        ' isListened: $isListened,' +
+        ' removedUserIds: $excludedUserIds,' +
+        '}';
   }
 
   @override
@@ -85,7 +87,8 @@ class Post {
           audioStoragePath == other.audioStoragePath &&
           audioDuration == other.audioDuration &&
           postDateTime == other.postDateTime &&
-          isListened == other.isListened);
+          isListened == other.isListened &&
+          excludedUserIds == other.excludedUserIds);
 
   @override
   int get hashCode =>
@@ -98,7 +101,8 @@ class Post {
       audioStoragePath.hashCode ^
       audioDuration.hashCode ^
       postDateTime.hashCode ^
-      isListened.hashCode;
+      isListened.hashCode ^
+      excludedUserIds.hashCode;
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return new Post(
@@ -112,9 +116,12 @@ class Post {
       audioDuration: map['audioDuration'] as String?,
       // String(UTC) to DateTime(local)
       postDateTime: map['postDateTime'] == null
-    ? null : DateTime.parse(map['postDateTime'] as String).toLocal(),
+          ? null
+          : DateTime.parse(map['postDateTime'] as String).toLocal(),
       isListened: map['isListened'] == null
-      ? false : map['isListened'] as bool?,
+          ? false
+          : map['isListened'] as bool? ?? false,
+      excludedUserIds: map['removedUserIds'] as List<String>? ?? [],
     );
   }
 
@@ -131,9 +138,9 @@ class Post {
       'audioDuration': this.audioDuration,
       'postDateTime': this.postDateTime!.toIso8601String(),
       'isListened': this.isListened,
+      'removedUserIds': this.excludedUserIds,
     } as Map<String, dynamic>;
   }
 
 //</editor-fold>
-
 }
