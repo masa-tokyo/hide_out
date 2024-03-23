@@ -250,7 +250,7 @@ class DatabaseManager {
     return Group.fromMap(query.docs[0].data());
   }
 
-  Future<List<Post>> getPostsByGroup(String? groupId) async {
+  Future<List<Post>> getPostsByGroup(String groupId, String userId) async {
     final query = await _db.collection("posts").get();
     if (query.docs.length == 0) return [];
 
@@ -267,7 +267,12 @@ class DatabaseManager {
       });
     });
 
-    return results;
+    // exclude the posts that the current user removed in the past
+    final unExcludedPosts = results
+        .where((post) => !post.excludedUserIds.contains(userId))
+        .toList();
+
+    return unExcludedPosts;
   }
 
   Future<List<Post>> getPostsByUser(String userId) async {
@@ -402,6 +407,16 @@ class DatabaseManager {
         .collection("members")
         .doc(userId)
         .update(map);
+  }
+
+  /// Updates post collection
+  ///
+  /// only `excludedUserIds` field is allowed to be modified in the current security rule.
+  Future<void> updatePost(
+      {required String currentUserId, required Post post}) async {
+    await _db.collection("posts").doc(post.postId).update({
+      'excludedUserIds': [...post.excludedUserIds, currentUserId]
+    });
   }
 
   //----------------------------------------------------------------------------Delete

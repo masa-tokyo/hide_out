@@ -184,7 +184,7 @@ class GroupViewModel extends ChangeNotifier {
   //---------------------------------------------------------------------------- PostRepository
 
   Future<void> getGroupPosts(Group group) async {
-    await postRepository.getPostsByGroup(group.groupId);
+    await postRepository.getPostsByGroup(group.groupId, currentUser!.userId);
   }
 
   onGroupPostsObtained(PostRepository postRepository) async {
@@ -218,6 +218,11 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<void> deletePost(Post post) async {
     await postRepository.deletePost(post);
+  }
+
+  Future<void> removeMemberPost(Post post) async {
+    await postRepository.removeMemberPost(post,
+        currentUserId: currentUser!.userId);
   }
 
   Future<void> insertListener(Post post) async {

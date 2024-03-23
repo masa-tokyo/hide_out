@@ -9,7 +9,9 @@
     "deploy:prod": "firebase deploy --project prod --only functions",
     "rules": "firebase deploy --only firestore:rules",
     "logs": "firebase functions:log",
-    "dump": "firebase emulators:export seed"
+    "dump": "firebase emulators:export seed",
+    "deploy-rules:dev": "firebase --project dev deploy --only firestore:rules",
+    "deploy-rules:prod": "firebase --project prod deploy --only firestore:rules"
   },
   "engines": {
     "node": "14"
