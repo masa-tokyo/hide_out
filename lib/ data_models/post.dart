@@ -71,7 +71,7 @@ class Post {
         ' audioDuration: $audioDuration,' +
         ' postDateTime: $postDateTime,' +
         ' isListened: $isListened,' +
-        ' removedUserIds: $excludedUserIds,' +
+        ' excludedUserIds: $excludedUserIds,' +
         '}';
   }
 
@@ -123,7 +123,9 @@ class Post {
       isListened: map['isListened'] == null
           ? false
           : map['isListened'] as bool? ?? false,
-      excludedUserIds: map['removedUserIds'] as List<String>? ?? [],
+      excludedUserIds: map['excludedUserIds'] == null
+          ? <String>[]
+          : [...map['excludedUserIds']],
     );
   }
 
@@ -140,7 +142,7 @@ class Post {
       'audioDuration': this.audioDuration,
       'postDateTime': this.postDateTime!.toIso8601String(),
       'isListened': this.isListened,
-      'removedUserIds': this.excludedUserIds,
+      'excludedUserIds': this.excludedUserIds,
     } as Map<String, dynamic>;
   }
 
