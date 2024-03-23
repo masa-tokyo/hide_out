@@ -521,7 +521,7 @@ class GroupScreen extends StatelessWidget {
         contentString: "The post will be removed only for you.",
         onConfirmed: (isConfirmed) async {
           if (isConfirmed) {
-            await groupViewModel.removePost(post);
+            await groupViewModel.removeMemberPost(post);
             Fluttertoast.showToast(
                 msg: "Post Removed", gravity: ToastGravity.CENTER);
           }
