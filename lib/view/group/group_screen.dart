@@ -548,6 +548,27 @@ class GroupScreen extends StatelessWidget {
   }
 
   Future<void> _reportMemberPost(BuildContext context, Post post) async {
-    // TODO(masaki): implement
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    showConfirmDialog(
+        context: context,
+        titleString: "Report the post?",
+        contentString:
+            "The post will be deleted by the admin if deemed inappropriate.",
+        onConfirmed: (isConfirmed) async {
+          if (isConfirmed) {
+            // TODO(masaki): implement
+            // await groupViewModel.removeMemberPost(post);
+            Fluttertoast.showToast(
+                msg: "Reported", gravity: ToastGravity.CENTER);
+          }
+        },
+        yesText: Text(
+          "Remove",
+          style: showConfirmDialogYesTextStyle,
+        ),
+        noText: Text(
+          "Cancel",
+        ));
   }
 }
