@@ -435,37 +435,49 @@ class GroupScreen extends StatelessWidget {
                             topRight: Radius.circular(16.0),
                           ),
                         ),
-                        child: ListTile(
-                          onLongPress: () => _removeMemberPost(context, post),
-                          trailing: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: PostAudioPlayButton(
-                              color: lightThemeBackgroundColor!,
-                              index: index,
-                              audioPlayType: AudioPlayType.POST_OTHERS,
-                              post: post,
+                        child: Slidable(
+                          actionPane: SlidableDrawerActionPane(),
+                          actionExtentRatio: 0.25,
+                          child: ListTile(
+                            onLongPress: () => _removeMemberPost(context, post),
+                            trailing: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: PostAudioPlayButton(
+                                color: lightThemeBackgroundColor!,
+                                index: index,
+                                audioPlayType: AudioPlayType.POST_OTHERS,
+                                post: post,
+                              ),
                             ),
+                            title: RichText(
+                                text: TextSpan(
+                                    // RichText does not consider the font size set on user preferences
+                                    style: scaledFontTextStyle(
+                                        DefaultTextStyle.of(context).style,
+                                        textScale: scale),
+                                    children: [
+                                  TextSpan(
+                                      text: post.title,
+                                      style: scaledFontTextStyle(
+                                          postTitleTextStyle,
+                                          textScale: scale)),
+                                  TextSpan(text: "  "),
+                                  TextSpan(
+                                      text: "(${post.audioDuration})",
+                                      style: scaledFontTextStyle(
+                                          postAudioDurationTextStyle,
+                                          textScale: scale)),
+                                ])),
                           ),
-                          title: RichText(
-                              text: TextSpan(
-                                  // RichText does not consider the font size set on user preferences
-                                  style: scaledFontTextStyle(
-                                      DefaultTextStyle.of(context).style,
-                                      textScale: scale),
-                                  children: [
-                                TextSpan(
-                                    text: post.title,
-                                    style: scaledFontTextStyle(
-                                        postTitleTextStyle,
-                                        textScale: scale)),
-                                TextSpan(text: "  "),
-                                TextSpan(
-                                    text: "(${post.audioDuration})",
-                                    style: scaledFontTextStyle(
-                                        postAudioDurationTextStyle,
-                                        textScale: scale)),
-                              ])),
+                          secondaryActions: [
+                            IconSlideAction(
+                              caption: "Report",
+                              icon: Icons.warning,
+                              color: Colors.redAccent,
+                              onTap: () => _reportMemberPost(context, post),
+                            )
+                          ],
                         ),
                       ),
                     ],
@@ -533,5 +545,9 @@ class GroupScreen extends StatelessWidget {
         noText: Text(
           "Cancel",
         ));
+  }
+
+  Future<void> _reportMemberPost(BuildContext context, Post post) async {
+    // TODO(masaki): implement
   }
 }
