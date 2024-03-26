@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Report {
   final String reportId;
   final String postId;
@@ -16,7 +18,7 @@ class Report {
     required this.reporterId,
     required this.createdAt,
     required this.updatedAt,
-    required this.isResolved,
+    this.isResolved = false,
     this.notificationId,
   });
 
@@ -87,23 +89,25 @@ class Report {
       'postId': this.postId,
       'postOwnerId': this.postOwnerId,
       'reporterId': this.reporterId,
-      'createdAt': this.createdAt,
-      'updatedAt': this.updatedAt,
+      'createdAt': Timestamp.fromDate(this.createdAt),
+      'updatedAt': Timestamp.fromDate(this.updatedAt),
       'isResolved': this.isResolved,
       'notificationId': this.notificationId,
     };
   }
 
+  // MEMO(masaki): implement this method if necessary
   factory Report.fromMap(Map<String, dynamic> map) {
+    throw UnimplementedError();
     return Report(
       reportId: map['reportId'] as String,
       postId: map['postId'] as String,
       postOwnerId: map['postOwnerId'] as String,
       reporterId: map['reporterId'] as String,
-      createdAt: map['createdAt'] as DateTime,
-      updatedAt: map['updatedAt'] as DateTime,
+      createdAt: map['createdAt'].toDate(),
+      updatedAt: map['updatedAt'].toDate(),
       isResolved: map['isResolved'] as bool,
-      notificationId: map['notificationId'] as String,
+      notificationId: map['notificationId'] as String?,
     );
   }
 
