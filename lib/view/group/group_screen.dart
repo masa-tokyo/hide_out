@@ -557,8 +557,7 @@ class GroupScreen extends StatelessWidget {
             "The post will be deleted by the admin if deemed inappropriate.",
         onConfirmed: (isConfirmed) async {
           if (isConfirmed) {
-            // TODO(masaki): implement
-            // await groupViewModel.removeMemberPost(post);
+            await groupViewModel.reportMemberPost(post);
             Fluttertoast.showToast(
                 msg: "Reported", gravity: ToastGravity.CENTER);
           }
