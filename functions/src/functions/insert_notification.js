@@ -16,4 +16,5 @@ exports.insertNotification = async ({type, userId, groupId, postId, content}) =>
             "content": content,
         }
     );
+    return docId;
 }

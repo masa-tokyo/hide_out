@@ -12,6 +12,7 @@ exports.onDelete = require('./src/on_delete');
 // deploy only necessary functions
 exports.modifyDb = onRequest.modifyDb;
 exports.testFunction = onRequest.testFunction;
+exports.resolveReport = onRequest.resolveReport;
 
 
 
