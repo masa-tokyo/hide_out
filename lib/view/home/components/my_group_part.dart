@@ -207,7 +207,7 @@ class MyGroupPart extends StatelessWidget {
             context: context,
             title: Text("Your post was reported"),
             contentString:
-                "Your post ${element.content} has been deleted due to inappropriate content.",
+                'Your post "${element.content}" has been deleted due to inappropriate content.',
             okayString: "Okay",
             onConfirmed: () {
               homeScreenViewModel.deleteNotification(element.notificationId);
