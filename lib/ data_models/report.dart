@@ -5,6 +5,7 @@ class Report {
   final String postId;
   final String postOwnerId;
   final String reporterId;
+  final String postTitle;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isResolved; //for self-introduction
@@ -16,6 +17,7 @@ class Report {
     required this.postId,
     required this.postOwnerId,
     required this.reporterId,
+    required this.postTitle,
     required this.createdAt,
     required this.updatedAt,
     this.isResolved = false,
@@ -31,6 +33,7 @@ class Report {
           postId == other.postId &&
           postOwnerId == other.postOwnerId &&
           reporterId == other.reporterId &&
+          postTitle == other.postTitle &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
           isResolved == other.isResolved &&
@@ -42,6 +45,7 @@ class Report {
       postId.hashCode ^
       postOwnerId.hashCode ^
       reporterId.hashCode ^
+      postTitle.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
       isResolved.hashCode ^
@@ -54,6 +58,7 @@ class Report {
         ' postId: $postId,' +
         ' postOwnerId: $postOwnerId,' +
         ' reporterId: $reporterId,' +
+        ' postTitle: $postTitle,' +
         ' createdAt: $createdAt,' +
         ' updatedAt: $updatedAt,' +
         ' isResolved: $isResolved,' +
@@ -66,6 +71,7 @@ class Report {
     String? postId,
     String? postOwnerId,
     String? reporterId,
+    String? postTitle,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isResolved,
@@ -76,6 +82,7 @@ class Report {
       postId: postId ?? this.postId,
       postOwnerId: postOwnerId ?? this.postOwnerId,
       reporterId: reporterId ?? this.reporterId,
+      postTitle: postTitle ?? this.postTitle,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isResolved: isResolved ?? this.isResolved,
@@ -89,6 +96,7 @@ class Report {
       'postId': this.postId,
       'postOwnerId': this.postOwnerId,
       'reporterId': this.reporterId,
+      'postTitle': this.postTitle,
       'createdAt': Timestamp.fromDate(this.createdAt),
       'updatedAt': Timestamp.fromDate(this.updatedAt),
       'isResolved': this.isResolved,
@@ -104,6 +112,7 @@ class Report {
       postId: map['postId'] as String,
       postOwnerId: map['postOwnerId'] as String,
       reporterId: map['reporterId'] as String,
+      postTitle: map['postTitle'] as String,
       createdAt: map['createdAt'].toDate(),
       updatedAt: map['updatedAt'].toDate(),
       isResolved: map['isResolved'] as bool,
