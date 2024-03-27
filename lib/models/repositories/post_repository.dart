@@ -120,6 +120,7 @@ class PostRepository extends ChangeNotifier {
       postId: post.postId!,
       postOwnerId: post.userId!,
       reporterId: currentUserId,
+      postTitle: post.title!,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

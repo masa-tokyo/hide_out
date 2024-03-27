@@ -27,6 +27,7 @@ enum RecordingButtonOpenMode {
   SELF_INTRO_FROM_PROFILE,
   SELF_INTRO_FROM_SIGN_UP,
 }
+
 enum ProfileEditScreensOpenMode {
   SIGN_UP,
   PROFILE,
@@ -50,6 +51,7 @@ enum NotificationType {
   DELETED_GROUP,
   ALERT_AUTO_EXIT,
   NEW_OWNER,
+  REPORTED_POST,
 }
 
 enum NotificationDeleteType {
@@ -68,5 +70,4 @@ enum EventType {
   SIGN_UP,
   JOIN_GROUP,
   CREATE_GROUP,
-
 }
