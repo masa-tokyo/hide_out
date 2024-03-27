@@ -15,7 +15,7 @@ exports.testFunction = functions.https.onRequest(async (req, res) => {
 
 });
 
-/// Resolves report that deletes the post and creates a notification
+/// Resolves report to delete the post and create a notification
 exports.resolveReport = functions.https.onRequest(async (req, res) => {
   const reportId = req.query.reportId;
 
