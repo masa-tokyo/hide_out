@@ -225,6 +225,11 @@ class GroupViewModel extends ChangeNotifier {
         currentUserId: currentUser!.userId);
   }
 
+  Future<void> reportMemberPost(Post post) async {
+    await postRepository.reportMemberPost(post,
+        currentUserId: currentUser!.userId);
+  }
+
   Future<void> insertListener(Post post) async {
     await postRepository.insertListener(post, currentUser!);
   }

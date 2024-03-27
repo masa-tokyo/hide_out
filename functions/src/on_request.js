@@ -2,6 +2,7 @@ const functions = require('firebase-functions').region('asia-northeast1');
 const admin = require('firebase-admin');
 const uuid = require("uuid");
 const {fetchGroupIdsByUser} = require("./functions/read");
+const {insertNotification} = require("./functions/insert_notification");
 
 const _db = admin.firestore();
 const _storage = admin.storage();
@@ -9,9 +10,44 @@ const _storage = admin.storage();
 
 exports.testFunction = functions.https.onRequest(async (req, res) => {
 
-    const userId = req.query.userId;
+  const userId = req.query.userId;
 
 
+});
+
+/// Resolves report to delete the post and create a notification
+exports.resolveReport = functions.https.onRequest(async (req, res) => {
+  const reportId = req.query.reportId;
+
+  // fetch report document
+  const reportRef = _db.doc(`reports/${reportId}`);
+  const report = await reportRef.get();
+  const reportData = report.data();
+
+
+  // delete post document
+  const postId = reportData.postId;
+  const postRef = _db.doc(`posts/${postId}`);
+  await postRef.delete();
+
+  // create notification document
+  const notificationId = await insertNotification({
+    type: 'REPORTED_POST',
+    userId: reportData.postOwnerId,
+    groupId: null,
+    // don't pass postId in order not to be deleted by onPostDeleted trigger
+    postId: null,
+    content: reportData.postTitle,
+  });
+
+  // update report document
+  await reportRef.update({
+    isResolved: true,
+    notificationId: notificationId,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  res.send('report resolved');
 });
 
 
@@ -21,34 +57,34 @@ exports.modifyDb = functions.https.onRequest(async (req, res) => {
 // STEP3: Call the function by copying and pasting the url in a browser
 
 
-    // --- insert 'photoUrl' and 'name' field to document on members sub-collection ---
-    //make all the members
-    //fetch user data of each member
-    //add that info on member
-    await _db.collection('groups').get().then((groupsSnap) => {
-        groupsSnap.forEach((group) => {
-            _db.collection(`groups/${group.id}/members`).get().then((membersSnap) => {
-                membersSnap.forEach((member) => {
-                    //fetch user info of each member
-                    _db.doc(`users/${member.id}`).get().then((user) => {
-                        const photoUrl = user.data().photoUrl;
-                        const name = user.data().inAppUserName;
-                        if (photoUrl != null && name != null) {
-                            member.ref.update({
-                                'photoUrl': photoUrl,
-                                'name': name,
-                            });
-                        }
-                    });
-
-                });
-            });
+  // --- insert 'photoUrl' and 'name' field to document on members sub-collection ---
+  //make all the members
+  //fetch user data of each member
+  //add that info on member
+  await _db.collection('groups').get().then((groupsSnap) => {
+    groupsSnap.forEach((group) => {
+      _db.collection(`groups/${group.id}/members`).get().then((membersSnap) => {
+        membersSnap.forEach((member) => {
+          //fetch user info of each member
+          _db.doc(`users/${member.id}`).get().then((user) => {
+            const photoUrl = user.data().photoUrl;
+            const name = user.data().inAppUserName;
+            if (photoUrl != null && name != null) {
+              member.ref.update({
+                'photoUrl': photoUrl,
+                'name': name,
+              });
+            }
+          });
 
         });
+      });
+
     });
+  });
 
 
-    res.send(`data is modified!!!`);
+  res.send(`data is modified!!!`);
 
 
 });

@@ -9,6 +9,8 @@ import 'package:hide_out/%20data_models/notification.dart' as d;
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/%20data_models/user.dart';
 
+import '../ data_models/report.dart';
+
 class DatabaseManager {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -139,6 +141,10 @@ class DatabaseManager {
       "userId": user.userId,
       "createdAt": DateTime.now().millisecondsSinceEpoch,
     });
+  }
+
+  Future<void> createReport(Report report) async {
+    await _db.collection("reports").doc(report.reportId).set(report.toMap());
   }
 
   //-----------------------------------------------------------------------------Read
