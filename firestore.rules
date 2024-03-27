@@ -28,7 +28,8 @@ service cloud.firestore {
         match /posts/{postId} {
             allow read: if isSignedIn();
             allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.userId);
-            allow update, delete: if isSignedIn() && isUserAuthenticated(resource.data.userId);
+            allow update: if isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['excludedUserIds']);
+            allow delete: if isSignedIn() && isUserAuthenticated(resource.data.userId);
         }
         match /posts/{postId}/listeners/{document=**} {
             allow read: if isSignedIn();
@@ -43,6 +44,9 @@ service cloud.firestore {
             allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.userId);
             allow read: if isSignedIn();
 
+        }
+        match /reports/{document=**} {
+            allow create: if isSignedIn() && isUserAuthenticated(request.resource.data.reporterId);
         }
     }
 }

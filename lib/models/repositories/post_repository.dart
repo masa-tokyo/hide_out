@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hide_out/%20data_models/post.dart';
+import 'package:hide_out/%20data_models/report.dart';
 import 'package:hide_out/%20data_models/user.dart';
 import 'package:hide_out/models/database_manager.dart';
 import 'package:uuid/uuid.dart';
@@ -52,7 +53,8 @@ class PostRepository extends ChangeNotifier {
           audioStoragePath: audioStoragePath,
           audioDuration: audioDuration,
           postDateTime: DateTime.now().toUtc(),
-          isListened: false);
+          isListened: false,
+          excludedUserIds: []);
 
       await dbManager!.postRecording(post, currentUser.userId, groupId);
 
@@ -60,7 +62,6 @@ class PostRepository extends ChangeNotifier {
       _posts
         ..add(post)
         ..sort((a, b) => b.postDateTime!.compareTo(a.postDateTime!));
-
     }
 
     if (groupIds != null) {
@@ -76,7 +77,8 @@ class PostRepository extends ChangeNotifier {
             audioStoragePath: audioStoragePath,
             audioDuration: audioDuration,
             postDateTime: DateTime.now().toUtc(),
-            isListened: false);
+            isListened: false,
+            excludedUserIds: []);
 
         await dbManager!.postRecording(post, currentUser.userId, groupId);
       });
@@ -85,14 +87,14 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPostsByGroup(String? groupId) async {
+  Future<void> getPostsByGroup(String groupId, String userId) async {
     _isProcessing = true;
     notifyListeners();
 
     //not to show the posts of the previous group
     _posts.clear();
 
-    _posts = await dbManager!.getPostsByGroup(groupId);
+    _posts = await dbManager!.getPostsByGroup(groupId, userId);
 
     _isProcessing = false;
     notifyListeners();
@@ -104,13 +106,34 @@ class PostRepository extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removeMemberPost(Post post,
+      {required String currentUserId}) async {
+    await dbManager!.updatePost(currentUserId: currentUserId, post: post);
+    _posts.removeWhere((element) => element.postId == post.postId);
+    notifyListeners();
+  }
+
+  Future<void> reportMemberPost(Post post,
+      {required String currentUserId}) async {
+    final report = Report(
+      reportId: Uuid().v1(),
+      postId: post.postId!,
+      postOwnerId: post.userId!,
+      reporterId: currentUserId,
+      postTitle: post.title!,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    await dbManager!.createReport(report);
+  }
+
   Future<void> insertListener(Post post, User user) async {
     var updatedPost = post.copyWith(isListened: true);
 
     await dbManager!.insertListener(updatedPost, user);
   }
 
-  Future<List<Post>> getPostsByUser(String userId) async{
+  Future<List<Post>> getPostsByUser(String userId) async {
     return await dbManager!.getPostsByUser(userId);
   }
 }

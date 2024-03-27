@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hide_out/utils/style.dart';
 import 'package:hide_out/view/login/login_screen.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:intro_slider/slide_object.dart';
 
 class BeforeLoginScreen extends StatelessWidget {
   @override

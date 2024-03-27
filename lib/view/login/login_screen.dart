@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -67,24 +68,43 @@ class LoginScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 24,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            child: Text('Privacy Policy', style: underlineTextStyle),
-                            onTap: () {
-                              Navigator.push(context, createRoute(context, PrivacyPolicyScreen()));
-                            },
-                          ),
-                          GestureDetector(
-                            child: Text('Terms and Conditions', style: underlineTextStyle),
-                            onTap: () {
-                              Navigator.push(context, createRoute(context, TermsAndConditionsScreen()));
-                            },
-                          ),
-                        ],
-                      )
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: DefaultTextStyle.of(context).style,
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'By continuing, you agree to our\n',
+                              ),
+                              TextSpan(
+                                text: ' Privacy Policy',
+                                style: underlineTextStyle,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        createRoute(
+                                            context, PrivacyPolicyScreen()));
+                                  },
+                              ),
+                              const TextSpan(text: ' and '),
+                              TextSpan(
+                                text: 'Terms and Conditions',
+                                style: underlineTextStyle,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        createRoute(context,
+                                            TermsAndConditionsScreen()));
+                                  },
+                              ),
+                              const TextSpan(text: '.'),
+                            ],
+                          )),
                     ],
                   );
           },

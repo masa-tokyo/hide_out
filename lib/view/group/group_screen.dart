@@ -37,12 +37,13 @@ class GroupScreen extends StatelessWidget {
 
     return Theme(
       data: lightTheme,
-      child: WillPopScope(
-        onWillPop: () async {
+      child: PopScope(
+        onPopInvoked: (didPop) async {
           // stop audio when the user closes the screen
           // * with this, iOS users cannot close the screen by swiping
-          groupViewModel.pauseAudio();
-          return true;
+          if (didPop) {
+            groupViewModel.pauseAudio();
+          }
         },
         child: Scaffold(
           floatingActionButton: _floatingActionButton(context),
@@ -304,6 +305,7 @@ class GroupScreen extends StatelessWidget {
   }
 
   Widget _currentUserPost(BuildContext context, int index, Post post) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.of(context).textScaleFactor;
 
     return Column(
@@ -324,7 +326,7 @@ class GroupScreen extends StatelessWidget {
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
                 child: ListTile(
-                  onLongPress: () => _onDeleteTapped(context, post),
+                  onLongPress: () => _deleteCurrentUserPost(context, post),
                   trailing: SizedBox(
                     width: 50,
                     height: 50,
@@ -358,7 +360,7 @@ class GroupScreen extends StatelessWidget {
                     caption: "Delete",
                     icon: Icons.delete,
                     color: Colors.redAccent,
-                    onTap: () => _onDeleteTapped(context, post),
+                    onTap: () => _deleteCurrentUserPost(context, post),
                   )
                 ],
               )),
@@ -376,7 +378,7 @@ class GroupScreen extends StatelessWidget {
     );
   }
 
-  _onDeleteTapped(BuildContext context, Post post) {
+  _deleteCurrentUserPost(BuildContext context, Post post) {
     final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
 
     showConfirmDialog(
@@ -401,6 +403,7 @@ class GroupScreen extends StatelessWidget {
 
   Widget _memberPost(
       BuildContext context, int index, GroupViewModel model, Post post) {
+    // ignore: deprecated_member_use
     final scale = MediaQuery.of(context).textScaleFactor;
 
     return Padding(
@@ -432,36 +435,49 @@ class GroupScreen extends StatelessWidget {
                             topRight: Radius.circular(16.0),
                           ),
                         ),
-                        child: ListTile(
-                          trailing: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: PostAudioPlayButton(
-                              color: lightThemeBackgroundColor!,
-                              index: index,
-                              audioPlayType: AudioPlayType.POST_OTHERS,
-                              post: post,
+                        child: Slidable(
+                          actionPane: SlidableDrawerActionPane(),
+                          actionExtentRatio: 0.25,
+                          child: ListTile(
+                            onLongPress: () => _removeMemberPost(context, post),
+                            trailing: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: PostAudioPlayButton(
+                                color: lightThemeBackgroundColor!,
+                                index: index,
+                                audioPlayType: AudioPlayType.POST_OTHERS,
+                                post: post,
+                              ),
                             ),
+                            title: RichText(
+                                text: TextSpan(
+                                    // RichText does not consider the font size set on user preferences
+                                    style: scaledFontTextStyle(
+                                        DefaultTextStyle.of(context).style,
+                                        textScale: scale),
+                                    children: [
+                                  TextSpan(
+                                      text: post.title,
+                                      style: scaledFontTextStyle(
+                                          postTitleTextStyle,
+                                          textScale: scale)),
+                                  TextSpan(text: "  "),
+                                  TextSpan(
+                                      text: "(${post.audioDuration})",
+                                      style: scaledFontTextStyle(
+                                          postAudioDurationTextStyle,
+                                          textScale: scale)),
+                                ])),
                           ),
-                          title: RichText(
-                              text: TextSpan(
-                                  // RichText does not consider the font size set on user preferences
-                                  style: scaledFontTextStyle(
-                                      DefaultTextStyle.of(context).style,
-                                      textScale: scale),
-                                  children: [
-                                TextSpan(
-                                    text: post.title,
-                                    style: scaledFontTextStyle(
-                                        postTitleTextStyle,
-                                        textScale: scale)),
-                                TextSpan(text: "  "),
-                                TextSpan(
-                                    text: "(${post.audioDuration})",
-                                    style: scaledFontTextStyle(
-                                        postAudioDurationTextStyle,
-                                        textScale: scale)),
-                              ])),
+                          secondaryActions: [
+                            IconSlideAction(
+                              caption: "Report",
+                              icon: Icons.warning,
+                              color: Colors.redAccent,
+                              onTap: () => _reportMemberPost(context, post),
+                            )
+                          ],
                         ),
                       ),
                     ],
@@ -506,5 +522,52 @@ class GroupScreen extends StatelessWidget {
     } else {
       return userIconUrl;
     }
+  }
+
+  _removeMemberPost(BuildContext context, Post post) {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    showConfirmDialog(
+        context: context,
+        titleString: "Remove the post?",
+        contentString: "The post will be removed only for you.",
+        onConfirmed: (isConfirmed) async {
+          if (isConfirmed) {
+            await groupViewModel.removeMemberPost(post);
+            Fluttertoast.showToast(
+                msg: "Post Removed", gravity: ToastGravity.CENTER);
+          }
+        },
+        yesText: Text(
+          "Remove",
+          style: showConfirmDialogYesTextStyle,
+        ),
+        noText: Text(
+          "Cancel",
+        ));
+  }
+
+  Future<void> _reportMemberPost(BuildContext context, Post post) async {
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+
+    showConfirmDialog(
+        context: context,
+        titleString: "Report the post?",
+        contentString:
+            "The post will be deleted by the admin if deemed inappropriate.",
+        onConfirmed: (isConfirmed) async {
+          if (isConfirmed) {
+            await groupViewModel.reportMemberPost(post);
+            Fluttertoast.showToast(
+                msg: "Reported", gravity: ToastGravity.CENTER);
+          }
+        },
+        yesText: Text(
+          "Remove",
+          style: showConfirmDialogYesTextStyle,
+        ),
+        noText: Text(
+          "Cancel",
+        ));
   }
 }

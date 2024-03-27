@@ -47,6 +47,7 @@ class MyGroupPart extends StatelessWidget {
                 _showAutoExitDialog(context, model.notifications);
                 _showDeletedGroupDialog(context, model.notifications);
                 _showNewOwnerDialog(context, model.notifications);
+                _showReportedPostDialog(context, model.notifications);
               }
 
               return model.groups.isEmpty
@@ -185,6 +186,28 @@ class MyGroupPart extends StatelessWidget {
             title: Text("You are the owner!"),
             contentString:
                 'In "${element.content}", you have become the new owner because the previous owner exited from the group.',
+            okayString: "Okay",
+            onConfirmed: () {
+              homeScreenViewModel.deleteNotification(element.notificationId);
+            }));
+      });
+    }
+  }
+
+  void _showReportedPostDialog(
+      BuildContext context, List<d.Notification> notifications) {
+    final homeScreenViewModel = context.read<HomeScreenViewModel>();
+
+    var reportedPostNotifications = notifications.where((element) =>
+        element.notificationType == NotificationType.REPORTED_POST);
+
+    if (reportedPostNotifications.isNotEmpty) {
+      reportedPostNotifications.forEach((element) {
+        Future(() => showHelpDialog(
+            context: context,
+            title: Text("Your post was reported"),
+            contentString:
+                'Your post "${element.content}" has been deleted due to inappropriate content.',
             okayString: "Okay",
             onConfirmed: () {
               homeScreenViewModel.deleteNotification(element.notificationId);
