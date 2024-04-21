@@ -14,3 +14,6 @@
 3. `firebase use dev` or `firebase use prod`
 4. `firebase deploy --only hosting`
 
+## Pull request
+When making a pull request, add issue number in the title, which is shown on the corresponding Notion document.  
+e.g. `[#123] Add new feature`
