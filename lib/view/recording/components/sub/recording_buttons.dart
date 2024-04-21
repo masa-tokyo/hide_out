@@ -15,6 +15,7 @@ import 'package:hide_out/view_models/recording_view_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 class RecordingButtons extends StatefulWidget {
   final RecordingButtonOpenMode from;
@@ -42,6 +43,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
 
     openTheRecorder().then((value) {
       setState(() {
@@ -71,7 +73,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
       _recorderSubscription!.cancel();
       _recorderSubscription = null;
     }
-
+    Wakelock.disable();
     super.dispose();
   }
 

@@ -71,6 +71,7 @@ dependencies:
   flutter_markdown: ^0.6.10
   url_strategy: ^0.2.0
   tutorial_coach_mark: ^1.2.11
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:
