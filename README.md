@@ -16,4 +16,4 @@
 
 ## Pull request
 When making a pull request, add issue number in the title, which is shown on the corresponding Notion document.  
-e.g. `[#123] Add new feature`
+e.g. `[ISS-123] Add new feature`
