@@ -107,17 +107,17 @@ class Report {
   // MEMO(masaki): implement this method if necessary
   factory Report.fromMap(Map<String, dynamic> map) {
     throw UnimplementedError();
-    return Report(
-      reportId: map['reportId'] as String,
-      postId: map['postId'] as String,
-      postOwnerId: map['postOwnerId'] as String,
-      reporterId: map['reporterId'] as String,
-      postTitle: map['postTitle'] as String,
-      createdAt: map['createdAt'].toDate(),
-      updatedAt: map['updatedAt'].toDate(),
-      isResolved: map['isResolved'] as bool,
-      notificationId: map['notificationId'] as String?,
-    );
+    // return Report(
+    //   reportId: map['reportId'] as String,
+    //   postId: map['postId'] as String,
+    //   postOwnerId: map['postOwnerId'] as String,
+    //   reporterId: map['reporterId'] as String,
+    //   postTitle: map['postTitle'] as String,
+    //   createdAt: map['createdAt'].toDate(),
+    //   updatedAt: map['updatedAt'].toDate(),
+    //   isResolved: map['isResolved'] as bool,
+    //   notificationId: map['notificationId'] as String?,
+    // );
   }
 
 //</editor-fold>
