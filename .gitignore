@@ -42,15 +42,11 @@ app.*.map.json
 
 # FLAVOR for Android
 android/app/google-services.json
-android/app/src/dev/google-services.json
-android/app/src/prod/google-services.json
+
 
 # FLAVOR for iOS
 ios/Flutter/DartDefines.xcconfig
 ios/GoogleService-Info.plist
-ios/Runner/GoogleService-Info.plist
-ios/dev/GoogleService-Info.plist
-ios/prod/GoogleService-Info.plist
 
 # FVM Version Cache
 .fvm/

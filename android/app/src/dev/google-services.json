@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "289406628812",
+    "project_id": "voiceput-e9f38",
+    "storage_bucket": "voiceput-e9f38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289406628812:android:b6d9fb37c14ad1512e6369",
+        "android_client_info": {
+          "package_name": "com.masakisato.hideout.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289406628812-5hh3h250bjia5k8t6b4j6go8mkv25rdp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masakisato.hideout.dev",
+            "certificate_hash": "c4e98aa96569ccccc188b08655560cfeeb8f56a8"
+          }
+        },
+        {
+          "client_id": "289406628812-db78dd7q9ptr6kq5bc1oar19gb5bjusc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8VKizqiSXuXnorx_Dw9nPEGJ1Bw7ZBx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289406628812-db78dd7q9ptr6kq5bc1oar19gb5bjusc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "289406628812-6qsp9lo00j0v1eagutefr23hq1943bge.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.masakisato.hideout"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
