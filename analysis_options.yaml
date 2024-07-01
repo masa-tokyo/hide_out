@@ -1,0 +1,7 @@
+# https://github.com/mono0926/pedantic_mono/blob/main/lib/analysis_options.yaml
+include: package:pedantic_mono/analysis_options.yaml
+
+linter:
+  rules:
+    prefer_relative_imports: true
+    avoid_classes_with_only_static_members: false

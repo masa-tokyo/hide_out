@@ -72,6 +72,7 @@ dependencies:
   url_strategy: ^0.2.0
   tutorial_coach_mark: ^1.2.11
   wakelock: ^0.6.2
+  pedantic_mono: any
 
 dev_dependencies:
   flutter_test:
