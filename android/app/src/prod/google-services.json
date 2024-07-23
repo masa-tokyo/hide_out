@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "869881966842",
+    "project_id": "hideout-production",
+    "storage_bucket": "hideout-production.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869881966842:android:5a9bf414dacacf4e555943",
+        "android_client_info": {
+          "package_name": "com.masakisato.hideout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869881966842-o70p74vtnfcbghem88k2alb2tsce1uca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masakisato.hideout",
+            "certificate_hash": "c4e98aa96569ccccc188b08655560cfeeb8f56a8"
+          }
+        },
+        {
+          "client_id": "869881966842-i6ss8dlvmujsgm07p0kjisqt5l77eekf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHfoTu9wuUsimnNi2IETcuM08UBOz6nJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869881966842-i6ss8dlvmujsgm07p0kjisqt5l77eekf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "869881966842-m1s0554sbkaak1fb8e9vprk9nhbbb6gu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.masakisato.hideout"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
