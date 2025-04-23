@@ -50,3 +50,6 @@ ios/GoogleService-Info.plist
 
 # FVM Version Cache
 .fvm/
+
+# Release Notes
+release_notes.json
