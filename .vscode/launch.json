@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "app debug",
+            "name": "dev debug",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
