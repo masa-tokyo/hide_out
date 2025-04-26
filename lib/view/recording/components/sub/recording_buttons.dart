@@ -61,7 +61,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
   void dispose() async {
     _stopRecording(); // in the case when status is DURING and not stopped.
 
-    _flutterSoundRecorder!.closeAudioSession();
+    _flutterSoundRecorder!.closeRecorder();
     _flutterSoundRecorder = null;
 
     var outputFile = File(_path);
@@ -409,7 +409,7 @@ class _RecordingButtonsState extends State<RecordingButtons> {
     if (outputFile.existsSync()) {
       await outputFile.delete();
     }
-    await _flutterSoundRecorder!.openAudioSession();
+    await _flutterSoundRecorder!.openRecorder();
   }
 
   Future<void> _startRecording() async {

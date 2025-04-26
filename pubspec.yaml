@@ -30,11 +30,11 @@ dependencies:
   cupertino_icons: ^1.0.3
 
   #firebase
-  firebase_core: ^2.25.4
-  cloud_firestore: ^4.15.5
-  firebase_auth: ^4.17.4
-  firebase_storage: ^11.6.6
-  firebase_analytics: ^10.8.6
+  firebase_core: ^2.32.0
+  cloud_firestore: ^4.17.3
+  firebase_auth: ^4.20.0
+  firebase_storage: ^11.7.5
+  firebase_analytics: ^10.10.0
 
   google_sign_in: ^6.2.1
 
@@ -46,7 +46,7 @@ dependencies:
 
   font_awesome_flutter: ^9.1.0
 
-  flutter_sound: ^8.4.2
+  flutter_sound: ^9.2.13
   permission_handler: ^8.1.2
   path_provider: ^2.0.2
   # needs to be 3.4.1(fix for Android 12) <= x < 3.0.5(breaking change)
@@ -63,9 +63,9 @@ dependencies:
   intl: ^0.17.0
   cached_network_image: ^3.3.1
   sign_in_with_apple: ^5.0.0
-  firebase_remote_config: ^4.3.14
+  firebase_remote_config: ^4.4.5
   package_info: ^2.0.2
-  url_launcher: ^6.1.8
+  url_launcher: ^6.3.1
   loading_animation_widget: ^1.1.0+3
   recase: ^4.1.0
   flutter_markdown: ^0.6.10
