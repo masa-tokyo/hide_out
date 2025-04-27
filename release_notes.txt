@@ -1,3 +1,0 @@
-Bug fixes and performance improvements.
-
-This is another line.
