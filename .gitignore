@@ -57,5 +57,5 @@ release_notes.json
 # SpecStory, a VS Code extension for saving and sharing chat history.
 #
 # https://marketplace.visualstudio.com/items?itemName=SpecStory.specstory-vscode
-# .specstory/*
+.specstory/*
 !.specstory/.what-is-this.md
