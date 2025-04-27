@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/post.dart';
 import 'package:hide_out/utils/constants.dart';
@@ -29,21 +29,20 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
 
   @override
   Widget build(BuildContext context) {
-
     try {
-      return AudioWidget.network(
-        url: widget.audioUrl ?? 'audio is not played if null',
-        play: _isPlaying,
-        loopMode: LoopMode.single,
-        child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),
-        onFinished: () => _onAudioFinished(),
-      );
+      return Container();
+      // return AudioWidget.network(
+      //   url: widget.audioUrl ?? 'audio is not played if null',
+      //   play: _isPlaying,
+      //   loopMode: LoopMode.single,
+      //   child: !_isPlaying ? _notPlayingButton() : _duringPlayingButton(),
+      //   onFinished: () => _onAudioFinished(),
+      // );
     } catch (e) {
       // inappropriate audio url throws an error
       log('error caught: $e');
       rethrow;
     }
-
   }
 
   _onAudioFinished() {
@@ -76,7 +75,7 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
   }
 
   _onNotPlayingButtonPressed() {
-    if(widget.audioUrl == null){
+    if (widget.audioUrl == null) {
       showHelpDialog(
           context: context,
           contentString: "No Recording yet!",
@@ -84,16 +83,15 @@ class _AudioPlayButtonState extends State<AudioPlayButton> {
           onConfirmed: null);
       return;
     }
-      final groupViewModel =
-          Provider.of<GroupViewModel>(context, listen: false);
-      if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
-        groupViewModel.insertListener(widget.post!);
-        groupViewModel.deleteNotification(postId: widget.post!.postId);
-      }
+    final groupViewModel = Provider.of<GroupViewModel>(context, listen: false);
+    if (widget.audioPlayType == AudioPlayType.POST_OTHERS) {
+      groupViewModel.insertListener(widget.post!);
+      groupViewModel.deleteNotification(postId: widget.post!.postId);
+    }
 
-      setState(() {
-        _isPlaying = !_isPlaying;
-      });
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
   }
 
   //-------------------------------------------------------------------------------------------------DURING_PLAYING
