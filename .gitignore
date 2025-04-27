@@ -58,6 +58,6 @@ ios/GoogleService-Info.plist
 !.specstory/.what-is-this.md
 
 # Alternative release notes file patterns
-# release_notes.json
-release_notes_*.txt
+release_notes.json
+# release_notes_*.txt
 release_notes.txt
