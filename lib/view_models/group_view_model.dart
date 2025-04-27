@@ -1,4 +1,4 @@
-// import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hide_out/%20data_models/group.dart';
 import 'package:hide_out/%20data_models/notification.dart' as d;
@@ -51,11 +51,11 @@ class GroupViewModel extends ChangeNotifier {
 
   List<String?> _audioUrls = [];
 
-  // List<AssetsAudioPlayer> _players = [];
+  List<AssetsAudioPlayer> _players = [];
 
-  // List<AssetsAudioPlayer> get players => _players; //exists only one
+  List<AssetsAudioPlayer> get players => _players; //exists only one
 
-  // AssetsAudioPlayer _player = AssetsAudioPlayer();
+  AssetsAudioPlayer _player = AssetsAudioPlayer();
 
   //how many times audios in the playlist are played in total
   List<int> _plays = [];
@@ -74,7 +74,7 @@ class GroupViewModel extends ChangeNotifier {
 
   // reset properties that are not connected to repositories and not reset automatically
   void resetPlayer() {
-    // _player = AssetsAudioPlayer();
+    _player = AssetsAudioPlayer();
     _currentIndex = 0;
 
     _plays.clear();
@@ -96,13 +96,13 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
-    // if (_currentIndex == index) {
-    //   //resume audio
-    //   _player.play();
-    // } else {
-    //   _currentIndex = index;
-    //   _player.playlistPlayAtIndex(_currentIndex);
-    // }
+    if (_currentIndex == index) {
+      //resume audio
+      _player.play();
+    } else {
+      _currentIndex = index;
+      _player.playlistPlayAtIndex(_currentIndex);
+    }
 
     _isPlayings[_currentIndex] = true;
 
@@ -117,49 +117,49 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> _openPlayer() async {
-    // List<Audio> audios = [];
-    // _audioUrls.forEach((element) {
-    //   audios.add(Audio.network(element!));
-    // });
+    List<Audio> audios = [];
+    _audioUrls.forEach((element) {
+      audios.add(Audio.network(element!));
+    });
 
-    // await _player.open(
-    //   Playlist(audios: audios),
-    //   // Since the player should start playing right after opening the screen,
-    //   // turn off the autoStart property
-    //   autoStart: false,
-    // );
+    await _player.open(
+      Playlist(audios: audios),
+      // Since the player should start playing right after opening the screen,
+      // turn off the autoStart property
+      autoStart: false,
+    );
   }
 
   void _addPlayerListener() {
     //check everytime the current audio is finished, except for the last one
-    // _player.playlistAudioFinished.listen((event) {
-    //   _isPlayings[_currentIndex] = false;
+    _player.playlistAudioFinished.listen((event) {
+      _isPlayings[_currentIndex] = false;
 
-    //   //next audio
-    //   _currentIndex = event.index + 1;
-    //   _isPlayings[_currentIndex] = true;
+      //next audio
+      _currentIndex = event.index + 1;
+      _isPlayings[_currentIndex] = true;
 
-    //   if (posts[_currentIndex].userId != currentUser!.userId) {
-    //     deleteNotification(postId: _posts[_currentIndex].postId);
-    //     insertListener(posts[_currentIndex]);
-    //   }
+      if (posts[_currentIndex].userId != currentUser!.userId) {
+        deleteNotification(postId: _posts[_currentIndex].postId);
+        insertListener(posts[_currentIndex]);
+      }
 
-    //   notifyListeners();
-    // });
+      notifyListeners();
+    });
 
-    // //check when the playlist finishes
-    // _player.playlistFinished.listen((isFinished) {
-    //   //listen even when the playlist is yet to be complete
-    //   if (isFinished) {
-    //     _isPlayings[_currentIndex] = false;
+    //check when the playlist finishes
+    _player.playlistFinished.listen((isFinished) {
+      //listen even when the playlist is yet to be complete
+      if (isFinished) {
+        _isPlayings[_currentIndex] = false;
 
-    //     if (posts[_currentIndex].userId != currentUser!.userId) {
-    //       deleteNotification(postId: _posts[_currentIndex].postId);
-    //       insertListener(posts[_currentIndex]);
-    //     }
-    //     notifyListeners();
-    //   }
-    // });
+        if (posts[_currentIndex].userId != currentUser!.userId) {
+          deleteNotification(postId: _posts[_currentIndex].postId);
+          insertListener(posts[_currentIndex]);
+        }
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> pauseAudio() async {
@@ -167,15 +167,15 @@ class GroupViewModel extends ChangeNotifier {
       _isPlayings[_currentIndex] = false;
 
       if (_plays.length == 1) {
-        // _player.currentPosition.listen((event) {
-        //   //prevent carrying out the process when event is updated after resuming the audio
-        //   if (!_isPlayings[_currentIndex]) {
-        //     //prevent pausing audio before starting audio
-        //     if (event.inMilliseconds > 0) {
-        //       _player.pause();
-        //     }
-        //   }
-        // });
+        _player.currentPosition.listen((event) {
+          //prevent carrying out the process when event is updated after resuming the audio
+          if (!_isPlayings[_currentIndex]) {
+            //prevent pausing audio before starting audio
+            if (event.inMilliseconds > 0) {
+              _player.pause();
+            }
+          }
+        });
       }
       notifyListeners();
     }

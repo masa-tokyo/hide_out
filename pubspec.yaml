@@ -50,7 +50,7 @@ dependencies:
   permission_handler: ^8.1.2
   path_provider: ^2.0.2
   # needs to be 3.4.1(fix for Android 12) <= x < 3.0.5(breaking change)
-  # assets_audio_player: <3.0.5
+  assets_audio_player: <3.0.5
   tuple: ^2.0.0
 
   flutter_slidable: ^0.6.0
